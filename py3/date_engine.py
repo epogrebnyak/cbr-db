@@ -17,8 +17,8 @@ def get_date_range(start_date, end_date):
     return date_range
 
 def get_isodate_list(start_iso_date, end_iso_date):
-    range = get_date_range(iso2datetime(start_iso_date), iso2datetime(end_iso_date))
-    return [datetime2iso(x) for x in range]
+    range_ = get_date_range(iso2datetime(start_iso_date), iso2datetime(end_iso_date))
+    return [datetime2iso(x) for x in range_]
 
 def zero_padded_month(month):
     return "0" + str(month) if month < 10 else str(month)
