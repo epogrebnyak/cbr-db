@@ -2,7 +2,7 @@ import ini
 import os
 
 def pyrun(cmd):
-    os.system("python {}".format(cmd))
+    os.system("python3 {}".format(cmd))
 
 if __name__ == '__main__':
     ini.check_mysql_path()
