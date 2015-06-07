@@ -1,5 +1,8 @@
+import sys
+sys.path.append('..')
+
 import unittest
-from datetime import datetime
+from datetime import datetime, date
 import date_engine
 
 class DateEngineTest(unittest.TestCase):
@@ -21,10 +24,32 @@ class DateEngineTest(unittest.TestCase):
         )
     
     def test_get_date_range(self):
-        pass
+        self.assertEqual(
+            date_engine.get_date_range(datetime(2012, 3, 24), datetime(2012, 5, 24)),
+            [datetime(2012, 3, 24), datetime(2012, 4, 24), datetime(2012, 5, 24)]
+        )
+        
+        self.assertEqual(
+            date_engine.get_date_range(datetime(1988, 11, 1), datetime(1989, 1, 1)),
+            [datetime(1988, 11, 1), datetime(1988, 12, 1), datetime(1989, 1, 1)]
+        )
+        
+        # what should occur here?
+        self.assertEqual(
+            date_engine.get_date_range(datetime(1988, 10, 31), datetime(1988, 12, 31)),
+            [datetime(1988, 11, 31), datetime(1988, 12, 30), datetime(1988, 12, 31)]
+        )
     
     def test_get_isodate_list(self):
-        pass
+        self.assertEqual(
+            date_engine.get_isodate_list('2012-03-24', '2012-05-24'),
+            ['2012-03-24', '2012-04-24', '2012-05-24']
+        )
+        
+        self.assertEqual(
+            date_engine.get_isodate_list('1988-11-01', '1989-01-01'),
+            ['1988-11-01', '1988-12-01', '1989-01-01']
+        )
     
     def test_zero_padded_month(self):
         self.assertEqual(
@@ -59,14 +84,41 @@ class DateEngineTest(unittest.TestCase):
             datetime(2015, 5, 23)
         )
     
-    def test_isodate2timestamp(self):
-        pass
-    
     def test_date2timestamp(self):
-        pass
+        self.assertEqual(
+            date_engine.date2timestamp(101, datetime(2014, 5, 3)),
+            '042014'
+        )
+        
+        self.assertEqual(
+            date_engine.date2timestamp('101', datetime(2014, 1, 5)),
+            '122013'
+        )
     
     def test_timestamp2date(self):
-        pass
+        self.assertEqual(
+            date_engine.timestamp2date(2015, 5),
+            date(2015, 6, 1)
+        )
+        
+        self.assertEqual(
+            date_engine.timestamp2date(1992, 12),
+            date(1993, 1, 1)
+        )
+        
+        # should not be able to specify the month and quarter
+        self.assertRaises(ValueError, date_engine.timestamp2date, 1992, 5, 1)
+    
+    def test_isodate2timestamp(self):
+        self.assertEqual(
+            date_engine.isodate2timestamp(101, '2014-05-03'),
+            '042014'
+        )
+        
+        self.assertEqual(
+            date_engine.isodate2timestamp('101', '2014-01-05'),
+            '122013'
+        )
     
     def test_year_start_isodate(self):
         self.assertEqual(

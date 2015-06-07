@@ -30,10 +30,6 @@ def iso2datetime(iso_date):
     d = datetime.datetime.strptime(iso_date, "%Y-%m-%d")
     return d.date()
 
-def isodate2timestamp(form, isodate):
-    dt = iso2datetime(isodate)
-    return date2timestamp(form, dt)
-
 def date2timestamp(form, dt):
     # must keet this hardcoded, different code will apply to different form
     if str(form) == "101":
@@ -43,14 +39,20 @@ def date2timestamp(form, dt):
         else:
             year = dt.year
             month = dt.month - 1
+            
         return zero_padded_month(month) + str(year)
-        
-    if str(form) == "102":
-        return None 
+     
+    # not needed
+    # if str(form) == "102":
+    #    return None 
+
+def isodate2timestamp(form, isodate):
+    dt = iso2datetime(isodate)
+    return date2timestamp(form, dt)
 
 def timestamp2date(year, month=0, quarter=0):
 
-    if month == 0 and quarter == 0:
+    if month != 0 and quarter != 0:
         raise ValueError("The month and the quarter must not be specified simultaneously")
 
     if month == 0:

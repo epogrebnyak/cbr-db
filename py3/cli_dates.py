@@ -53,6 +53,7 @@ def get_date_range_from_command_line(arg):
         s = date_engine.check_isodate(arg['<date>'])
         e = s
     elif arg['--all-dates']:
+        # L: where is DATE_FLOOR_ISO defined?
         s = date_engine.check_isodate(DATE_FLOOR_ISO)
         e = date_engine.this_month_isodate()
 

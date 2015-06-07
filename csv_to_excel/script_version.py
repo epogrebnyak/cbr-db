@@ -1,4 +1,3 @@
-
 from xlwings import Range, Workbook, Chart, Sheet
 import pandas as pd
 import numpy as np

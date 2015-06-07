@@ -16,9 +16,8 @@ def get_url(date=None, isodate=None, form=None):
     """
     Creates URL based on date for form 101
     """
-    if form == '101':
-        url = "http://www.cbr.ru/credit/forms/" + get_ziprar_filename(date, isodate, form)        
-    return url
+    if str(form) == '101':
+        return "http://www.cbr.ru/credit/forms/" + get_ziprar_filename(date, isodate, form)
 
 def get_ziprar_filename(date=None, isodate=None, form=None):
     if isodate is not None:
@@ -31,7 +30,7 @@ def get_ziprar_filename(date=None, isodate=None, form=None):
     year = date.year
     extension = get_extension(date)
 
-    if form == '101':
+    if str(form) == '101':
         return "101-{0}{1}01.{2}".format(year, month, extension)
     
 
@@ -40,18 +39,15 @@ def get_extension(date):
     zip_start_date = datetime.date(2004, 2, 1)
     zip_end_date = datetime.date(2008, 12, 1)
 
-    extension = None  # prevents extension from not being set if rar_start_date or zip_end_date changes
     if zip_start_date <= date <= zip_end_date:
-        extension = 'zip'
+        return 'zip'
 
     # dbf files are in rar format stating Jan-2009
     rar_start_date = datetime.date(2009, 1, 1)
 
     # rar_end_date   = datetime.datetime.now().date().replace(day=1)
     if date >= rar_start_date:
-        extension = 'rar'
-
-    return extension
+        return 'rar'
 
 if __name__ == "__main__":
     if len(sys.argv) == 1:

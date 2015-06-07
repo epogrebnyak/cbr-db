@@ -1,6 +1,6 @@
-#  should be run from the parent directory, as:
-#  set PYTHONPATH=%PYTHONPATH;.
-#  python tests/test_conn.py
+import sys
+sys.path.append('..')
+
 import unittest
 import collections
 import conn
