@@ -28,6 +28,7 @@ aggregate data into reports and dump reports to csv or xls files.
     'import alloc' and 'import tables' read supplementary tables to final database (allocation algorithm)
     'make balance' creates table 'balance' based on 'f101', 'alloc' and supplementary tables (for form 101)
     'report balance' dumps final reporting tables to csv or xls files    
+    'test balance' performs sample queries on the final reporting tables for verification purposes 
 
 Usage:   
     bankform.py delete database (raw | final)
@@ -49,9 +50,10 @@ Usage:
     
     bankform.py import alloc
     bankform.py import tables    
-    bankform.py make balance 
+    bankform.py make balance
     bankform.py report balance     [--csv | --xls]
-    bankform.py report form <FORM> [--csv | --xls]        
+    bankform.py report form <FORM> [--csv | --xls]
+    bankform.py test balance
 
 Notes:
     All dates must be in ISO format: YYYY-MM-DD
@@ -169,6 +171,9 @@ if __name__ == '__main__':
 
     if arg['make'] and arg['balance']:
         make_balance()
+        
+    if arg['test'] and arg['balance']:
+        test_balance()
 
     if arg['report'] and (arg['balance'] or arg['form']):
         report_balance_tables()

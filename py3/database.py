@@ -9,17 +9,15 @@ from global_ini import DB_DICT, DIRLIST
 from make_csv import list_csv_filepaths_by_date
 import os
 
-   
-################################################################
-#             Generic functions used in other calls            #
-################################################################
 
-# EP: in this section there are lower-level fucntions that are used in other more higher level functions
+################################################################
+#             0. Generic functions used in other calls         #
+################################################################
 
 
 def replace_in_file(filepath, replace_what, replace_with):
     """
-    Replaces 'replace_what' string with 'replace_with' string in file, saves file.
+    Replaces 'replace_what' string with 'replace_with' string in filepath.
     """
     with open(filepath) as f:
         lines = f.read().replace(replace_what, replace_with)
@@ -34,7 +32,7 @@ def run_sql_string(string, database=None, verbose=False):
     Allows running non-SQL commands in mysql.exe (e.g. source)
     For SQL commands may also use conn.execute_sql()
     """
-    if database == None:
+    if database is None:
         call_string = "mysql -e \"{0}\"".format(string)
     else:
         call_string = "mysql --database {0} --execute \"{1}\"".format(
@@ -71,13 +69,11 @@ def dump_table_csv(db, table, dir_):
     replace_in_file(os.path.join(dir_, table + ".txt"), "\\", "")
 
 
-# EP: starting this section we have functions used in docopt interface
-    
 ################################################################
 #            1. General database operations                    #
 ################################################################
-    
-    
+
+
 def recreate_db(db_name):
     """
     Deletes an existing database and recreates it (empty).
@@ -129,14 +125,6 @@ def save_db_to_dump(db_name):
         db_name))
 
 
-# def reset_db_from_dump(db_name):
-    # """
-    # Removes the database and reloads its structure from a dump file.
-    # """
-    # recreate_db(db_name)
-    # load_db_from_dump(db_name)
-
-
 ################################################################
 #                  2. DBF file import                          #
 ################################################################
@@ -162,7 +150,8 @@ def import_csv(isodate, form):
 
 def dump_table_sql(db, table, file, form):
     """
-    Dumps table from database to local directory as SQL file
+    Dumps table from database to local directory as a SQL file.
+    Support function, it is not called directly from the interface.
     EP (not todo): later will need to write this file to publically open folder on a server
     """
     path = os.path.join(DIRLIST[form]['sql'], file)
@@ -174,6 +163,9 @@ def dump_table_sql(db, table, file, form):
 
 
 def read_table_sql(db, form, file):
+    """
+    Support function, it is not called directly from the interface.
+    """
     path = os.path.join(DIRLIST[form]['sql'], file)
     source_sql_file(path, db)
 
@@ -181,16 +173,17 @@ def read_table_sql(db, form, file):
 def get_sqldump_table_and_filename(form):
     """
     Returns (f101, f101.sql) for form 101, and similar output for other forms.
+    Support function, it is not called directly from the interface.
     """
     table = 'f' + form
     file = table + ".sql"
     return table, file
 
 
-# EP: also need to indicate somehow that functions below are the ones that imported to the bankform module 
-# and are used in docopt interface and functions above are support functions - maybe in docstrings  
-    
 def save_dataset_as_sql(form):
+    """
+    Used in the 'save dataset' and 'migrate dataset' operation modes.
+    """
     database = DB_DICT['raw']
     table, file = get_sqldump_table_and_filename(form)
     dump_table_sql(database, table, file, form)
@@ -199,6 +192,9 @@ def save_dataset_as_sql(form):
 
 
 def import_dataset_from_sql(form):
+    """
+    Used in the 'import dataset' and 'migrate dataset' operation modes.
+    """
     database = DB_DICT['final']
     table, file = get_sqldump_table_and_filename(form)
     read_table_sql(database, form, file)
@@ -206,6 +202,9 @@ def import_dataset_from_sql(form):
 
 
 def create_final_dataset_in_raw_database():
+    """
+    Used in the 'make dataset' operation mode.
+    """
     db_name = DB_DICT['raw']
     run_sql_string("call insert_f101();", db_name)
 
@@ -216,6 +215,9 @@ def create_final_dataset_in_raw_database():
 
 
 def report_balance_tables():
+    """
+    Used in the 'report balance' operation mode.
+    """
     # prepare TABLES in database
     db_name = DB_DICT['final']
     execute_sql("call balance_report_line_dt_3tables", db_name)
@@ -228,6 +230,9 @@ def report_balance_tables():
 
 
 def make_balance():
+    """
+    Used in the 'make balance' operation mode.
+    """
     db_name = DB_DICT['final']
     execute_sql("call alloc_make", db_name)
     execute_sql("delete from balance", db_name)
@@ -239,11 +244,14 @@ def make_balance():
 
 
 def test_balance():
+    """
+    Used in the 'test balance' operation mode.
+    """
     def do_output(sql):
-        print('** Performing the following test: **')
-        print(sql)
-        out = execute_sql(sql)
-        print('** Results **')
+        print('-> ' + sql)
+        out = execute_sql(sql, DB_DICT['final'], verbose=False)
+        # I see no valuable info with verbose=True, as I'm printing the results
+        # here
 
         if out:
             for row, val in enumerate(out, 1):
@@ -253,33 +261,28 @@ def test_balance():
 
         print()
 
-    # usage. Will print all the results, numbered from 1
-    do_output('SELECT A, B FROM C ORDER DESC')
-    
-    # EP-todo: this is not complete - I need the specific lines below to be run
-    #          you also need database name in  execute_sql(sql)  to run the tests, the name is db_name = DB_DICT['final']
-    # EP-todo: + when finished add "bankform.py test balance" to bankform.py 
-    # EP-todo: + also consider a call like execute_sql(sql, db_name, verbose = True) 
-
-    # running tests:
-    # select "Test: balance residuals" as Test;
-    # select * from test_balance_residual;
-
-    # select "Test: ref items" as Test;
-    # select * from test_ref_items;
-
-    # select "Test: net assets not zero" as Test;
-    # select dt, regn, itogo from balance where line = 500 and itogo != 0
-    # order by dt;
+    do_output('select "Test: balance residuals" as Test')
+    do_output('select * from test_balance_residual')
+    do_output('select "Test: ref items" as Test')
+    do_output('select * from test_ref_items')
+    do_output('select "Test: net assets not zero" as Test')
+    do_output(
+        'select dt, regn, itogo from balance where line = 500 and itogo != 0 order by dt')
 
 
 def import_alloc(filename='alloc_raw.txt'):
+    """
+    Used in the 'import alloc' operation mode.
+    """
     database = DB_DICT['final']
     path = os.path.join(DIRLIST['global']['alloc'], filename)
     import_generic(database, path)
 
 
 def import_tables():
+    """
+    Used in the 'import tables' operation mode.
+    """
     database = DB_DICT['final']
     dir_ = os.path.join(DIRLIST['global']['tables'])
 

@@ -1,4 +1,5 @@
 import os
+from global_ini import MYSQL_PATH
 
 def check_mysql_path():
     """
@@ -6,9 +7,9 @@ def check_mysql_path():
     Raises an exception if not.
     """
     # mysql is already on the PATH on Linux distros
-    if os.name != 'posix':
-        os.environ['PATH'] += ';C:\Program Files (x86)\MySQL\MySQL Server 5.7\bin'
-        print('path: ', os.environ['PATH'])
+    if os.name != 'posix' and (MYSQL_PATH not in os.environ['PATH']):
+        os.environ['PATH'] += ';' + MYSQL_PATH
+        print('path updated to', os.environ['PATH'])
 
     # test if mysql is on the path
     if os.system('mysql -e ""') != 0:

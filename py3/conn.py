@@ -24,20 +24,17 @@ def execute_sql_with_cursor(sql_string, cur, verbose=False):
     
     if verbose is True:
         print(cur.description)
-        print()
-        for row in cur:
-            print(row)
     
     return cur.fetchall()
 
-def execute_sql(sql_string, database=None):
+def execute_sql(sql_string, database=None, verbose=False):
     """
     Executes a SQL query, returning all the results. A new connection is
     opened and closed at every call by using the default credentials.
     """
     conn = get_mysql_connection (DB_INI_DICT, database)
     cur = conn.cursor()
-    resp = execute_sql_with_cursor(sql_string, cur)    
+    resp = execute_sql_with_cursor(sql_string, cur, verbose)    
     cur.close()
     conn.close()
     

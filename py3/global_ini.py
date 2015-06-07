@@ -9,6 +9,7 @@ DIR_ROOT = os.path.dirname(
 # Executables directories          
 UNRAR_PATH = os.path.join(DIR_ROOT, 'bin', 'unrar.exe')
 Z7_PATH    = os.path.join(DIR_ROOT, 'bin', '7za')
+MYSQL_PATH = r'C:\Program Files (x86)\MySQL\MySQL Server 5.7\bin'
 PATH = {'unrar': UNRAR_PATH, 'z7': Z7_PATH}
 
 # Public data directories          
@@ -71,5 +72,3 @@ f101 = {
 }
 
 FORM_DATA = {'101': f101}
-
-

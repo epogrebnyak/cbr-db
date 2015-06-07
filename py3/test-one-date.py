@@ -2,7 +2,7 @@ import ini
 import os
 
 def pyrun(cmd):
-    os.system("python3 {}".format(cmd))
+    os.system("python {}".format(cmd))
 
 if __name__ == '__main__':
     ini.check_mysql_path()
@@ -18,3 +18,4 @@ if __name__ == '__main__':
     pyrun("bankform.py import tables")
     pyrun("bankform.py make balance")
     pyrun("bankform.py report balance")
+    pyrun("bankform.py test balance")
