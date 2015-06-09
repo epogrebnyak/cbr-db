@@ -1,6 +1,6 @@
 import datetime
 import sys
-from date_engine import iso2datetime, zero_padded_month
+from date_engine import iso2date, zero_padded_month
 from global_ini import DIRLIST
 from download import download
 
@@ -21,7 +21,7 @@ def get_url(date=None, isodate=None, form=None):
 
 def get_ziprar_filename(date=None, isodate=None, form=None):
     if isodate is not None:
-        date = iso2datetime(isodate)
+        date = iso2date(isodate)
     elif date is None:
         return None
 
@@ -32,12 +32,12 @@ def get_ziprar_filename(date=None, isodate=None, form=None):
 
     if str(form) == '101':
         return "101-{0}{1}01.{2}".format(year, month, extension)
-    
+
 
 def get_extension(date):
     # dbf files are avaialble since Feb-2004. They are in zip format up to Dec-2008
     zip_start_date = datetime.date(2004, 2, 1)
-    zip_end_date = datetime.date(2008, 12, 1)
+    zip_end_date = datetime.date(2008, 12, 31)
 
     if zip_start_date <= date <= zip_end_date:
         return 'zip'

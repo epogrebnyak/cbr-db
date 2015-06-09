@@ -13,13 +13,14 @@
 
 import date_engine
 
+DATE_FLOOR_ISO = "2004-02-01"
+
 def get_date_range_from_command_line_as_datetime(arg):
     """
-    Оutput of get_date_range_from_command_line(arg) in datetime format.
+    Оutput of get_date_range_from_command_line(arg) as date.
     """
     iso_date_list = get_date_range_from_command_line(arg)
-    datetime_date_list = [date_engine.iso2datetime(x) for x in iso_date_list]
-    return datetime_date_list
+    return [date_engine.iso2date(x) for x in iso_date_list]
 
 def get_date_range_from_command_line(arg):
     """
@@ -53,7 +54,6 @@ def get_date_range_from_command_line(arg):
         s = date_engine.check_isodate(arg['<date>'])
         e = s
     elif arg['--all-dates']:
-        # L: where is DATE_FLOOR_ISO defined?
         s = date_engine.check_isodate(DATE_FLOOR_ISO)
         e = date_engine.this_month_isodate()
 
