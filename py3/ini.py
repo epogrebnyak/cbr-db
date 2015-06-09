@@ -8,7 +8,7 @@ def check_mysql_path():
     """
     # mysql is already on the PATH on Linux distros
     if os.name != 'posix':
-        add_path = MYSQL_PATH.join(';')
+        add_path = ';'.join(MYSQL_PATH)
 
         if add_path not in os.environ['PATH']:
             os.environ['PATH'] += ';' + add_path
