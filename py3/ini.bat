@@ -1,0 +1,1 @@
+PATH %PATH%;C:\Program Files (x86)\MySQL\MySQL Server 5.7\bin;C:\MySQL\bin;D:\programs\xampp\mysql\bin
