@@ -1,0 +1,27 @@
+Comments in this file are not tasks to do by contractor, it is a list for me to keep in mind and work on - EP.
+
+DONE
+====
+.gitignore - delete it
+supply Excel file output, specification and previous realisation for –csv –xls keys. 
+
+TODO
+====
+make output common directory - write .sql there
+build xls file 
+delete temp sql files in ouptput directory 
+read veb to final/raw database + omit veb in raw
+warnings in sql import
+read from DBF to final database directly
+explicit regn and date limit when truncating raw database (hardcoded in database)
+    bankform.py make dataset <FORM> --regn 956,1000 --regn-file regn.txt --year 2015
+‘Import tables’ is not very clean, it is actually about importing names/plan from files
+think of top-30 test
+form 102
+
+COMMENT
+=======
+something to start mysql server/daemon (now manually in Windows)
+date_engine.py - some spagetti around format conversion, seems even not all functions are used
+pandas dataframe  - more explicit data aggregation algorithm 
+SQLA abstraction of SQL queries
