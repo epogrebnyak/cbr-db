@@ -3,7 +3,7 @@ from global_ini import MYSQL_PATH
 
 def check_mysql_path():
     """
-    Guarantees that the required MySQL binaries are in the PATH.
+    Guarantees that required MySQL binaries are in PATH.    
     Raises an exception if not.
     """
     # mysql is already on the PATH on Linux distros
@@ -12,9 +12,12 @@ def check_mysql_path():
 
         if add_path not in os.environ['PATH']:
             os.environ['PATH'] += ';' + add_path
-            print('path updated to', os.environ['PATH'])
+            print('PATH updated to following:\n', os.environ['PATH'])
 
     # test if mysql is on the path
     if os.system('mysql -e ""') != 0:
-        print("mysql is not in the PATH or the server is stopped.")
+        print("mysql.exe is not found in PATH or MySQL server not running.")
         raise AssertionError("Invalid PATH")
+        
+if __name__ == "__main__":
+    check_mysql_path()
