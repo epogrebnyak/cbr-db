@@ -51,9 +51,10 @@ Usage:
     bankform.py import alloc
     bankform.py import tables    
     bankform.py make balance
+    bankform.py test balance
     bankform.py report balance     [--csv | --xls]
     bankform.py report form <FORM> [--csv | --xls]
-    bankform.py test balance
+
 
 Notes:
     All dates must be in ISO format: YYYY-MM-DD
@@ -71,7 +72,7 @@ from unpack import unpack
 from make_csv import dbf2csv
 from global_ini import DIRLIST, DB_DICT
 from global_ini import create_directories
-from database import recreate_db, save_db_to_dump, load_db_from_dump, import_csv #, reset_db_from_dump
+from database import recreate_db, save_db_to_dump, load_db_from_dump, import_csv
 from database import save_dataset_as_sql, import_dataset_from_sql, create_final_dataset_in_raw_database
 from database import import_alloc, import_tables
 from database import make_balance, test_balance, report_balance_tables
@@ -100,7 +101,7 @@ if __name__ == '__main__':
     arg = docopt(__doc__)
     form = get_selected_form(arg)
     date_range = get_date_range_from_command_line(arg)
-
+    
     if form:
         create_directories(DIRLIST[form])
 
@@ -114,10 +115,8 @@ if __name__ == '__main__':
         if arg['save']:
             save_db_to_dump(db_name)
         if arg['reset']:
-            # EP: I suggest the following
             recreate_db(db_name)
-            load_db_from_dump(db_name)
-            # reset_db_from_dump(db_name)
+            load_db_from_dump(db_name)            
 
     # 2. DBF file import
     # 'pass' option will print parsed command line arguments
@@ -149,9 +148,10 @@ if __name__ == '__main__':
     # 3. Dataset manipulation in raw and final database
     if arg['dataset']:
         if arg['make']:
-                # bankform.py make dataset <FORM>
-                # Need replicate following behavior:
-                # mysql --database dbf_db3 -e "call insert_f101();"
+            # bankform.py make dataset <FORM>
+            # Replicates replicate following behavior:
+            # mysql --database dbf_db3 -e "call insert_f101();"
+            # todo: need to change this when adding more forms 
             create_final_dataset_in_raw_database()
 
         if arg['save']:
