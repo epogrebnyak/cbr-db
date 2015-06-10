@@ -28,5 +28,6 @@ if __name__ == '__main__':
     pyrun(exec_, "bankform.py import alloc")
     pyrun(exec_, "bankform.py import tables")
     pyrun(exec_, "bankform.py make balance")
-    pyrun(exec_, "bankform.py report balance")
     pyrun(exec_, "bankform.py test balance")
+    pyrun(exec_, "bankform.py report balance")
+
