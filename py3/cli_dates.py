@@ -20,6 +20,7 @@ def try_format(string, format):
         z = z.date()
     except ValueError:
         pass
+
     return z, format
 
 def get_date(string, formats=DATE_FORMATS):
@@ -28,7 +29,8 @@ def get_date(string, formats=DATE_FORMATS):
     """
     for format in formats:
         z, format = try_format(string, format)
-        if z is not None:
+
+        if z:
             return z, format
 
 def get_last_date_in_year(dt):
@@ -40,22 +42,24 @@ def get_last_date_in_year(dt):
     c2 = dt.replace(month=12)
     return min(c1, c2)
 
-def shift_month_ahead(date_):
+def shift_month_ahead(dt):
     """
     Shifts date to next month's day 01.
     """
-    if date_.month < 12:
-        date_ = date_.replace(month=date_.month + 1)
+    if dt.month < 12:
+        dt = dt.replace(month=dt.month + 1)
     else:
-        date_ = date_.replace(month=1)
-        date_ = date_.replace(year=date_.year + 1)
-    return date_
+        dt = dt.replace(month=1)
+        dt = dt.replace(year=dt.year + 1)
+
+    return dt
 
 def yield_date(start, end):
     """
-    Yeilds dates between and including <start> and <end>.
+    Yields dates between and including <start> and <end>.
     """
     dt = start
+
     while dt <= end:
         yield dt
         dt = shift_month_ahead(dt)
@@ -65,11 +69,10 @@ def get_date_range_from_command_line(args):
     Returns date range specified in command line as a list of dates in iso format.
     """
     s, e = get_date_endpoints(args)
-    if s is not None and e is not None:
+
+    if s and e:
         datelist = [x.isoformat() for x in yield_date(s, e)]
         return datelist
-    else:
-        return None
 
 def get_date_endpoints(args):
     """
@@ -82,8 +85,6 @@ def get_date_endpoints(args):
         # Risk: hard-coded constant
         s = date(2004, 2, 1)
         e = date.today().replace(day=1)
-
-    # todo: script does not check if date is day 1. Must print warning.
 
     # process first timestamp
     if args['<timestamp1>'] is not None:
@@ -102,12 +103,16 @@ def get_date_endpoints(args):
         else:
             e = ts2
 
-    return (s, e)
+    if s.day != 1 or e.day != 1:
+        print('Warning: must always use dates in the start of the month (day 1). Forcing day=1.')
+        s = s.replace(day=1)
+        e = e.replace(day=1)
+
+    return s, e
 
 if __name__ == '__main__':
     args = docopt(__doc__)
-    s, e = get_date_endpoints(args)
     d_range = get_date_range_from_command_line(args)
-    print("Start date:", s)
-    print("End date:", e)
+    print("Start date:", d_range[0])
+    print("End date:", d_range[-1])
     print("Date list:", d_range)
