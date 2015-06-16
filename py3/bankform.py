@@ -1,6 +1,9 @@
 """
 Import bank sector statistics stored as archived DBF files at www.cbr.ru/credit/forms.asp to a local MySQL database, 
-aggregate data into reports and dump reports to csv or xls files.
+aggregate data into reports and save reports in csv or xlsx format. 
+
+More:
+    - can also import text file statistics forms, stored locally ("private data")
 
 1. General database operations:      
     'save' creates database dump in <db_name>.sql file without data, unless --with-data flag is specified
@@ -11,14 +14,18 @@ aggregate data into reports and dump reports to csv or xls files.
     'raw' refers to initial data database with information form DBF files (size in gigabytes)
     'final' refers to a reduced dataset used for final reports (size in 10Mb's)     
    
-2. DBF file import:
-    'pass' does nothing, prints date arguments to screen
+2. DBF/TXT file import
+2.1. Public data (DBF files as source)
     'download' saves zip/rar files form Bank of Russia web site to local folder
     'unpack' unzips/unrars DBF files
     'make csv' creates a CSV dump of DBF files     
     'import csv' reads csv files into raw database
+2.2. Private data (TXT files as source)
+    'make csv' converts text files to csv
+    'import csv' reads csv files into raw database
+    Note: no timestamps for private data are used, all files are processed.
    
-3. Dataset manipulation in raw and final database:     
+3. Dataset manipulation in raw and final database:
     'make dataset' creates a final table in raw database
     'save dataset' ...
     'import dataset' ...     
@@ -31,51 +38,52 @@ aggregate data into reports and dump reports to csv or xls files.
     'test balance' performs sample queries on the final reporting tables for verification purposes 
 
 Usage:   
-    bankform.py delete database (raw | final)
-    bankform.py load   database (raw | final)
     bankform.py reset  database (raw | final)
-    bankform.py save   database (raw | final) [--with-data]   
     
-    bankform.py pass <FORM>       ( --all-dates | --date <date> | --date-start <date_start> [--date-end <date_end>] | --year <year> | --year-start <year_start> [--year-end <year_end>] )    
-    bankform.py download <FORM>   ( --all-dates | --date <date> | --date-start <date_start> [--date-end <date_end>] | --year <year> | --year-start <year_start> [--year-end <year_end>] )    
-    bankform.py make csv <FORM>   ( --all-dates | --date <date> | --date-start <date_start> [--date-end <date_end>] | --year <year> | --year-start <year_start> [--year-end <year_end>] )    
-    bankform.py unpack <FORM>     ( --all-dates | --date <date> | --date-start <date_start> [--date-end <date_end>] | --year <year> | --year-start <year_start> [--year-end <year_end>] )    
-    bankform.py make csv <FORM>   ( --all-dates | --date <date> | --date-start <date_start> [--date-end <date_end>] | --year <year> | --year-start <year_start> [--year-end <year_end>] )    
-    bankform.py import csv <FORM> ( --all-dates | --date <date> | --date-start <date_start> [--date-end <date_end>] | --year <year> | --year-start <year_start> [--year-end <year_end>] )
+    bankform.py download   <FORM> (<timestamp1> [<timestamp2>] | --all-dates)
+    bankform.py make csv   <FORM> (<timestamp1> [<timestamp2>] | --all-dates)
+    bankform.py unpack     <FORM> (<timestamp1> [<timestamp2>] | --all-dates)
+    bankform.py make csv   <FORM> (<timestamp1> [<timestamp2>] | --all-dates)
+    bankform.py import csv <FORM> (<timestamp1> [<timestamp2>] | --all-dates)
     
-    bankform.py make dataset <FORM>
-    bankform.py save dataset <FORM>
-    bankform.py import dataset <FORM>
+    bankform.py make csv   <FORM> --private-data [--all-dates]
+    bankform.py import csv <FORM> --private-data [--all-dates]    
+    
+    bankform.py make    dataset <FORM>
+    bankform.py save    dataset <FORM>
+    bankform.py import  dataset <FORM>
     bankform.py migrate dataset <FORM>
-    
+        
     bankform.py import alloc
     bankform.py import tables    
-    bankform.py make balance
-    bankform.py test balance
+    bankform.py make   balance
+    bankform.py test   balance
     bankform.py report balance     [--csv | --xls]
     bankform.py report form <FORM> [--csv | --xls]
 
 
 Notes:
-    All dates must be in ISO format: YYYY-MM-DD
-    MySQL:
-        MySQL daemon must be up and running when bankform.py is started.
+    (1) Format for timestamps is YYYY-MM-DD (ISO), YYYY-MM, DD.MM.YYYY, MM.YYYY or YYYY
+    MySQL configuration requirements:
+        MySQL server daemon must be up and running when bankform.py is started.
         Config file 'my.ini' or 'my.cfg' must contain host, user, password to allow mysql.exe calls.
-        mysql*.exe must be in PATH, amend and run ini.bat
+        mysql*.exe must be in PATH. If not in PATH run ini.bat or ini.py 
 """
-
 
 from docopt import docopt
 from cli_dates import get_date_range_from_command_line
 from make_url import download_form
 from unpack import unpack
 from make_csv import dbf2csv
-from global_ini import DIRLIST, DB_DICT
+from global_ini import DIRLIST, DB_NAMES
 from global_ini import create_directories
-from database import recreate_db, save_db_to_dump, load_db_from_dump, import_csv
+from database import delete_and_create_db, save_db_to_dump, load_db_from_dump
+from database import import_csv, import_csv_derived_from_text_files
+from private_form_txt import convert_txt_directory_to_csv
 from database import save_dataset_as_sql, import_dataset_from_sql, create_final_dataset_in_raw_database
 from database import import_alloc, import_tables
-from database import make_balance, test_balance, report_balance_tables
+from database import make_balance, test_balance, report_balance_tables_csv, report_balance_tables_xls
+
 
 EOL = "\n"
 SUPPORTED_FORMS = ['101', '102', '123', '134', '135']
@@ -86,16 +94,17 @@ def get_selected_form(arg):
     return form if form in SUPPORTED_FORMS else None
 
 
-def get_db_name(arg, db_dict=DB_DICT):
+def get_db_name(arg, db_dict=DB_NAMES):
     """
-    DB_DICT = {'raw': DB_NAME_RAW, "final": DB_NAME_FINAL}
+    Returns actual database name, which is coded in command line by keywords 'raw' and 'final'.
+    Uses global dictionary DB_NAMES = {'raw': DB_NAME_RAW, "final": DB_NAME_FINAL}
     """
-    # todo: shorter expression?
     db_name = None
     for param in db_dict.keys():
         if arg[param]:
             db_name = db_dict[param]
     return db_name
+
 
 if __name__ == '__main__':
     arg = docopt(__doc__)
@@ -103,26 +112,25 @@ if __name__ == '__main__':
     date_range = get_date_range_from_command_line(arg)
     
     if form:
+        # todo: need not printing it 
         create_directories(DIRLIST[form])
 
     # 1. General database operations
     if arg['database']:
-        db_name = get_db_name(arg, DB_DICT)
-        if arg['delete']:
-            recreate_db(db_name)
-        if arg['load']:
-            load_db_from_dump(db_name)
-        if arg['save']:
-            save_db_to_dump(db_name)
+        # todo: global rename DB_NAMES
+        db_name = get_db_name(arg, DB_NAMES)
+        # if arg['delete']:
+            # delete_and_create_db(db_name)
+        # if arg['load']:
+            # load_db_from_dump(db_name)
+        # if arg['save']:
+            # save_db_to_dump(db_name)
         if arg['reset']:
-            recreate_db(db_name)
+            # todo: rename delete_and_create_db(db_name))
+            delete_and_create_db(db_name)
             load_db_from_dump(db_name)            
 
-    # 2. DBF file import
-    # 'pass' option will print parsed command line arguments
-    if arg['pass']:
-        print("Selected form:", form)
-        print("Date list:", date_range)
+    # 2.1 DBF file import
 
     if date_range is not None:
         for isodate in date_range:
@@ -144,6 +152,19 @@ if __name__ == '__main__':
             # import CSV for selected dates into raw database
             if arg['import'] and arg['csv']:
                 import_csv(isodate, form)
+                
+    # 2.2 DBF file import
+    if arg["--private-data"]:    
+            # convert text to CSV
+            if arg['make'] and arg['csv']:
+                convert_txt_directory_to_csv() 
+                print("This will make csv from text files")
+
+            # import CSV into raw database
+            if arg['import'] and arg['csv']:
+                print("This will import csv to raw database")
+                import_csv_derived_from_text_files()
+    
 
     # 3. Dataset manipulation in raw and final database
     if arg['dataset']:
@@ -159,6 +180,7 @@ if __name__ == '__main__':
         if arg['import']:
             import_dataset_from_sql(form)
         if arg['migrate']:
+            create_final_dataset_in_raw_database()
             save_dataset_as_sql(form)
             import_dataset_from_sql(form)
 
@@ -176,4 +198,8 @@ if __name__ == '__main__':
         test_balance()
 
     if arg['report'] and (arg['balance'] or arg['form']):
-        report_balance_tables()
+        report_balance_tables_csv()  
+        if arg['--xls']:
+            report_balance_tables_xls() 
+              
+        

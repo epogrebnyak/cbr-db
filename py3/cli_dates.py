@@ -1,75 +1,130 @@
-"""Usage:
-   cli_dates2.py pass <FORM> (--date <date> | --date-start <date_start> [--date-end <date_end>] | --year <year> | --year-start <year_start> [--year-end <year_end>] | --all-dates )
-   cli_dates2.py pass
-   cli_dates2.py pass <FORM> --all-dates
-   cli_dates2.py pass <FORM> --date <date>
-   cli_dates2.py pass <FORM> --date-start <date_start> [--date-end <date_end>]
-   cli_dates2.py pass <FORM> --year <year>
-   cli_dates2.py pass <FORM> --year-start <year_start> [--year-end <year_end>]
-   cli_dates2.py pass <form> [<timestamp1> [<timestamp2>]] [--all-dates]
+"""
+Usage:
+   new_cli.py pass <form> (<timestamp1> [<timestamp2>] | --all-dates)
 
    Notes:
-   (1) Format for all dates is YYYY-MM-DD (ISO)"""
-
+   (1) Format for timestamps is YYYY-MM-DD (ISO), YYYY-MM, DD.MM.YYYY, MM.YYYY or YYYY
+"""
+ 
+from datetime import datetime
+from docopt import docopt
 import date_engine
+DATE_FORMATS = ['%Y', '%d.%m.%Y', '%m.%Y', '%Y-%m', '%Y-%m-%d']
 
-DATE_FLOOR_ISO = "2004-02-01"
+def try_format(string, format):
+   """
+   Attempts to parse <string> with date <format>.  
+   """
+   z = None
+   try:
+       z = datetime.strptime(string, format) 
+       z = z.date()       
+   except ValueError:    
+       pass
+   return z, format
 
-def get_date_range_from_command_line_as_datetime(arg):
+def get_date(string, formats = DATE_FORMATS):
+   """
+   Applies several date <formats> to parse <string>.
+   """
+   for format in formats: 
+       z, format = try_format(string, format)
+       if z is not None:            
+           return z, format
+    
+def get_last_date_in_year(dt):
     """
-    Оutput of get_date_range_from_command_line(arg) as date.
+    Cap last month in year with current month. Returns a date with day 01. 
+    Example: In June 2015 will rturn 2015-06 for 2015-12.
     """
-    iso_date_list = get_date_range_from_command_line(arg)
-    return [date_engine.iso2date(x) for x in iso_date_list]
+    c1 = datetime.today().replace(day=1).date()
+    c2 = dt.replace(month=12) 
+    return min(c1, c2)
 
-def get_date_range_from_command_line(arg):
+def shift_month_ahead(date):
     """
-    Transforms command line arguments to a list of dates in ISO format (default) of datetime format.
-    Example: ["2015-01-01", "2015-02-01"]
+    Shifts date to next month's day 01.
     """
-    s = None  # start iso date
-    e = None  # end iso date
+    if date.month < 12:
+        date = date.replace(month=date.month + 1)
+    else:
+        date = date.replace(month=1)
+        date = date.replace(year=date.year + 1)
+    return date
 
-    if arg['--date-start']:
-        s = date_engine.check_isodate(arg['<date_start>'])
-        # if end date not supplied make it today
-        if arg['--date-end']:
-            e = date_engine.check_isodate(arg['<date_end>'])
+def yield_date(start, end):
+    """
+    Yeilds dates between and including <start> and <end>.
+    """
+    dt = start
+    while dt <= end:
+        yield dt
+        dt = shift_month_ahead(dt)    
+
+def get_date_range_from_command_line(args):
+    """
+    Returns date range specified in command line as a list of dates in iso format.
+    """
+    s, e = get_date_endpoints(args)
+    if s is not None and e is not None:
+        datelist = [x.isoformat() for x in yield_date(s,e)]
+        return datelist
+    else:
+        return None     
+
+def get_date_endpoints(args):
+    """
+    Returns start and end of date range specified in command line.    
+    """
+    s = None  # start date
+    e = None  # end date
+
+    if args['--all-dates']:
+        # Risk: hard-coded constant
+        s = date(2004, 2, 1)
+        e = date.today().replace(day=1)  
+
+    # todo: script does not check if date is day 1. Must print warning.        
+    
+    # process first timestamp
+    if args['<timestamp1>'] is not None:
+        ts1, f1  = get_date(args['<timestamp1>'])
+        s = ts1
+        if f1 == "%Y":
+            e = get_last_date_in_year(ts1)
         else:
-            e = date_engine.this_month_isodate()
-    elif arg['--year']:
-        s = date_engine.year_start_isodate(arg['<year>'])
-        e = date_engine.year_end_isodate(arg['<year>'])
-    elif arg['--year-start']:
-        # make s start of year 1-Jan
-        s = date_engine.year_start_isodate(arg['<year_start>'])
-        # make end of year 1-Dec year or current month start, whichever earlier
-        if arg['--year-end']:
-            e = date_engine.year_end_isodate(arg['<year_end>'])
+            e = s
+        
+    # process second timestamp
+    if args['<timestamp2>'] is not None:
+        ts2, f2  = get_date(args['<timestamp2>'])  
+        if f2 == "%Y":
+            e = get_last_date_in_year(ts2)
         else:
-            e = date_engine.year_end_isodate(arg['<year_start>'])
-    elif arg['--date']:
-        # check format for date YYYY-MM-DD or YYYY-DD
-        # check if date makes sense
-        s = date_engine.check_isodate(arg['<date>'])
-        e = s
-    elif arg['--all-dates']:
-        s = date_engine.check_isodate(DATE_FLOOR_ISO)
-        e = date_engine.this_month_isodate()
+            e = ts2
+            
+    return (s, e)        
+           
+if __name__ == '__main__': 
+    args = docopt(__doc__)
+    s, e = get_date_endpoints(args)  
+    d_range = get_date_range_from_command_line(args)    
+    print ("Start date:", s)
+    print ("End date:"  , e)
+    print ("Date list:" , d_range)    
+    
+# todo - Move this to unit tests. All of below refers to date 2005-01-01
 
-    if s is None or e is None:
-        return None
+# test_strings = ['2005', '01.01.2005',  '1.1.2005', '1.2005', '2005-01', '2005-01-01']
+# for string in test_strings:
+     # z, format = get_date(string, DATE_FORMATS)
+     # print ("Selected date:", z)
+     # print ("Date format:", format)
+     # print ()
+     
+# end of unit test
 
-    return date_engine.get_isodate_list(s, e)
+           
+    
 
-if __name__ == '__main__':
 
-    from docopt import docopt
-    arg = docopt(__doc__)
-
-    # do nothing option - for testing
-    if arg['pass']:
-        range1 = get_date_range_from_command_line(arg)
-        print(range1)
-        range2 = get_date_range_from_command_line_as_datetime(arg)
-        print(range2)

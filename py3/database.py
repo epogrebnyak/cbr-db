@@ -5,7 +5,7 @@
 
 from terminal import terminal
 from conn import execute_sql
-from global_ini import DB_DICT, DIRLIST
+from global_ini import DB_NAMES, DIRLIST
 from make_csv import list_csv_filepaths_by_date
 import os
 
@@ -67,6 +67,10 @@ def dump_table_csv(db, table, dir_):
     terminal(call_string)
     # Note: below is a fix to kill unnecessary slashes in txt file.
     replace_in_file(os.path.join(dir_, table + ".txt"), "\\", "")
+    # more cleanup, delete extra sql files:
+    extra_sql = os.path.join(dir_, table + ".sql")
+    os.remove(extra_sql)
+    
 
 
 ################################################################
@@ -74,7 +78,7 @@ def dump_table_csv(db, table, dir_):
 ################################################################
 
 
-def recreate_db(db_name):
+def delete_and_create_db(db_name):
     """
     Deletes an existing database and recreates it (empty).
     """
@@ -89,7 +93,7 @@ def recreate_db(db_name):
 
 def get_db_dumpfile_path(db_name):
     """
-    Returns the standard path to dump files, configured in DIRLIST in the
+    Returns the path to sql dump files, configured in DIRLIST in the
     global initialization module.
     """
     dir_ = DIRLIST['global']['database']
@@ -126,22 +130,43 @@ def save_db_to_dump(db_name):
 
 
 ################################################################
-#                  2. DBF file import                          #
+#                  2. DBF and TXT file import                  #
 ################################################################
 
-def import_csv(isodate, form):
-    db_name = DB_DICT['raw']
-
-    for csv_path in list_csv_filepaths_by_date(isodate, form):
-        if os.path.isfile(csv_path):
-            command_line = "mysqlimport --ignore_lines=1 --ignore {0} \"{1}\"".format(
-                db_name, csv_path)
+def run_mysqlimport_command_line(csv_path, command_line):
+        if os.path.isfile(csv_path):            
             terminal(command_line)
         else:
             print("File not found:",  csv_path)
 
+def import_csv(isodate, form):
+    db_name = DB_NAMES['raw']
+
+    for csv_path in list_csv_filepaths_by_date(isodate, form):
+        command_line = "mysqlimport --ignore_lines=1 --ignore {0} \"{1}\"".format(
+                db_name, csv_path)
+        run_mysqlimport_command_line(csv_path, command_line)
+        
     print("Finished importing CSV files into raw data database.")
     print("Form:", form, ". Date:", isodate)
+    
+from global_ini import get_private_data_folder
+
+def import_csv_derived_from_text_files(): 
+    db_name = DB_NAMES['raw']   
+    
+    # risk: hardcoded 101
+    dir_ = get_private_data_folder('101', 'csv')
+    for filename in os.listdir(dir_):
+         csv_path = os.path.join(dir_, filename)   
+         # todo: the difference --ignore_lines=1 and --ignore_lines=0, need to harmonise file formats.  
+         command_line = "mysqlimport --ignore_lines=0 --ignore --lines-terminated-by=\\r\\n {0} \"{1}\"".format(
+                         db_name, csv_path)
+         run_mysqlimport_command_line(csv_path, command_line)  
+       
+    print("Finished importing CSV files into raw data database.")
+    print("Directory:", dir_)
+    
 
 ################################################################
 #              3. Dataset manipulation                         #
@@ -151,10 +176,8 @@ def import_csv(isodate, form):
 def dump_table_sql(db, table, file, form):
     """
     Dumps table from database to local directory as a SQL file.
-    Support function, it is not called directly from the interface.
-    EP (not todo): later will need to write this file to publically open folder on a server
     """
-    path = os.path.join(DIRLIST[form]['sql'], file)
+    path = os.path.join(DIRLIST[form]['output'], file)
     # mysqldump dbf_db f101 --add-drop-table=FALSE --no-create-info
     # --insert-ignore > %SQL_DIR%\f101.sql
     string = "mysqldump {0} {1}     --add-drop-table=FALSE --no-create-info --insert-ignore > \"{2}\"".format(
@@ -166,7 +189,7 @@ def read_table_sql(db, form, file):
     """
     Support function, it is not called directly from the interface.
     """
-    path = os.path.join(DIRLIST[form]['sql'], file)
+    path = os.path.join(DIRLIST[form]['output'], file)
     source_sql_file(path, db)
 
 
@@ -184,7 +207,7 @@ def save_dataset_as_sql(form):
     """
     Used in the 'save dataset' and 'migrate dataset' operation modes.
     """
-    database = DB_DICT['raw']
+    database = DB_NAMES['raw']
     table, file = get_sqldump_table_and_filename(form)
     dump_table_sql(database, table, file, form)
     # mysqldump dbf_db f101 --add-drop-table=FALSE --no-create-info
@@ -195,7 +218,7 @@ def import_dataset_from_sql(form):
     """
     Used in the 'import dataset' and 'migrate dataset' operation modes.
     """
-    database = DB_DICT['final']
+    database = DB_NAMES['final']
     table, file = get_sqldump_table_and_filename(form)
     read_table_sql(database, form, file)
     # mysql --database cbr_db2 -e "source %SQL_DIR%\f101.sql"
@@ -205,7 +228,7 @@ def create_final_dataset_in_raw_database():
     """
     Used in the 'make dataset' operation mode.
     """
-    db_name = DB_DICT['raw']
+    db_name = DB_NAMES['raw']
     run_sql_string("call insert_f101();", db_name)
 
 
@@ -213,27 +236,38 @@ def create_final_dataset_in_raw_database():
 #             4. Working with the final dataset               #
 ################################################################
 
-
-def report_balance_tables():
+def import_alloc(filename='alloc_raw.txt'):
     """
-    Used in the 'report balance' operation mode.
+    Used in the 'import alloc' operation mode.
+    todo: doc_string should describe what the function does, not where it is used, it is supplementary info
     """
-    # prepare TABLES in database
-    db_name = DB_DICT['final']
-    execute_sql("call balance_report_line_dt_3tables", db_name)
+    database = DB_NAMES['final']
+    path = os.path.join(DIRLIST['global']['alloc'], filename)
+    import_generic(database, path)
 
-    # dump TABLES to CSV
-    dir_ = DIRLIST['101']['output']
-    TABLES = ("tmp_output_itogo", "tmp_output_ir", "tmp_output_iv")
-    for table in TABLES:
-        dump_table_csv(db_name, table, dir_)
 
+def import_tables():
+    """
+    Used in the 'import tables' operation mode.
+    todo: doc_string should describe what the function does, not where it is used, it is supplementary info
+    """
+    database = DB_NAMES['final']
+    dir_ = os.path.join(DIRLIST['global']['tables'])
+
+    for file in os.listdir(dir_):
+        path = os.path.join(dir_, file)
+        if file.endswith(".txt"):
+            import_generic(database, path)
+        if file.endswith(".sql"):
+            source_sql_file(path, database)
+            # Risk: import_generic and source_sql_file - similar functions
+            # different arg order
 
 def make_balance():
     """
     Used in the 'make balance' operation mode.
     """
-    db_name = DB_DICT['final']
+    db_name = DB_NAMES['final']
     execute_sql("call alloc_make", db_name)
     execute_sql("delete from balance", db_name)
     execute_sql("call balance_make", db_name)
@@ -242,17 +276,14 @@ def make_balance():
     # delete from balance;
     # call balance_make;
 
-
 def test_balance():
     """
     Used in the 'test balance' operation mode.
     """
     def do_output(sql):
         print('-> ' + sql)
-        out = execute_sql(sql, DB_DICT['final'], verbose=False)
-        # I see no valuable info with verbose=True, as I'm printing the results
-        # here
-
+        out = execute_sql(sql, DB_NAMES['final'], verbose=False)
+        # Risk: I see no valuable info with verbose=True, as I'm printing the results here
         if out:
             for row, val in enumerate(out, 1):
                 print("row {0}: {1}".format(row, val))
@@ -269,28 +300,25 @@ def test_balance():
     do_output(
         'select dt, regn, itogo from balance where line = 500 and itogo != 0 order by dt')
 
+from make_xlsx import make_xlsx
 
-def import_alloc(filename='alloc_raw.txt'):
+def report_balance_tables_xls():
+    report_balance_tables_csv
+    dir_ = DIRLIST['101']['output']
+    make_xlsx(dir_)    
+
+def report_balance_tables_csv():
     """
-    Used in the 'import alloc' operation mode.
+    Used in the 'report balance' operation mode.
     """
-    database = DB_DICT['final']
-    path = os.path.join(DIRLIST['global']['alloc'], filename)
-    import_generic(database, path)
+    # prepare TABLES in database
+    db_name = DB_NAMES['final']
+    execute_sql("call balance_report_line_dt_3tables", db_name)
+
+    # dump TABLES to CSV
+    dir_ = DIRLIST['101']['output']
+    TABLES = ("tmp_output_itogo", "tmp_output_ir", "tmp_output_iv")
+    for table in TABLES:
+        dump_table_csv(db_name, table, dir_)
 
 
-def import_tables():
-    """
-    Used in the 'import tables' operation mode.
-    """
-    database = DB_DICT['final']
-    dir_ = os.path.join(DIRLIST['global']['tables'])
-
-    for file in os.listdir(dir_):
-        path = os.path.join(dir_, file)
-        if file.endswith(".txt"):
-            import_generic(database, path)
-        if file.endswith(".sql"):
-            source_sql_file(path, database)
-            # Risk: import_generic and source_sql_file - similar functions
-            # different arg order

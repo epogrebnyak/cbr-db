@@ -1,63 +1,113 @@
 import os
 
-# 1. DIRECTORIES
-# this file is in subfolder of DIR_ROOT
+# variables imported to other modules from here: 
+# PATH, DIRLIST, DB_NAMES, FORM_DATA, MYSQL_PATH
+
+# this global_ini.py file is in subfolder of DIR_ROOT, do os.path.dirname() twice
 DIR_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+
+#############################################################################
+# 0. EXECUTABLES
+#############################################################################
+ 
 # Executables directories
-UNRAR_PATH = os.path.join(DIR_ROOT, 'bin', 'unrar.exe')
-Z7_PATH = os.path.join(DIR_ROOT, 'bin', '7za')
-PATH = {'unrar': UNRAR_PATH, 'z7': Z7_PATH}
+PATH = {'unrar': os.path.join(DIR_ROOT, 'bin', 'unrar.exe'), 
+           'z7': os.path.join(DIR_ROOT, 'bin', '7za')}
 
-# Public data directories
-DIR_DATA = os.path.join(DIR_ROOT, 'data.downloadable')
-DIR_OUTPUT = os.path.join(DIR_ROOT, 'output')
-DIR_CSV_101 = os.path.join(DIR_DATA, '101', 'csv.full')
-DIR_DBF_101 = os.path.join(DIR_DATA, '101', 'dbf')
-DIR_RAR_101 = os.path.join(DIR_DATA, '101', 'rarzip')
-DIR_SQL_101 = os.path.join(DIR_DATA, '101', 'sql')
+#############################################################################
+# 1. DATA DIRECTORIES
+#############################################################################
+
+# todo: directory structure of DIRLIST is a bit of a mess, correct it
+#       see composition of DIRLIST
+#       maybe add fuctions such as:
+
+
+# Making of DIR101 ---------------------------------------------------------
+DIR_DATA    = os.path.join(DIR_ROOT, 'data.downloadable')
+ 
 DIR101 = {
-    'rar': DIR_RAR_101,
-    'dbf': DIR_DBF_101,
-    'csv': DIR_CSV_101,
-    'sql': DIR_SQL_101,
-    'output': DIR_OUTPUT
+    'rar': os.path.join(DIR_DATA, '101', 'rarzip'  ),
+    'dbf': os.path.join(DIR_DATA, '101', 'dbf'     ),
+    'csv': os.path.join(DIR_DATA, '101', 'csv.full'),
+#   'sql': DIR_SQL_101,
+    'output': os.path.join(DIR_ROOT, 'output')
 }
-# 'output' may be a global directory
+# todo: 'output' may be a global directory in GLOB_DIR, not a form 101  directory
+#        find where it is used and change
 
-DIR_GLOBAL_SQL = os.path.join(DIR_ROOT, 'database')
-DIR_ALLOC = os.path.join(DIR_GLOBAL_SQL, 'alloc')
-DIR_TABLES = os.path.join(DIR_GLOBAL_SQL, 'tables')
+# commented: SQL directory not used, writing sql dumps to output instead
+#         DIR_SQL_101 = os.path.join(DIR_DATA, '101', 'sql')
 
+# Making of GLOB_DIR --------------------------------------------------------
 GLOB_DIR = {
-    'database': DIR_GLOBAL_SQL,
-    'alloc': DIR_ALLOC,
-    'tables': DIR_TABLES
+    'database': os.path.join(DIR_ROOT, 'database', 'db_dump'),
+    'alloc'   : os.path.join(DIR_ROOT, 'database', 'alloc'  ),
+    'tables'  : os.path.join(DIR_ROOT, 'database', 'tables' )
 }
 
+# Private data directories --------------------------------------------------
+EXTRA_DIR = {'101': 
+                    {'txt': os.path.join(DIR_ROOT, 'data.private', 'veb', 'form'),
+                     'csv': os.path.join(DIR_ROOT, 'data.private', 'veb', 'csv' )
+                     }
+            }
+            
+# Final assembly ------------------------------------------------------------
 DIRLIST = {
-    '101': DIR101,
-    'global': GLOB_DIR
+    '101'    : DIR101,
+    'global' : GLOB_DIR,
+    'private': EXTRA_DIR
 }
+# ---------------------------------------------------------------------------
 
-# Private data directories
-EXTRA_DIR_101_TXT = os.path.join(DIR_ROOT, 'data.private', 'veb', 'form')
-EXTRA_DIR_101_CSV = os.path.join(DIR_ROOT, 'data.private', 'veb', 'csv')
-EXTRA_DIR = {'101': {'txt': EXTRA_DIR_101_TXT, 'csv': EXTRA_DIR_101_CSV}}
+# Tentative structure:
+# global + database, alloc, tables, output
+# 101 + public  + rar, dbf, csv
+# 101 + private + txt, csv
 
-def create_directories(dir_dict):
-    print("Directories used:")
+def get_public_data_folder(form, subfolder_tag):
+    """
+    Return absolute path to public data folder.
+    """
+    return DIRLIST[form][subfolder_tag]
+
+def get_private_data_folder(form, subfolder_tag):
+    """
+    Return absolute path to private data folder.
+    """
+    return EXTRA_DIR[form][subfolder_tag]
+    
+def get_global_folder(folder_tag):
+    """
+    Return absolute path to global folder with database files.
+    """
+    return GLOB_DIR[folder_tag]    
+
+def create_directories(dir_dict, verbose = False):
+    """
+    Create directories listed in <dir_dict> if such direcories fo not exist.
+    To be used before downloading archived files from CBR server.
+    """
+    if verbose: print("Directories used:")
     for key, dir_ in dir_dict.items():
-        print(dir_)
+        if verbose: print(dir_)
         os.makedirs(dir_, exist_ok=True)
 
+#############################################################################
 # 2. DATABASE NAMES
+#############################################################################
+
 DB_NAME_RAW = 'dbf_db3'
 DB_NAME_FINAL = 'cbr_db3'
-DB_DICT = {'raw': DB_NAME_RAW, "final": DB_NAME_FINAL}
 
+DB_NAMES = {'raw': DB_NAME_RAW, 
+          "final": DB_NAME_FINAL}
 
-# 3. FORM DESCRIPTIONS
+############################################################################# 
+#                3. FORM DESCRIPTIONS
+#############################################################################
 
 f101 = {
     'f101_B': {
@@ -81,5 +131,10 @@ f101 = {
 
 FORM_DATA = {'101': f101}
 
+############################################################################# 
 # 4. Additional paths
+#############################################################################
+
 MYSQL_PATH = [r'C:\Program Files (x86)\MySQL\MySQL Server 5.7\bin', r'C:\MySQL\bin']
+
+

@@ -1,17 +1,39 @@
-﻿Comments in this file are not tasks to do by contractor, it is a list for me to keep in mind and work on - EP.
+﻿TODO
+====
+update tests for cli_dates.py - see commented code in bootom of file cli_dates.py (I changed the command line interface, now several date formats can be supplied as input)
+
+inspect date_engine.py for orphan functions, document necessary changes. what modules use functions from there?
+
+there are warnings in mysqlimport of standard csv files, need to find out reason for these warnings (replicate same import with sql's "load data" then "show warnings")
 
 DONE
 ====
 .gitignore - delete it
 supply Excel file output, specification and previous realisation for –csv –xls keys. 
 
-TODO
-====
-make output common directory - write .sql there
+2015-06-15 05:20 PM
 build xls file 
+make output common directory - write .sql there
 delete temp sql files in ouptput directory 
-read veb to final/raw database + omit veb in raw
-warnings in sql import
+new dates interface
+
+2015-06-16 05:24 PM
+read private data to final/raw database 
+    Private data is text files with same logic structure as DBF. A separate altorightm is
+	used to convert these text files to csv's readable by mysqlimport. These CSVs can be 
+	imported directly to raw database. text files are in data.private.rar, conversion algorithm is in veb_txt.py.
+	
+	Steps:
+    define directories where private data text files are stored, and csv files are created
+    convert text files to csv files (using veb_txt.py). 
+	import csv files to raw database (import_veb.bat). import_veb.bat imports all available csv files, because it is a quick job to do. I think myslqimport call is slightly different from the one used for other csv files - please document it too.
+	integrate calls into bankform.py command line interface (no dates, this will for now work on all files):
+	     bankform.py make csv <FORM> --private-data [--all-dates]
+         bankform.py import csv <FORM> --private-data [--all-dates]
+
+NOT TODO
+========
+f101 integrity check
 read from DBF to final database directly
 explicit regn and date limit when truncating raw database (hardcoded in database)
     bankform.py make dataset <FORM> --regn 956,1000 --regn-file regn.txt --year 2015
@@ -19,6 +41,7 @@ explicit regn and date limit when truncating raw database (hardcoded in database
 think of top-30 test
 form 102
 restore documentation, make readme.md
+5 bank balance output 
 
 COMMENT
 =======
