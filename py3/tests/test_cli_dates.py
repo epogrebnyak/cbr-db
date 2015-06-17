@@ -13,45 +13,17 @@ class CliDatesTest(unittest.TestCase):
         target_date = date(2005, 1, 1)
 
         for string, target_format in zip(test_strings, test_format):
-            date_, format_ = cli_dates.get_date(string, cli_dates.DATE_FORMATS)
+            date_, format_ = cli_dates.get_date(string)
             self.assertEqual(date_, target_date)
             self.assertEqual(format_, target_format)
 
     def test_get_date(self):
-        self.assertEqual(cli_dates.get_date('1988', cli_dates.DATE_FORMATS)[0], date(1988, 1, 1))
-        self.assertEqual(cli_dates.get_date('03.12.2015', cli_dates.DATE_FORMATS)[0], date(2015, 12, 3))
-        self.assertEqual(cli_dates.get_date('2.2000', cli_dates.DATE_FORMATS)[0], date(2000, 2, 1))
-        self.assertEqual(cli_dates.get_date('12.2030', cli_dates.DATE_FORMATS)[0], date(2030, 12, 1))
-        self.assertEqual(cli_dates.get_date('2015-01-05', cli_dates.DATE_FORMATS)[0], date(2015, 1, 5))
-        self.assertEqual(cli_dates.get_date('1977-12', cli_dates.DATE_FORMATS)[0], date(1977, 12, 1))
-
-    def test_date_range(self): # yield was illegal name for test
-        self.assertEqual(
-            list(cli_dates.yield_date(date(2012, 3, 1), date(2012, 5, 1))),
-            [date(2012, 3, 1), date(2012, 4, 1), date(2012, 5, 1)]
-        )
-
-        self.assertEqual(
-            list(cli_dates.yield_date(date(1988, 11, 1), date(1989, 1, 1))),
-            [date(1988, 11, 1), date(1988, 12, 1), date(1989, 1, 1)]
-        )
-
-    def test_shift_month_ahead(self):
-        self.assertEqual(
-            cli_dates.shift_month_ahead(date(2015, 5, 1)),
-            date(2015, 6, 1)
-        )
-
-        self.assertEqual(
-            cli_dates.shift_month_ahead(date(2012, 12, 1)),
-            date(2013, 1, 1)
-        )
-
-        self.assertRaises(
-            ValueError,
-            cli_dates.shift_month_ahead,
-            date(2013, 3, 31)
-        )
+        self.assertEqual(cli_dates.get_date('1988')[0], date(1988, 1, 1))
+        self.assertEqual(cli_dates.get_date('03.12.2015')[0], date(2015, 12, 3))
+        self.assertEqual(cli_dates.get_date('2.2000')[0], date(2000, 2, 1))
+        self.assertEqual(cli_dates.get_date('12.2030')[0], date(2030, 12, 1))
+        self.assertEqual(cli_dates.get_date('2015-01-05')[0], date(2015, 1, 5))
+        self.assertEqual(cli_dates.get_date('1977-12')[0], date(1977, 12, 1))
 
     def test_get_date_range_from_command_line(self):
         args1 = {

@@ -30,4 +30,7 @@ if __name__ == '__main__':
     pyrun(exec_, "bankform.py make balance")
     pyrun(exec_, "bankform.py test balance")
     pyrun(exec_, "bankform.py report balance")
-
+    
+    #os.system("""mysql dbf_db3 --execute="SET max_error_count=3000; LOAD DATA INFILE  'C:/Users/Lucas/Desktop/ep_bf/data.downloadable/101/csv.full/bulk_f101_b.122014_B' IGNORE INTO TABLE bulk_f101_b IGNORE 1 LINES; SHOW WARNINGS" > warningsA.txt""")
+    #os.system("""mysql dbf_db3 --execute="SET max_error_count=3000; LOAD DATA INFILE  'C:/Users/Lucas/Desktop/ep_bf/data.downloadable/101/csv.full/bulk_f101b1.122014B1' IGNORE INTO TABLE bulk_f101b1 IGNORE 1 LINES; SHOW WARNINGS" > warningsB.txt""")
+    

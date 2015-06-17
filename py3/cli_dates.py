@@ -8,30 +8,31 @@ Usage:
 
 from datetime import datetime, date
 from docopt import docopt
+from date_engine import get_date_range
 DATE_FORMATS = ['%Y', '%d.%m.%Y', '%m.%Y', '%Y-%m', '%Y-%m-%d']
 
-def try_format(string, format):
+def try_format(string, fmt):
     """
     Attempts to parse <string> with date <format>.
     """
     z = None
     try:
-        z = datetime.strptime(string, format)
+        z = datetime.strptime(string, fmt)
         z = z.date()
     except ValueError:
         pass
 
-    return z, format
+    return z, fmt
 
 def get_date(string, formats=DATE_FORMATS):
     """
     Applies several date <formats> to parse <string>.
     """
-    for format in formats:
-        z, format = try_format(string, format)
+    for fmt in formats:
+        z, fmt = try_format(string, fmt)
 
         if z:
-            return z, format
+            return z, fmt
 
 def get_last_date_in_year(dt):
     """
@@ -42,28 +43,6 @@ def get_last_date_in_year(dt):
     c2 = dt.replace(month=12)
     return min(c1, c2)
 
-def shift_month_ahead(dt):
-    """
-    Shifts date to next month's day 01.
-    """
-    if dt.month < 12:
-        dt = dt.replace(month=dt.month + 1)
-    else:
-        dt = dt.replace(month=1)
-        dt = dt.replace(year=dt.year + 1)
-
-    return dt
-
-def yield_date(start, end):
-    """
-    Yields dates between and including <start> and <end>.
-    """
-    dt = start
-
-    while dt <= end:
-        yield dt
-        dt = shift_month_ahead(dt)
-
 def get_date_range_from_command_line(args):
     """
     Returns date range specified in command line as a list of dates in iso format.
@@ -71,8 +50,7 @@ def get_date_range_from_command_line(args):
     s, e = get_date_endpoints(args)
 
     if s and e:
-        datelist = [x.isoformat() for x in yield_date(s, e)]
-        return datelist
+        return [d.isoformat() for d in get_date_range(s, e)]
 
 def get_date_endpoints(args):
     """

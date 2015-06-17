@@ -35,17 +35,6 @@ class DateEngineTest(unittest.TestCase):
             [date(1988, 11, 1), date(1988, 12, 1), date(1989, 1, 1)]
         )
 
-    def test_get_isodate_list(self):
-        self.assertEqual(
-            date_engine.get_isodate_list('2012-03-01', '2012-05-01'),
-            ['2012-03-01', '2012-04-01', '2012-05-01']
-        )
-
-        self.assertEqual(
-            date_engine.get_isodate_list('1988-11-01', '1989-01-01'),
-            ['1988-11-01', '1988-12-01', '1989-01-01']
-        )
-
     def test_zero_padded_month(self):
         self.assertEqual(
             date_engine.zero_padded_month(5),
@@ -90,20 +79,6 @@ class DateEngineTest(unittest.TestCase):
             '122013'
         )
 
-    def test_timestamp2date(self):
-        self.assertEqual(
-            date_engine.timestamp2date(2015, 5),
-            date(2015, 6, 1)
-        )
-
-        self.assertEqual(
-            date_engine.timestamp2date(1992, 12),
-            date(1993, 1, 1)
-        )
-
-        # should not be able to specify the month and quarter
-        self.assertRaises(ValueError, date_engine.timestamp2date, 1992, 5, 1)
-
     def test_isodate2timestamp(self):
         self.assertEqual(
             date_engine.isodate2timestamp(101, '2014-05-03'),
@@ -114,25 +89,6 @@ class DateEngineTest(unittest.TestCase):
             date_engine.isodate2timestamp('101', '2014-01-05'),
             '122013'
         )
-
-    def test_year_start_isodate(self):
-        self.assertEqual(
-            date_engine.year_start_isodate(1988),
-            '1988-01-01'
-        )
-
-        self.assertEqual(
-            date_engine.year_start_isodate(2015),
-            '2015-01-01'
-        )
-
-    def test_is_isodate(self):
-        self.assertTrue(date_engine.is_isodate('2015-04-30'))
-        self.assertTrue(date_engine.is_isodate('2011-01-01'))
-        self.assertTrue(date_engine.is_isodate('1988-12-31'))
-        self.assertFalse(date_engine.is_isodate('1988-12-32'))
-        self.assertFalse(date_engine.is_isodate('25-12-1995'))
-        self.assertFalse(date_engine.is_isodate('12-25-1995'))
 
 if __name__ == '__main__':
     unittest.main()
