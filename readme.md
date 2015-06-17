@@ -24,27 +24,27 @@ The script below will download data and produce final balance sheet report for J
 
 
 ```
-  python bankform.py reset database raw
-  python bankform.py reset database final    
-  python bankform.py download   101 2015-01-01
-  python bankform.py unpack     101 2015-01-01
-  python bankform.py make csv   101 2015-01-01
-  python bankform.py import csv 101 2015-01-01
-  python bankform.py migrate dataset 101        
-  python bankform.py make   balance
-  python bankform.py report balance --xls
-  dir ..\output
+python bankform.py reset database raw
+python bankform.py reset database final    
+python bankform.py download   101 2015-01-01
+python bankform.py unpack     101 2015-01-01
+python bankform.py make csv   101 2015-01-01
+python bankform.py import csv 101 2015-01-01
+python bankform.py migrate dataset 101        
+python bankform.py make   balance
+python bankform.py report balance --xls
+dir ..\output
 
 ```
 
 Same result shorter:
 
 ```
-  python bankform.py reset database 
-  python bankform.py update 101 2015-01-01
-  python bankform.py migrate dataset 101        
-  python bankform.py make balance
-  python bankform.py report balance --xls
-  dir ..\output
+python bankform.py reset database 
+python bankform.py update 101 2015-01-01
+python bankform.py migrate dataset 101        
+python bankform.py make balance
+python bankform.py report balance --xlsx
+dir ..\output
 
 ```
