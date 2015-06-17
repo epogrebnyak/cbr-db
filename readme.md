@@ -8,16 +8,17 @@ Archived DBF files at Bank of Russia web site contain detailed monthly and quart
 
 ## Data flow and interface
 
-Data is processed arroding to the following chain:
+Data is processed in a following way:
 
 Bank of Russia web site -> Local ZIP/RAR files -> Local DBF files -> Local CSV files -> Large raw database -> Smaller final database -> Reports in CSV of XLSX files
 
 ## Interface
 
-For full commandline interface: 
-''
+For full command line interface: 
+```
 python bankform.py 
-''
+```
+
 ## Sample script
 The script below will download data and produce final balance sheet report for Jan 1, 2015 for reporting form 101. The final report files will be located in 'output' folder.
 
