@@ -39,11 +39,11 @@ The script below will download data and produce final balance sheet report for J
 Same result shorter:
 
 ```
-    python bankform.py reset database 
-    python bankform.py update 101 2015-01-01
-    python bankform.py migrate dataset 101        
-    python bankform.py make balance
-    python bankform.py report balance --xls
-    dir ..\output
+  python bankform.py reset database 
+  python bankform.py update 101 2015-01-01
+  python bankform.py migrate dataset 101        
+  python bankform.py make balance
+  python bankform.py report balance --xls
+  dir ..\output
 
 ```
