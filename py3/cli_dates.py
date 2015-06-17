@@ -103,7 +103,7 @@ def get_date_endpoints(args):
         else:
             e = ts2
 
-    if s.day != 1 or e.day != 1:
+    if s and e and (s.day != 1 or e.day != 1):
         print('Warning: must always use dates in the start of the month (day 1). Forcing day=1.')
         s = s.replace(day=1)
         e = e.replace(day=1)
