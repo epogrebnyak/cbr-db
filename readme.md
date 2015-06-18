@@ -6,17 +6,14 @@ Archived DBF files at Bank of Russia web site contain detailed monthly and quart
 
 [cbr-forms]: http://www.cbr.ru/credit/forms.asp
 
-## Data flow and interface
+## Data flow 
 
-Data is processed in a following way:
-
-- Bank of Russia web site
-- Local ZIP/RAR files 
-- Local DBF file 
-- Local CSV file 
-- Large raw data database 
-- Smaller final use database 
-- Reports in CSV or XLSX files
+- Original archived DBF files are stored at [Bank of Russia website][cbr-forms]
+- Download these ZIP/RAR files, unpack to get local DBF files
+- Convert DBF files to CSV 
+- Import CSV files to "raw data" database (large in size, contains all dates and banks)
+- Truncate dataset and migrate it to "final use" database (smaller in size, just a few banks)
+- Create output reports and write reports to CSV or XLSX files
 
 ## Interface
 
@@ -27,7 +24,6 @@ python bankform.py
 
 ## Sample script
 The script below will download data and produce final balance sheet report for Jan 1, 2015 for reporting form 101. The final report files will be located in 'output' folder.
-
 
 ```
 python bankform.py reset database raw
