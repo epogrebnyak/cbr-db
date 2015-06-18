@@ -10,7 +10,13 @@ Archived DBF files at Bank of Russia web site contain detailed monthly and quart
 
 Data is processed in a following way:
 
-Bank of Russia web site -> Local ZIP/RAR files -> Local DBF files -> Local CSV files -> Large raw database -> Smaller final database -> Reports in CSV of XLSX files
+- Bank of Russia web site
+- Local ZIP/RAR files 
+- Local DBF file 
+- Local CSV file 
+- Large raw data database 
+- Smaller final use database 
+- Reports in CSV or XLSX files
 
 ## Interface
 
