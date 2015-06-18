@@ -57,7 +57,7 @@ def import_generic(database, path):
         print("File not found:",  path)
 
 def mysqlimport(db_name, csv_path, ignore_lines = 1, add_mode = "ignore"):
-        command_line = "mysqlimport --ignore_lines={0} --{1} {2} \"{3}\" ".format(
+        command_line = r'mysqlimport --ignore_lines={0} --{1} {2} "{3}" --lines-terminated-by="\r\n"'.format(
                 ignore_lines, add_mode, db_name, csv_path)
         run_mysqlimport_command_line(csv_path, command_line)
 
@@ -75,7 +75,7 @@ def dump_table_csv(db, table, directory):
     """
     Saves database table in specified directory as csv file.
     """
-    call_string = "mysqldump --fields-terminated-by=\\t\ --lines-terminated-by=\\r\\n --tab=\"{0}\" {1} {2}".format(
+    call_string = r'mysqldump --fields-terminated-by="\t" --lines-terminated-by="\r\n" --tab="{0}" {1} {2}'.format(
         directory, db, table)
     terminal(call_string)
     # Note: below is a fix to kill unnecessary slashes in txt file.
@@ -88,8 +88,7 @@ def dump_table_sql(db, table, path):
     """
     Dumps table from database to local directory as a SQL file.    
     """
-    #         mysqldump dbf_db f101 --add-drop-table=FALSE --no-create-info --insert-ignore > %SQL_DIR%\f101.sql
-    string = "mysqldump {0} {1}     --add-drop-table=FALSE --no-create-info --insert-ignore > \"{2}\"".format(
+    string = r'mysqldump {0} {1} --add-drop-table=FALSE --no-create-info --insert-ignore > "{2}"'.format(
         db, table, path)
     terminal(string)
 
@@ -218,8 +217,7 @@ def get_sqldump_table_and_filename(form):
 
 def save_dataset_as_sql(form):
     """
-    Used in the 'save dataset' and 'migrate dataset' operation modes.
-    todo: docstring must say what the function  does, not where it is used.
+    Saves the dataset corresponding to *form* to the default sql dump file.
     """
     database = DB_NAMES['raw']
     table, file = get_sqldump_table_and_filename(form)
@@ -229,19 +227,16 @@ def save_dataset_as_sql(form):
 
 def import_dataset_from_sql(form):
     """
-    Used in the 'import dataset' and 'migrate dataset' operation modes.
-    todo: docstring must say what the function does, not where it is used.
+    Imports a dataset from the default sql dump file.
     """
     database = DB_NAMES['final']
     table, file = get_sqldump_table_and_filename(form)
     read_table_sql(database, form, file)
-    # mysql --database cbr_db2 -e "source %SQL_DIR%\f101.sql"
 
 
 def create_final_dataset_in_raw_database():
     """
-    Used in the 'make dataset' operation mode.
-    todo: docstring must say what the function  does, not where it is used.
+    Processes the data from the raw database, creating the final dataset.
     """
     db_name = DB_NAMES['raw']
     # risk: harcoded function
@@ -254,8 +249,7 @@ def create_final_dataset_in_raw_database():
 
 def import_alloc(filename='alloc_raw.txt'):
     """
-    Used in the 'import alloc' operation mode.
-    todo: doc_string should describe what the function does, not where it is used, it is supplementary info
+    TODO: describe what this function does
     """
     database = DB_NAMES['final']
     path = os.path.join(DIRLIST['global']['alloc'], filename)
@@ -264,8 +258,7 @@ def import_alloc(filename='alloc_raw.txt'):
 
 def import_tables():
     """
-    Used in the 'import tables' operation mode.
-    todo: doc_string should describe what the function does, not where it is used, it is supplementary info
+    TODO: describe what this function does
     """
     database = DB_NAMES['final']
     directory = os.path.join(DIRLIST['global']['tables'])
@@ -281,7 +274,7 @@ def import_tables():
 
 def make_balance():
     """
-    Used in the 'make balance' operation mode.
+   TODO: describe what this function does
     """
     db_name = DB_NAMES['final']
     execute_sql("call alloc_make", db_name)
@@ -294,7 +287,7 @@ def make_balance():
 
 def test_balance():
     """
-    Used in the 'test balance' operation mode.
+   TODO: describe what this function does
     """
     def do_output(sql):
         print('-> ' + sql)
@@ -325,7 +318,7 @@ def report_balance_tables_xls():
 
 def report_balance_tables_csv():
     """
-    Used in the 'report balance' operation mode.
+    TODO: describe what this function does
     # todo: change wording
     """
     # prepare TABLES in database
