@@ -1,0 +1,106 @@
+Import more forms
+=================
+
+Contents:
+Public forms
+Private forms
+
+Public forms
+------------
+
+Import data from public forms 101 (additional files) and 102 
+    - Desired solution is that all is needed to import a new form is to add its description to global_ini.py FORM_DATA, but it may not be that easy. Still, better try adding one fmore form, think of what can be done to make this more standard/patter-like and make next form import implementation easier.  
+	
+	- Import was earlier implemented in PHP in https://github.com/zimBop/dbfToMysql	- comments are in Russian. Fiel read functions are in 
+	https://github.com/zimBop/dbfToMysql/blob/master/functions.php. This may be used for reference (e.g. fields), but current implementation. 
+	
+	- Tentative plan:
+	  inspect and agree what fields are imported for each final table
+	  design or retieve from previous implementation CREATE TABLE code, add necessary tables to both raw and final database
+	       see file create_more_tables.sql for final table descriptions.
+	  write converter function from DBF to CSV
+	  import CSV to raw database
+	  inspect data in raw database (informal test)
+	  struggle with special cases (data type different from declared, dates in fields do not coincide with file date, etc)
+	  truncate data same way when moving from raw to final table
+	  migrate final table from raw to final database
+	  see how much of this can be offloaded to FORM_DATA definition and where specific functions are needed. 
+	  
+	- Need add 964 to bank list.
+	  
+	- Previous implementation of data import in PHP, comments in Russian. https://github.com/zimBop/dbfToMysql	
+
+	From form 101:	   
+	   
+	   1) List of banks (regn-name)
+	     Files:
+	     mmyyyy_N.DBF
+	     mmyyyyN1.DBF
+		 
+		 Raw tables:
+		 bank_N
+		 bankN1
+		 
+		 Final table:
+		 bank
+		 		  
+	   
+	   2) List of accounts
+	   NAMES.DBF
+	     Raw/final tables:
+		 plan
+	   
+	   All files contain fields with Cyrillic characters.
+	   
+	   Field description:
+	   http://www.cbr.ru/credit/f101-20130301.pdf
+	   
+	   Not todo: file format prior to 1.03.2013
+	   
+	From public form 102:
+
+	   1) Account names: 	   
+			Raw/final tables:
+			   sprav102
+
+			Files:
+			  SPRAV1.DBF
+			  
+	   2) Form 102 data: 
+	      Files:
+	        QYYYY_P.DBF
+	        QYYYY_P1.DBF
+			
+	      Raw tables:
+		    f102_P
+			f102P1
+			 
+     	  Final table:
+	 		 f102
+		
+	
+	   Field description:
+	   http://www.cbr.ru/credit/f102.pdf	
+	   
+	Not todo:
+	Forms 123, 134, 135
+
+	
+Private forms
+-------------
+	
+Import private from 102 from text file:	
+
+     From private form 102:
+	 	  ***
+		  Files:
+	        QYYYY_P.DBF
+	        QYYYY_P1.DBF
+			
+	      Raw tables:
+		    f102_P
+			f102P1
+			 
+     	  Final table:
+	 		 f102
+	     ***	
