@@ -34,10 +34,10 @@ Import bank sector statistics stored as archived DBF files at www.cbr.ru/credit/
     'test balance' performs sample queries on the final reporting tables for verification purposes 
 
 Usage:   
-    bankform.py save    database (raw | final)
-    bankform.py delete  database (raw | final)
-    bankform.py load    database (raw | final)
-    bankform.py reset   database (raw | final)
+    bankform.py save    database [raw | final]
+    bankform.py delete  database [raw | final]
+    bankform.py load    database [raw | final]
+    bankform.py reset   database [raw | final]
     
     bankform.py download   <FORM> (<timestamp1> [<timestamp2>] | --all-dates)
     bankform.py make csv   <FORM> (<timestamp1> [<timestamp2>] | --all-dates)
@@ -67,7 +67,7 @@ Notes:
     MySQL configuration requirements:
         MySQL server daemon must be up and running when bankform.py is started.
         Config file 'my.ini' or 'my.cfg' must contain host, user, password to allow mysql.exe calls.
-        mysql*.exe must be in PATH. If not in PATH run ini.bat or ini.py 
+        mysql*.exe must be in PATH. If not in PATH run utils\ini.bat or utils\ini.py with correct path to mysql. 
 """
 
 from docopt import docopt
@@ -96,13 +96,16 @@ def get_selected_form(arg):
 
 def get_db_name(arg, db_dict=DB_NAMES):
     """
-    Returns actual database name, which is coded in command line by keywords 'raw' and 'final'.
+    Returns either a list of db names, or one database name, which is coded in command line by keywords 'raw' and 'final'.
     Uses global dictionary DB_NAMES = {'raw': DB_NAME_RAW, "final": DB_NAME_FINAL}
     """
-    db_name = None
+    # db_name = None
+    db_name = db_dict.values()
+    
     for param in db_dict.keys():
         if arg[param]:
-            db_name = db_dict[param]
+            db_name = list(db_dict[param])
+            
     return db_name
 
 
@@ -116,8 +119,7 @@ if __name__ == '__main__':
         create_directories(DIRLIST[form])
 
     # 1. General database operations
-    if arg['database']:
-        db_name = get_db_name(arg, DB_NAMES)
+    def general_database_operations(arg, db_name):    
         if arg['delete']:
             delete_and_create_db(db_name)
         if arg['load']:
@@ -129,7 +131,13 @@ if __name__ == '__main__':
             load_db_from_dump(db_name)  
             if arg['final']:
                  import_alloc()
-                 import_tables()
+                 import_tables()    
+    
+    if arg['database']:
+        db_names = get_db_name(arg, DB_NAMES)
+        for db_name in db_names:
+                general_database_operations(arg, db_name)
+
 
     # 2.1 DBF file import
 
@@ -161,16 +169,14 @@ if __name__ == '__main__':
                 dbf2csv(isodate, form)
                 import_csv(isodate, form)
                 
-    # 2.2 DBF file import
+    # 2.2 Text file import
     if arg["--private-data"]:    
             # convert text to CSV
             if arg['make'] and arg['csv']:
                 convert_txt_directory_to_csv() 
-                print("This will make csv from text files")
-
+                
             # import CSV into raw database
             if arg['import'] and arg['csv']:
-                print("This will import csv to raw database")
                 import_csv_derived_from_text_files()
     
 
