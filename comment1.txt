@@ -1,11 +1,113 @@
-﻿TODO
+TODO
 ====
-'used in ...' docstrings in database.py not very meaningful, may go over them. better add what the function does, not whwere it is used.
+main task:
+----------
+Add more forms, other that import of form 102. This is a bigger task, please send some time reviewing you understand the requirement and know what to do about it. I have put everything related to task in in 'issues/import_more_forms' forder. Please write back soon with any questions about the task. 
 
-there are warnings in mysqlimport of standard csv files, need to find out reason for these warnings (replicate same import with sql's "load data" then "show warnings")
-EP: 
-    are warnings format conversion? 
-	 
+
+minor changes:
+--------------
+linux help - if I want to run the script on linux from scratch - what would be the sequence on commands?
+	create directory - what part of the file system?
+	install git client
+	git clone project directory 
+	configure mysql username/password
+	run script
+   (I have a linux virtual machine at home computer, want to start learn using it)
+
+   What GUI editors do you use for python on linux (not EMACS/VIM)?
+
+
+'used in ...' docstrings in database.py not very meaningful, may go over them. better add what the function does (very concisely), not whwere it is used. can omit docstring where behavoir is self-evident.
+
+create folder py3/utils and move following files there (intent - keep command files to run scripts and script files separately)
+17.06.2015  00:44               175 ini.bat
+17.06.2015  00:44               740 ini.py
+17.06.2015  10:55                33 start_unit_tests.bat
+17.06.2015  00:44               492 test-one-date.bat
+17.06.2015  00:44             1 631 test-one-date.py
+
+
+RISKS
+=====
+Encountered before:
+   CSV written to file not complete (fwere lines than other)
+   f101 has residuals not 0
+   
+What license?    
+   
+
+		 
+NOT TODO
+========
+Critical
+--------
+f101 integrity check
+
+check test results / full circle tests
+
+explicit regn and date limit when truncating raw database (hardcoded in database)
+    bankform.py make dataset <FORM> --regn=<regn_list> --regn-file<file> --dates 2012 2015
+    bankform.py make dataset <FORM> --regn=956,1000 --regn-file regn.txt --dates 2015
+	must look for regn.txt in current directory or DIRLIST['global']['tables']
+	now regn list is hard-coded in views f101_long, f101_*.
+	
+top-30 bank test
+
+import form 102
+
+update readme.md
+
+final uses of data: typical charts/forms/text comment
+    projection model / forecast (in Pandas)
+	top 5 bank balance output 
+
+<ccorp> output
+
+audit previous versions of cbr_db
+
+audit previous php/python implementations, html, database keys
+
+run on linux
+
+Optional
+--------
+instead on myslimport can run LOAD DATA INFILE '/full/path/to/temp.txt' - with mysqlconnector, no using mysqlimport necessary
+
+directory structure: 
+	same in public/private
+	101:
+	  csv
+	  rar
+	  dbf
+	  txt
+	different path to local data folder (non-standard)
+	no 'veb' in folder or database names
+	
+more documentation to readme.md (was - folder 'doc')
+python bankform.py reset database 
+write to existing file openpyxl
+add --alldates key in commandline interface 
+read from DBF to final database directly
+sql outputs to screen
+   -v for verbose
+   date formats
+timer
+sqla abstraction/sql optimisation
+show all available dates
+if behind firewall, do not invoke download - catch error below
+  urllib.error.URLError: <urlopen error [WinError 10060] Попытка установить соединение была безуспешной, т.к. от другого к
+  требуемое время не получен нужный отклик, или было разорвано уже установленное соединение из-за неверного отклика уже п
+  компьютера>
+Join conn.py and download?
+
+COMMENT
+=======
+bottle framework to put to localhost/web 
+something to start mysql server/daemon (now manually in Windows)
+pandas dataframe - more explicit data aggregation algorithm 
+SQLA abstraction of SQL queries
+‘Import tables’ is not very clean, it is actually about importing names/plan from files
 
 DONE
 ====
@@ -43,55 +145,13 @@ EP: made additional comments/doctrings + code blocks, done
 2015-06-17 05:44 PM
 update command: bankform.py update <FORM> 
 make readme.md
-		 
-NOT TODO
-========
-Critical
---------
-f101 integrity check, find
 
-check test results / full circle tests
+2015-06-18 4:30 AM
+there are warnings in mysqlimport of standard csv files, need to find out reason for these warnings (replicate same import with sql's "load data" then "show warnings")
+  EP: are warnings format conversion? 
+  Done(L): /r/n
 
-explicit regn and date limit when truncating raw database (hardcoded in database)
-    bankform.py make dataset <FORM> --regn=<regn_list> --regn-file<file> --dates 2012 2015
-    bankform.py make dataset <FORM> --regn=956,1000 --regn-file regn.txt --dates 2015
-	must look for regn.txt in current directory or DIRLIST['global']['tables']
-	
-top-30 bank test
+2015-06-18 10:15 AM
+save7z.bat - makes archive of the folder except data and output 
+delete 'csv_to_excel' folder in root in repository as it was moved to issues
 
-import form 102
-
-update readme.md
-
-final uses of data: typical charts/forms/text comment
-
-ccorp piece
-
-Can live without it
--------------------
-autopack/7z
-audit previous versions of cbr_db
-audit previous php/python implementations
-python bankform.py reset database 
-write to existing file openpyxl
-add --alldates key in commandline interface 
-read from DBF to final database directly
-‘Import tables’ is not very clean, it is actually about importing names/plan from files
-5 bank balance output 
-sql outputs to screen
-   -v for verbose
-   date formats
-timer
-sqla abstraction/sql optimisation
-
-More
-----
-Examples, not tests
-Join conn.py anmd download?
-
-COMMENT
-=======
-bottle framework to put to localhost/web 
-something to start mysql server/daemon (now manually in Windows)
-pandas dataframe - more explicit data aggregation algorithm 
-SQLA abstraction of SQL queries
