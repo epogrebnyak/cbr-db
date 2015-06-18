@@ -153,12 +153,13 @@ def save_db_to_dump(db_name):
     Saves the structure of a database to a sql dump file in the standard location.
     Standard location defined by get_db_dumpfile_path() 
     # todo: change to new directory structure    
+    # Other variety: http://code.activestate.com/recipes/286223-ohmysqldump/
     """
     print("Database:", db_name)
     # uses mysqldump and terminal()
     path = get_db_dumpfile_path(db_name)
     #               mysqldump %1  --no-data --routines > %1.sql
-    line_command = "mysqldump {0} --no-data --routines > {0}".format(path)
+    line_command = "mysqldump {0} --no-data --routines > {1}".format(db_name, path)
     terminal(line_command)
     print("Dumped database structure to file <{0}.sql>. No data saved to this file.".format(
         db_name))
@@ -330,5 +331,3 @@ def report_balance_tables_csv():
     TABLES = ("tmp_output_itogo", "tmp_output_ir", "tmp_output_iv")
     for table in TABLES:
         dump_table_csv(db_name, table, directory)
-
-
