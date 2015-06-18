@@ -15,22 +15,17 @@ import os
 ################################################################
 
 
-def replace_in_file(filepath, replace_what, replace_with):
-    """
-    Replaces 'replace_what' string with 'replace_with' string in filepath.
-    """
-    with open(filepath) as f:
-        lines = f.read().replace(replace_what, replace_with)
-
-    with open(filepath, 'w') as f1:
-        f1.write(lines)
-
+############################################################################### 
+# mysql.exe wrapppers
+###############################################################################
 
 def run_sql_string(string, database=None, verbose=False):
     """
-    Requires mysql to be in PATH - see ini.bat
-    Allows running non-SQL commands in mysql.exe (e.g. source)
-    For SQL commands may also use conn.execute_sql()
+    Runs <string> as command for mysql.exe
+    Notes:
+       Requires mysql to be in PATH - see ini.bat/ini.py. Also requires host/port/user/password credentials MySQL configureation files. 
+       Allows running non-SQL commands in mysql.exe (e.g. source)
+       For SQL commands may also use conn.execute_sql()
     """
     if database is None:
         call_string = "mysql -e \"{0}\"".format(string)
@@ -38,6 +33,7 @@ def run_sql_string(string, database=None, verbose=False):
         call_string = "mysql --database {0} --execute \"{1}\"".format(
             database, string)
 
+    # todo: -v not showing to screen, check if it so, change 
     if verbose:
         call_string = call_string + " -v"
 
@@ -49,6 +45,9 @@ def source_sql_file(sql_filename, db_name):
     command = "source {0}".format(path)
     run_sql_string(command, database=db_name)
 
+############################################################################### 
+# mysqlimport wrapppers
+############################################################################### 
 
 def import_generic(database, path):
     if os.path.isfile(path):
@@ -57,20 +56,55 @@ def import_generic(database, path):
     else:
         print("File not found:",  path)
 
+def mysqlimport(db_name, csv_path, ignore_lines = 1, add_mode = "ignore"):
+        command_line = "mysqlimport --ignore_lines={0} --{1} {2} \"{3}\" ".format(
+                ignore_lines, add_mode, db_name, csv_path)
+        run_mysqlimport_command_line(csv_path, command_line)
 
-def dump_table_csv(db, table, dir_):
+def run_mysqlimport_command_line(csv_path, command_line):
+        if os.path.isfile(csv_path):            
+            terminal(command_line)
+        else:
+            print("File not found:",  csv_path)
+            
+############################################################################### 
+# mysqldump wrapppers
+############################################################################### 
+            
+def dump_table_csv(db, table, directory):
     """
     Saves database table in specified directory as csv file.
     """
     call_string = "mysqldump --fields-terminated-by=\\t\ --lines-terminated-by=\\r\\n --tab=\"{0}\" {1} {2}".format(
-        dir_, db, table)
+        directory, db, table)
     terminal(call_string)
     # Note: below is a fix to kill unnecessary slashes in txt file.
-    replace_in_file(os.path.join(dir_, table + ".txt"), "\\", "")
+    replace_in_file(os.path.join(directory, table + ".txt"), "\\", "")
     # more cleanup, delete extra sql files:
-    extra_sql = os.path.join(dir_, table + ".sql")
+    extra_sql = os.path.join(directory, table + ".sql")
     os.remove(extra_sql)
+
+def dump_table_sql(db, table, path):
+    """
+    Dumps table from database to local directory as a SQL file.    
+    """
+    #         mysqldump dbf_db f101 --add-drop-table=FALSE --no-create-info --insert-ignore > %SQL_DIR%\f101.sql
+    string = "mysqldump {0} {1}     --add-drop-table=FALSE --no-create-info --insert-ignore > \"{2}\"".format(
+        db, table, path)
+    terminal(string)
+
     
+
+def replace_in_file(filepath, replace_what, replace_with):
+    """
+    Replaces 'replace_what' string with 'replace_with' string in filepath.
+    Auxillary procedure used to clean up myslqdump csv output.
+    """
+    with open(filepath) as f:
+        lines = f.read().replace(replace_what, replace_with)
+
+    with open(filepath, 'w') as f1:
+        f1.write(lines)   
 
 
 ################################################################
@@ -83,9 +117,9 @@ def delete_and_create_db(db_name):
     Deletes an existing database and recreates it (empty).
     """
     print("Database:", db_name)
-    # sql-only, can use pymysql connection for this
     command = "DROP DATABASE IF EXISTS {0}; CREATE DATABASE  {0};".format(
         db_name)
+    # sql-only, using pymysql connection for this
     execute_sql(command)
     print(
         "Deleted existing database and created empty database under same name.")
@@ -96,16 +130,17 @@ def get_db_dumpfile_path(db_name):
     Returns the path to sql dump files, configured in DIRLIST in the
     global initialization module.
     """
-    dir_ = DIRLIST['global']['database']
+    directory = DIRLIST['global']['database']
     sql_filename = db_name + ".sql"
-    path = os.path.join(dir_, sql_filename)
+    path = os.path.join(directory, sql_filename)
     return path
 
 
 def load_db_from_dump(db_name):
     """
     Loads a database structure from a dump file.
-    See get_db_dumpfile_path to check the standard location.
+    Standard location defined by get_db_dumpfile_path() 
+    # todo: change to new directory structure   
     """
     print("Database:", db_name)
     path = get_db_dumpfile_path(db_name)
@@ -116,8 +151,9 @@ def load_db_from_dump(db_name):
 
 def save_db_to_dump(db_name):
     """
-    Saves the structure of a database to a dump file in the standard location.
-    See get_db_dumpfile_path to check the standard location.
+    Saves the structure of a database to a sql dump file in the standard location.
+    Standard location defined by get_db_dumpfile_path() 
+    # todo: change to new directory structure    
     """
     print("Database:", db_name)
     # uses mysqldump and terminal()
@@ -133,22 +169,13 @@ def save_db_to_dump(db_name):
 #                  2. DBF and TXT file import                  #
 ################################################################
 
-def run_mysqlimport_command_line(csv_path, command_line):
-        if os.path.isfile(csv_path):            
-            terminal(command_line)
-        else:
-            print("File not found:",  csv_path)
-
 def import_csv(isodate, form):
-    db_name = DB_NAMES['raw']
-
+    db_name = DB_NAMES['raw']        
     for csv_path in list_csv_filepaths_by_date(isodate, form):
-        command_line = "mysqlimport --ignore_lines=1 --ignore {0} \"{1}\"".format(
-                db_name, csv_path)
-        run_mysqlimport_command_line(csv_path, command_line)
+        mysqlimport(db_name, csv_path, ignore_lines=1)
         
-    print("Finished importing CSV files into raw data database.")
-    print("Form:", form, ". Date:", isodate)
+    print("\nFinished importing CSV files into raw data database.")
+    print("Form:", form, "Date:", isodate)
     
 from global_ini import get_private_data_folder
 
@@ -156,38 +183,24 @@ def import_csv_derived_from_text_files():
     db_name = DB_NAMES['raw']   
     
     # risk: hardcoded 101
-    dir_ = get_private_data_folder('101', 'csv')
-    for filename in os.listdir(dir_):
-         csv_path = os.path.join(dir_, filename)   
-         # todo: the difference --ignore_lines=1 and --ignore_lines=0, need to harmonise file formats.  
-         command_line = "mysqlimport --ignore_lines=0 --ignore --lines-terminated-by=\\r\\n {0} \"{1}\"".format(
-                         db_name, csv_path)
-         run_mysqlimport_command_line(csv_path, command_line)  
+    directory = get_private_data_folder('101', 'csv')
+    
+    for filename in os.listdir(directory):
+         csv_path = os.path.join(directory, filename)  
+         mysqlimport(db_name, csv_path, ignore_lines=0)
        
-    print("Finished importing CSV files into raw data database.")
-    print("Directory:", dir_)
+    print("\nFinished importing CSV files into raw data database.")
+    print("Directory:", directory)
     
 
 ################################################################
 #              3. Dataset manipulation                         #
 ################################################################
 
-
-def dump_table_sql(db, table, file, form):
-    """
-    Dumps table from database to local directory as a SQL file.
-    """
-    path = os.path.join(DIRLIST[form]['output'], file)
-    # mysqldump dbf_db f101 --add-drop-table=FALSE --no-create-info
-    # --insert-ignore > %SQL_DIR%\f101.sql
-    string = "mysqldump {0} {1}     --add-drop-table=FALSE --no-create-info --insert-ignore > \"{2}\"".format(
-        db, table, path)
-    terminal(string)
-
-
 def read_table_sql(db, form, file):
     """
     Support function, it is not called directly from the interface.
+    todo: refactor?
     """
     path = os.path.join(DIRLIST[form]['output'], file)
     source_sql_file(path, db)
@@ -206,17 +219,18 @@ def get_sqldump_table_and_filename(form):
 def save_dataset_as_sql(form):
     """
     Used in the 'save dataset' and 'migrate dataset' operation modes.
+    todo: docstring must say what the function  does, not where it is used.
     """
     database = DB_NAMES['raw']
     table, file = get_sqldump_table_and_filename(form)
-    dump_table_sql(database, table, file, form)
-    # mysqldump dbf_db f101 --add-drop-table=FALSE --no-create-info
-    # --insert-ignore > %SQL_DIR%\f101.sql
+    path = os.path.join(DIRLIST[form]['output'], file)    
+    dump_table_sql(database, table, path)
 
 
 def import_dataset_from_sql(form):
     """
     Used in the 'import dataset' and 'migrate dataset' operation modes.
+    todo: docstring must say what the function does, not where it is used.
     """
     database = DB_NAMES['final']
     table, file = get_sqldump_table_and_filename(form)
@@ -227,8 +241,10 @@ def import_dataset_from_sql(form):
 def create_final_dataset_in_raw_database():
     """
     Used in the 'make dataset' operation mode.
+    todo: docstring must say what the function  does, not where it is used.
     """
     db_name = DB_NAMES['raw']
+    # risk: harcoded function
     run_sql_string("call insert_f101();", db_name)
 
 
@@ -252,10 +268,10 @@ def import_tables():
     todo: doc_string should describe what the function does, not where it is used, it is supplementary info
     """
     database = DB_NAMES['final']
-    dir_ = os.path.join(DIRLIST['global']['tables'])
+    directory = os.path.join(DIRLIST['global']['tables'])
 
-    for file in os.listdir(dir_):
-        path = os.path.join(dir_, file)
+    for file in os.listdir(directory):
+        path = os.path.join(directory, file)
         if file.endswith(".txt"):
             import_generic(database, path)
         if file.endswith(".sql"):
@@ -304,21 +320,22 @@ from make_xlsx import make_xlsx
 
 def report_balance_tables_xls():
     report_balance_tables_csv
-    dir_ = DIRLIST['101']['output']
-    make_xlsx(dir_)    
+    directory = DIRLIST['101']['output']
+    make_xlsx(directory)    
 
 def report_balance_tables_csv():
     """
     Used in the 'report balance' operation mode.
+    # todo: change wording
     """
     # prepare TABLES in database
     db_name = DB_NAMES['final']
     execute_sql("call balance_report_line_dt_3tables", db_name)
 
     # dump TABLES to CSV
-    dir_ = DIRLIST['101']['output']
+    directory = DIRLIST['101']['output']
     TABLES = ("tmp_output_itogo", "tmp_output_ir", "tmp_output_iv")
     for table in TABLES:
-        dump_table_csv(db_name, table, dir_)
+        dump_table_csv(db_name, table, directory)
 
 

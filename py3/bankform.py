@@ -1,9 +1,5 @@
 """
-Import bank sector statistics stored as archived DBF files at www.cbr.ru/credit/forms.asp to a local MySQL database, 
-aggregate data into reports and save reports in csv or xlsx format. 
-
-More:
-    - can also import text file statistics forms, stored locally ("private data")
+Import bank sector statistics stored as archived DBF files at www.cbr.ru/credit/forms.asp to a local MySQL database, aggregate data into reports and save reports in csv or xlsx format. The script can also import statistics stored locally in text form files ("private data"). 
 
 1. General database operations:      
     'save' creates database dump in <db_name>.sql file without data, unless --with-data flag is specified
@@ -27,8 +23,8 @@ More:
    
 3. Dataset manipulation in raw and final database:
     'make dataset' creates a final table in raw database
-    'save dataset' ...
-    'import dataset' ...     
+    'save dataset' ... # todo: as in docstrings
+    'import dataset' ... # todo: as in docstrings    
     'migrate dataset' dumps final table from raw database and imports it to final database
     
 4. Working with final database:
@@ -38,13 +34,17 @@ More:
     'test balance' performs sample queries on the final reporting tables for verification purposes 
 
 Usage:   
-    bankform.py reset  database (raw | final)
+    bankform.py save    database (raw | final)
+    bankform.py delete  database (raw | final)
+    bankform.py load    database (raw | final)
+    bankform.py reset   database (raw | final)
     
     bankform.py download   <FORM> (<timestamp1> [<timestamp2>] | --all-dates)
     bankform.py make csv   <FORM> (<timestamp1> [<timestamp2>] | --all-dates)
     bankform.py unpack     <FORM> (<timestamp1> [<timestamp2>] | --all-dates)
     bankform.py make csv   <FORM> (<timestamp1> [<timestamp2>] | --all-dates)
     bankform.py import csv <FORM> (<timestamp1> [<timestamp2>] | --all-dates)
+    bankform.py update     <FORM> (<timestamp1> [<timestamp2>] | --all-dates)
     
     bankform.py make csv   <FORM> --private-data [--all-dates]
     bankform.py import csv <FORM> --private-data [--all-dates]    
@@ -58,8 +58,8 @@ Usage:
     bankform.py import tables    
     bankform.py make   balance
     bankform.py test   balance
-    bankform.py report balance     [--csv | --xls]
-    bankform.py report form <FORM> [--csv | --xls]
+    bankform.py report balance     [--xlsx]
+    bankform.py report form <FORM> [--xlsx]
 
 
 Notes:
@@ -117,18 +117,19 @@ if __name__ == '__main__':
 
     # 1. General database operations
     if arg['database']:
-        # todo: global rename DB_NAMES
         db_name = get_db_name(arg, DB_NAMES)
-        # if arg['delete']:
-            # delete_and_create_db(db_name)
-        # if arg['load']:
-            # load_db_from_dump(db_name)
-        # if arg['save']:
-            # save_db_to_dump(db_name)
-        if arg['reset']:
-            # todo: rename delete_and_create_db(db_name))
+        if arg['delete']:
             delete_and_create_db(db_name)
-            load_db_from_dump(db_name)            
+        if arg['load']:
+            load_db_from_dump(db_name)
+        if arg['save']:
+            save_db_to_dump(db_name)
+        if arg['reset']:            
+            delete_and_create_db(db_name)
+            load_db_from_dump(db_name)  
+            if arg['final']:
+                 import_alloc()
+                 import_tables()
 
     # 2.1 DBF file import
 
@@ -151,6 +152,13 @@ if __name__ == '__main__':
 
             # import CSV for selected dates into raw database
             if arg['import'] and arg['csv']:
+                import_csv(isodate, form)
+            
+            # do all data import operations
+            if arg['update']:
+                download_form(isodate, form)
+                unpack(isodate, form)
+                dbf2csv(isodate, form)
                 import_csv(isodate, form)
                 
     # 2.2 DBF file import
@@ -199,7 +207,7 @@ if __name__ == '__main__':
 
     if arg['report'] and (arg['balance'] or arg['form']):
         report_balance_tables_csv()  
-        if arg['--xls']:
+        if arg['--xlsx']:
             report_balance_tables_xls() 
               
         

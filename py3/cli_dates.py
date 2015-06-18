@@ -13,7 +13,7 @@ DATE_FORMATS = ['%Y', '%d.%m.%Y', '%m.%Y', '%Y-%m', '%Y-%m-%d']
 
 def try_format(string, fmt):
     """
-    Attempts to parse <string> with date <format>.
+    Attempts to parse <string> with date <fmt> (format).
     """
     z = None
     try:
@@ -37,7 +37,7 @@ def get_date(string, formats=DATE_FORMATS):
 def get_last_date_in_year(dt):
     """
     Cap last month in year with current month. Returns a date with day 01.
-    Example: In June 2015 will return 2015-06 for 2015-12.
+    Example: In June 2015 will return 2015-06 for dt = 2015-12.
     """
     c1 = datetime.today().replace(day=1).date()
     c2 = dt.replace(month=12)
@@ -82,7 +82,7 @@ def get_date_endpoints(args):
             e = ts2
 
     if s and e and (s.day != 1 or e.day != 1):
-        print('Warning: must always use dates in the start of the month (day 1). Forcing day=1.')
+        print('Warning: must always use start of the month dates (day 1). Force setting day to 1 in argument dates.')
         s = s.replace(day=1)
         e = e.replace(day=1)
 
@@ -92,5 +92,5 @@ if __name__ == '__main__':
     args = docopt(__doc__)
     d_range = get_date_range_from_command_line(args)
     print("Start date:", d_range[0])
-    print("End date:", d_range[-1])
-    print("Date list:", d_range)
+    print("End date:",   d_range[-1])
+    print("Date list:",  d_range)

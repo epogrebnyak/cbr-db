@@ -1,13 +1,15 @@
 ﻿TODO
 ====
-update tests for cli_dates.py - see commented code in bootom of file cli_dates.py (I changed the command line interface, now several date formats can be supplied as input)
-
-inspect date_engine.py for orphan functions, document necessary changes. what modules use functions from there?
+'used in ...' docstrings in database.py not very meaningful, may go over them. better add what the function does, not whwere it is used.
 
 there are warnings in mysqlimport of standard csv files, need to find out reason for these warnings (replicate same import with sql's "load data" then "show warnings")
+EP: 
+    are warnings format conversion? 
+	 
 
 DONE
 ====
+Before 2015-06-15 05:20 PM
 .gitignore - delete it
 supply Excel file output, specification and previous realisation for –csv –xls keys. 
 
@@ -31,22 +33,65 @@ read private data to final/raw database
 	     bankform.py make csv <FORM> --private-data [--all-dates]
          bankform.py import csv <FORM> --private-data [--all-dates]
 
+2015-06-17 11:22 AM
+update tests for cli_dates.py - see commented code in bootom of file cli_dates.py (I changed the command line interface, now several date formats can be supplied as input)
+EP: made additional comments/doctrings, done
+
+inspect date_engine.py for orphan functions, document necessary changes. what modules use functions from there?
+EP: made additional comments/doctrings + code blocks, done
+
+2015-06-17 05:44 PM
+update command: bankform.py update <FORM> 
+make readme.md
+		 
 NOT TODO
 ========
-f101 integrity check
-read from DBF to final database directly
+Critical
+--------
+f101 integrity check, find
+
+check test results / full circle tests
+
 explicit regn and date limit when truncating raw database (hardcoded in database)
-    bankform.py make dataset <FORM> --regn 956,1000 --regn-file regn.txt --year 2015
+    bankform.py make dataset <FORM> --regn=<regn_list> --regn-file<file> --dates 2012 2015
+    bankform.py make dataset <FORM> --regn=956,1000 --regn-file regn.txt --dates 2015
+	must look for regn.txt in current directory or DIRLIST['global']['tables']
+	
+top-30 bank test
+
+import form 102
+
+update readme.md
+
+final uses of data: typical charts/forms/text comment
+
+ccorp piece
+
+Can live without it
+-------------------
+autopack/7z
+audit previous versions of cbr_db
+audit previous php/python implementations
+python bankform.py reset database 
+write to existing file openpyxl
+add --alldates key in commandline interface 
+read from DBF to final database directly
 ‘Import tables’ is not very clean, it is actually about importing names/plan from files
-think of top-30 test
-form 102
-restore documentation, make readme.md
 5 bank balance output 
+sql outputs to screen
+   -v for verbose
+   date formats
+timer
+sqla abstraction/sql optimisation
+
+More
+----
+Examples, not tests
+Join conn.py anmd download?
 
 COMMENT
 =======
+bottle framework to put to localhost/web 
 something to start mysql server/daemon (now manually in Windows)
-date_engine.py - some spagetti around format conversion, seems even not all functions are used
-pandas dataframe  - more explicit data aggregation algorithm 
+pandas dataframe - more explicit data aggregation algorithm 
 SQLA abstraction of SQL queries
-sql outputs to screen - date formats.
