@@ -49,7 +49,11 @@ CREATE TABLE IF NOT EXISTS `f102` (
   `quart` int(1) NOT NULL,
   `year` int(11) NOT NULL,
   `code` varchar(10) NOT NULL,
-  `itogo` float DEFAULT NULL,
+# adding these new fields
+  `ir` bigint(20) DEFAULT NULL,
+  `iv` bigint(20) DEFAULT NULL,
+# end adding these new fields
+  `itogo` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`year`,`quart`,`regn`,`code`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
