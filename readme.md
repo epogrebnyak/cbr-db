@@ -1,4 +1,4 @@
-# Import and process Russian banking sector statistics 
+# Tools to import and process Russian banking sector statistics 
 
 **bankform.py** allows to import bank sector statistics stored as archived DBF files at [Bank of Russia website][cbr-forms] ("public data") to a local MySQL database, aggregate data into reports and save these reports in csv or xlsx format. The script can also import statistics stored locally in text form files ("private data"). 
 
