@@ -56,8 +56,8 @@ print("Datasets loaded in %f seconds" % (time.time() - start_time))
 # 
 # Data:
 # =====
-# Use 'test-one-date.bat' to obtain for small trial dataset (one datapoint).
-# Use 'make-reference-dataset.bat' for actual task (monthly datapoints for 2012-2015). 
+# Use 'py3/test-one-date.bat' to obtain for small trial dataset (one datapoint).
+# Use 'py3/utils/make-reference-dataset.bat' for actual task (monthly datapoints for 2012-2015). 
 #
 
 for var in [f101, alloc, balance]:
