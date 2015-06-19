@@ -56,15 +56,16 @@ DROP TABLE IF EXISTS `balance`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `balance` (
-  `dt` date DEFAULT NULL,
+  `dt` date,
   `line` int(11) DEFAULT NULL,
   `lev` int(1) NOT NULL DEFAULT '0',
   `la_p` double DEFAULT NULL,
-  `regn` smallint(6) DEFAULT NULL,
+  `regn` smallint(6),
   `has_iv` tinyint(4) DEFAULT NULL,
   `ir` decimal(65,0) DEFAULT NULL,
   `iv` decimal(65,0) DEFAULT NULL,
-  `itogo` decimal(65,0) DEFAULT NULL
+  `itogo` decimal(65,0) DEFAULT NULL,
+  KEY `bal_index_1` (`line`,`regn`,`dt`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -485,8 +486,8 @@ DROP TABLE IF EXISTS `tmp_balance_view`;
 CREATE TABLE `tmp_balance_view` (
   `line` int(11) DEFAULT NULL,
   `lev` int(1) DEFAULT NULL,
-  `regn` int(11) DEFAULT NULL,
-  `dt` date DEFAULT NULL,
+  `regn` int(11),
+  `dt` date,
   `itogo` decimal(65,0) NOT NULL DEFAULT '0',
   `ir` decimal(65,0) NOT NULL DEFAULT '0',
   `iv` decimal(65,0) NOT NULL DEFAULT '0'
@@ -810,7 +811,7 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `balance_make_saldo_198_298` */;
+/*!50003 DROP PROCEDURE IF EXISTS `balance_make_saldo198_298` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -820,80 +821,108 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `balance_make_saldo_198_298`()
+/*!50003 CREATE*/ /*!50020 DEFINER=`test_user`@`localhost`*/ /*!50003 PROCEDURE `balance_make_saldo198_298`()
 BEGIN
 
+
+
+
+
 drop table if exists saldo_198_298;
+
+
 
 create temporary table saldo_198_298 as
 
 
 
+
+
+# enter a.* > b.* case
+
 select 
+
    a.dt, a.line, a.lev, a.la_p, a.regn, a.has_iv,
+
    case when (a.ir > b.ir) then (a.ir - b.ir) else 0 end ir,
+
 	case when (a.iv > b.iv) then (a.iv - b.iv) else 0 end iv,
+
    
+
 	case when (a.ir > b.ir) then (a.ir - b.ir) else 0 end
+
  +	case when (a.iv > b.iv) then (a.iv - b.iv) else 0 end  itogo	
+
 from balance a
+
 left join balance b 
+
 on a.dt = b.dt and a.regn = b.regn 
+
 where a.line = 198000 
+
 and b.line = 298000 
-and a.has_iv = 1
+
+
 
 group by a.dt, a.line, a.lev, a.la_p, a.regn
+
+
 
 UNION ALL
 
 
 
+
+
+# enter a.* < b.* case
+
 select 
+
    b.dt, b.line, b.lev, b.la_p, b.regn, b.has_iv,
+
 	case when (a.ir < b.ir) then (- a.ir + b.ir) else 0 end ir, 
+
 	case when (a.iv < b.iv) then (- a.iv + b.iv) else 0 end iv, 
+
    
+
 	case when (a.ir < b.ir) then (- a.ir + b.ir) else 0 end  
+
  + case when (a.iv < b.iv) then (- a.iv + b.iv) else 0 end itogo 
+
 	from balance a
+
 left join balance b 
+
 on a.dt = b.dt and a.regn = b.regn 
+
 where a.line = 198000 
+
 and b.line = 298000
-and a.has_iv = 1
-
-group by b.dt, b.line, b.lev, b.la_p, b.regn
 
 
 
-UNION ALL
-select 
-   a.dt, a.line, a.lev, a.la_p, a.regn, b.has_iv, 0 ir, 0 iv,    
-   case when (a.itogo > b.itogo) then (a.itogo - b.itogo) else 0 end itogo      
-from balance a left join balance b 
-on a.dt = b.dt and a.regn = b.regn 
-where a.line = 198000 and b.line = 298000 
-and a.has_iv = 0
-group by a.dt, a.line, a.lev, a.la_p, a.regn
 
-UNION ALL
-select 
-   b.dt, b.line, b.lev, b.la_p, b.regn, b.has_iv,  0 ir, 0 iv, 
-   case when (a.itogo < b.itogo) then (- a.itogo + b.itogo) else 0 end itogo     
-	from balance a left join balance b 
-on a.dt = b.dt and a.regn = b.regn 
-where a.line = 198000 and b.line = 298000
-and a.has_iv = 0
 
 group by b.dt, b.line, b.lev, b.la_p, b.regn;
 
 
+
+
+
 delete from balance where line = 198000;
+
 delete from balance where line = 298000;
 
+
+
 insert into balance
+
 select * from saldo_198_298;
+
+
 
 END */;;
 DELIMITER ;
@@ -970,83 +999,157 @@ DELIMITER ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
 /*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `balance_report_line_dt_3tables`()
-BEGIN
-
-set session group_concat_max_len=100000;
-
-
-
-
-
-
-DROP  TABLE IF EXISTS tmp_balance_view;
-CREATE  TABLE tmp_balance_view AS
-SELECT * from balance_uniform;
-
-
-DROP  TABLE IF EXISTS tmp_dt_view;
-CREATE  TABLE IF NOT EXISTS tmp_dt_view AS
-	SELECT 'cpart' as cpart,
-    	'regn' as regn,
-    	'line' as line,
-		group_concat(d.dt order by d.dt asc separator '\t') as dt_group_1
-		FROM 
-		(select distinct dt from balance_uniform) d;
-		
-
-
-DROP  TABLE IF EXISTS tmp_output_itogo;
-CREATE  TABLE tmp_output_itogo AS
-Select * from tmp_dt_view
-UNION ALL
-SELECT * FROM (
-	   SELECT 'itogo' as cpart, regn, line,  
-		group_concat(coalesce(itogo, '') order by dt asc separator '\t') as itogo
-	   FROM tmp_balance_view
-	   Where regn is not Null
-		GROUP BY regn, line
-		ORDER BY regn, line) g_1
-
-;
-
-
-DROP  TABLE IF EXISTS tmp_output_ir;
-CREATE  TABLE tmp_output_ir AS
-Select * from tmp_dt_view
-UNION ALL
-SELECT * FROM (
-	   SELECT 'ir' as cpart, regn, line,  
-		group_concat(coalesce(ir, '') order by dt asc separator '\t') as itogo
-	   FROM tmp_balance_view
-	   Where regn is not Null
-		GROUP BY regn, line
-		ORDER BY regn, line) g_2
-
-;
-
-
-DROP  TABLE IF EXISTS tmp_output_iv;
-CREATE  TABLE tmp_output_iv AS
-Select * from tmp_dt_view
-UNION ALL
-SELECT * FROM (
-	   SELECT 'iv' as cpart, regn, line,  
-		group_concat(coalesce(iv, '') order by dt asc separator '\t') as itogo
-	   FROM tmp_balance_view
-	   Where regn is not Null
-		GROUP BY regn, line
-		ORDER BY regn, line) g_3
-
-;
-
-
-
-
+BEGIN
 
 
 
-
-
+set session group_concat_max_len=100000;
+
+
+
+
+
+
+
+
+
+
+
+
+
+DROP  TABLE IF EXISTS tmp_balance_view;
+
+CREATE  TABLE tmp_balance_view AS
+
+SELECT * from balance_uniform;
+
+
+
+
+
+DROP  TABLE IF EXISTS tmp_dt_view;
+
+CREATE  TABLE IF NOT EXISTS tmp_dt_view AS
+
+	SELECT 'cpart' as cpart,
+
+    	'regn' as regn,
+
+    	'line' as line,
+
+		group_concat(d.dt order by d.dt asc separator '\t') as dt_group_1
+
+		FROM 
+
+		(select distinct dt from balance_uniform) d;
+
+		
+
+
+
+
+
+DROP  TABLE IF EXISTS tmp_output_itogo;
+
+CREATE  TABLE tmp_output_itogo AS
+
+Select * from tmp_dt_view
+
+UNION ALL
+
+SELECT * FROM (
+
+	   SELECT 'itogo' as cpart, regn, line,  
+
+		group_concat(coalesce(itogo, '') order by dt asc separator '\t') as itogo
+
+	   FROM tmp_balance_view
+
+	   Where regn is not Null
+
+		GROUP BY regn, line
+
+		ORDER BY regn, line) g_1
+
+
+
+;
+
+
+
+
+
+DROP  TABLE IF EXISTS tmp_output_ir;
+
+CREATE  TABLE tmp_output_ir AS
+
+Select * from tmp_dt_view
+
+UNION ALL
+
+SELECT * FROM (
+
+	   SELECT 'ir' as cpart, regn, line,  
+
+		group_concat(coalesce(ir, '') order by dt asc separator '\t') as itogo
+
+	   FROM tmp_balance_view
+
+	   Where regn is not Null
+
+		GROUP BY regn, line
+
+		ORDER BY regn, line) g_2
+
+
+
+;
+
+
+
+
+
+DROP  TABLE IF EXISTS tmp_output_iv;
+
+CREATE  TABLE tmp_output_iv AS
+
+Select * from tmp_dt_view
+
+UNION ALL
+
+SELECT * FROM (
+
+	   SELECT 'iv' as cpart, regn, line,  
+
+		group_concat(coalesce(iv, '') order by dt asc separator '\t') as itogo
+
+	   FROM tmp_balance_view
+
+	   Where regn is not Null
+
+		GROUP BY regn, line
+
+		ORDER BY regn, line) g_3
+
+
+
+;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1104,27 +1207,47 @@ DELIMITER ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
 /*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `make_file`(IN `sql_line` VARCHAR(50), IN `file_prefix` VARCHAR(50))
-BEGIN
-
-SET @sql_text = CONCAT (sql_line
-		 ,	" into outfile '"
-       , "D:\\\\clean_db\\\\output\\\\"
+BEGIN
+
+
+
+SET @sql_text = CONCAT (sql_line
+
+		 ,	" into outfile '"
+
+       , "D:\\\\clean_db\\\\output\\\\"
+
        
-       , DATE_FORMAT( NOW(), '%Y%m%d')
-       , '_' 
-		 ,  CONVERT(ROUND(curtime()/100+0,0), CHAR)       
-       , '_' 
-		 , file_prefix 
-       , ".txt'"
-		 , " CHARACTER SET utf8 
-  FIELDS TERMINATED BY '\\t'
-  ESCAPED BY ''
-  LINES TERMINATED BY '\\r\\n'");
-       
-PREPARE s1 FROM @sql_text;
-EXECUTE s1;
-DROP PREPARE s1;
-
+       , DATE_FORMAT( NOW(), '%Y%m%d')
+
+       , '_' 
+
+		 ,  CONVERT(ROUND(curtime()/100+0,0), CHAR)       
+
+       , '_' 
+
+		 , file_prefix 
+
+       , ".txt'"
+
+		 , " CHARACTER SET utf8 
+
+  FIELDS TERMINATED BY '\\t'
+
+  ESCAPED BY ''
+
+  LINES TERMINATED BY '\\r\\n'");
+
+       
+
+PREPARE s1 FROM @sql_text;
+
+EXECUTE s1;
+
+DROP PREPARE s1;
+
+
+
 END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1145,6 +1268,171 @@ DELIMITER ;;
 BEGIN
 
 call make_file(CONCAT("select * from ", view_name), view_name);
+
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `temp_abandoned_balance_make_saldo_198_298` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = '' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `temp_abandoned_balance_make_saldo_198_298`()
+BEGIN
+
+
+
+drop table if exists saldo_198_298;
+
+
+
+create temporary table saldo_198_298 as
+
+
+
+
+
+
+
+select 
+
+   a.dt, a.line, a.lev, a.la_p, a.regn, a.has_iv,
+
+   case when (a.ir > b.ir) then (a.ir - b.ir) else 0 end ir,
+
+	case when (a.iv > b.iv) then (a.iv - b.iv) else 0 end iv,
+
+   
+
+	case when (a.ir > b.ir) then (a.ir - b.ir) else 0 end
+
+ +	case when (a.iv > b.iv) then (a.iv - b.iv) else 0 end  itogo	
+
+from balance a
+
+left join balance b 
+
+on a.dt = b.dt and a.regn = b.regn 
+
+where a.line = 198000 
+
+and b.line = 298000 
+
+and a.has_iv = 1
+
+
+
+group by a.dt, a.line, a.lev, a.la_p, a.regn
+
+
+
+UNION ALL
+
+
+
+
+
+
+
+select 
+
+   b.dt, b.line, b.lev, b.la_p, b.regn, b.has_iv,
+
+	case when (a.ir < b.ir) then (- a.ir + b.ir) else 0 end ir, 
+
+	case when (a.iv < b.iv) then (- a.iv + b.iv) else 0 end iv, 
+
+   
+
+	case when (a.ir < b.ir) then (- a.ir + b.ir) else 0 end  
+
+ + case when (a.iv < b.iv) then (- a.iv + b.iv) else 0 end itogo 
+
+	from balance a
+
+left join balance b 
+
+on a.dt = b.dt and a.regn = b.regn 
+
+where a.line = 198000 
+
+and b.line = 298000
+
+and a.has_iv = 1
+
+
+
+group by b.dt, b.line, b.lev, b.la_p, b.regn
+
+
+
+
+
+
+
+UNION ALL
+
+select 
+
+   a.dt, a.line, a.lev, a.la_p, a.regn, b.has_iv, 0 ir, 0 iv,    
+
+   case when (a.itogo > b.itogo) then (a.itogo - b.itogo) else 0 end itogo      
+
+from balance a left join balance b 
+
+on a.dt = b.dt and a.regn = b.regn 
+
+where a.line = 198000 and b.line = 298000 
+
+and a.has_iv = 0
+
+group by a.dt, a.line, a.lev, a.la_p, a.regn
+
+
+
+UNION ALL
+
+select 
+
+   b.dt, b.line, b.lev, b.la_p, b.regn, b.has_iv,  0 ir, 0 iv, 
+
+   case when (a.itogo < b.itogo) then (- a.itogo + b.itogo) else 0 end itogo     
+
+	from balance a left join balance b 
+
+on a.dt = b.dt and a.regn = b.regn 
+
+where a.line = 198000 and b.line = 298000
+
+and a.has_iv = 0
+
+
+
+group by b.dt, b.line, b.lev, b.la_p, b.regn;
+
+
+
+
+
+delete from balance where line = 198000;
+
+delete from balance where line = 298000;
+
+
+
+insert into balance
+
+select * from saldo_198_298;
+
+
 
 END */;;
 DELIMITER ;
@@ -1761,4 +2049,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-05-29 14:14:13
+-- Dump completed on 2015-06-19 11:58:23
