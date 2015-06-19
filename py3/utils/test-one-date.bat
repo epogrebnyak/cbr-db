@@ -1,3 +1,5 @@
+exec ini.bat
+cd ..
 python bankform.py reset database raw
 python bankform.py reset database final
 python bankform.py download  101 2015-01-01

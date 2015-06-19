@@ -96,18 +96,14 @@ def get_selected_form(arg):
 
 def get_db_name(arg, db_dict=DB_NAMES):
     """
-    Returns either a list of db names, or one database name, which is coded in command line by keywords 'raw' and 'final'.
+    Returns a list of db names which is coded in command line by keywords 'raw' and 'final'.
     Uses global dictionary DB_NAMES = {'raw': DB_NAME_RAW, "final": DB_NAME_FINAL}
     """
-    # db_name = None
-    db_name = db_dict.values()
-    
-    for param in db_dict.keys():
+    for param in db_dict:
         if arg[param]:
-            db_name = list(db_dict[param])
+            return [db_dict[param]]
             
-    return db_name
-
+    db_dict.values()
 
 if __name__ == '__main__':
     arg = docopt(__doc__)
@@ -135,6 +131,7 @@ if __name__ == '__main__':
     
     if arg['database']:
         db_names = get_db_name(arg, DB_NAMES)
+        
         for db_name in db_names:
                 general_database_operations(arg, db_name)
 
