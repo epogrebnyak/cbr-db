@@ -22,13 +22,48 @@ def get_sqla_connection():
     return con
     
 
-# start_time = time.time()
+start_time = time.time()
 con = get_sqla_connection()
-f101 = pd.read_sql_table('f101', con)
-# print("Dataset loaded in %f seconds" % (time.time() - start_time))
 
-print(f101.head())
-pprint(f101.columns.tolist())
+# Read datasets as dataframes
+f101 = pd.read_sql_table('f101', con)
+alloc = pd.read_sql_table('alloc', con)
+balance = pd.read_sql_table('balance', con)
+
+print("Datasets loaded in %f seconds" % (time.time() - start_time))
+
+# Setting
+# ========
+# In MySQL database the 'balance' table is obtained by doing several  manipulations with 'f101' table using 'alloc' table. 
+# These munipulations are performed by 'make_balance' procedure, it does 'inserts' into 'balance' table.
+# 'make_balance procedure consists of three parts:
+#
+# call balance_make_step_1();
+# call balance_make_saldo_198_298();
+# call balance_make_insert_totals();
+#
+# Comment:
+# step_1 is summation of 'f101' using 'alloc', it is the main step
+# saldo_198_298 does netting of balance lines 198 and 298. temp table is created with netted lines 198 and 298 and inserted back to 'balance'
+# balance_make_insert_totals adds a sum total of lines and a net of total. it inserts lines 100000, 20000 and 500 to 'balance'.
+
+#
+# Task:
+# =====
+# Obtain 'balance' dataframe from 'f101' and 'alloc' in pandas, 
+# showing improvements in code readability over sql procedure 'make_balance'
+# Prefrred results are beyond simple porting of the sql procedure. 
+# 
+# Data:
+# =====
+# Use 'test-one-date.bat' to obtain for small trial dataset (one datapoint).
+# Use 'make-reference-dataset.bat' for actual task (monthly datapoints for 2012-2015). 
+#
+
+for var in [f101, alloc, balance]:
+    print()
+    print(var.head())
+    pprint(var.columns.tolist())
 
 
 
