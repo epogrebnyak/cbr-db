@@ -1,61 +1,61 @@
 """
-Import bank sector statistics stored as archived DBF files at www.cbr.ru/credit/forms.asp to a local MySQL database, aggregate data into reports and save reports in csv or xlsx format. The script can also import statistics stored locally in text form files ("private data"). 
+Import bank sector statistics stored as archived DBF files at www.cbr.ru/credit/forms.asp to a local MySQL database, aggregate data into reports and save reports in csv or xlsx format. The script can also import statistics stored locally in text form files ("private data").
 
-1. General database operations:      
+1. General database operations:
     'save' creates database dump in <db_name>.sql file without data, unless --with-data flag is specified
     'load' imports this dump into database
     'delete' erases database
-    'reset' calls 'delete' and 'load'      
-   Database keywords: 
+    'reset' calls 'delete' and 'load'
+   Database keywords:
     'raw' refers to initial data database with information form DBF files (size in gigabytes)
-    'final' refers to a reduced dataset used for final reports (size in 10Mb's)     
-   
+    'final' refers to a reduced dataset used for final reports (size in 10Mb's)
+
 2. DBF/TXT file import
 2.1. Public data (DBF files as source)
     'download' saves zip/rar files form Bank of Russia web site to local folder
     'unpack' unzips/unrars DBF files
-    'make csv' creates a CSV dump of DBF files     
+    'make csv' creates a CSV dump of DBF files
     'import csv' reads csv files into raw database
 2.2. Private data (TXT files as source)
     'make csv' converts text files to csv
     'import csv' reads csv files into raw database
     Note: no timestamps for private data are used, all files are processed.
-   
+
 3. Dataset manipulation in raw and final database:
     'make dataset' creates a final table in raw database
     'save dataset' ... # todo: as in docstrings
-    'import dataset' ... # todo: as in docstrings    
+    'import dataset' ... # todo: as in docstrings
     'migrate dataset' dumps final table from raw database and imports it to final database
-    
+
 4. Working with final database:
     'import alloc' and 'import tables' read supplementary tables to final database (allocation algorithm)
     'make balance' creates table 'balance' based on 'f101', 'alloc' and supplementary tables (for form 101)
-    'report balance' dumps final reporting tables to csv or xls files    
-    'test balance' performs sample queries on the final reporting tables for verification purposes 
+    'report balance' dumps final reporting tables to csv or xls files
+    'test balance' performs sample queries on the final reporting tables for verification purposes
 
-Usage:   
+Usage:
     bankform.py save    database [raw | final]
     bankform.py delete  database [raw | final]
     bankform.py load    database [raw | final]
     bankform.py reset   database [raw | final]
-    
+
     bankform.py download   <FORM> (<timestamp1> [<timestamp2>] | --all-dates)
     bankform.py make csv   <FORM> (<timestamp1> [<timestamp2>] | --all-dates)
     bankform.py unpack     <FORM> (<timestamp1> [<timestamp2>] | --all-dates)
     bankform.py make csv   <FORM> (<timestamp1> [<timestamp2>] | --all-dates)
     bankform.py import csv <FORM> (<timestamp1> [<timestamp2>] | --all-dates)
     bankform.py update     <FORM> (<timestamp1> [<timestamp2>] | --all-dates)
-    
+
     bankform.py make csv   <FORM> --private-data [--all-dates]
-    bankform.py import csv <FORM> --private-data [--all-dates]    
-    
+    bankform.py import csv <FORM> --private-data [--all-dates]
+
     bankform.py make    dataset <FORM>
     bankform.py save    dataset <FORM>
     bankform.py import  dataset <FORM>
     bankform.py migrate dataset <FORM>
-        
+
     bankform.py import alloc
-    bankform.py import tables    
+    bankform.py import tables
     bankform.py make   balance
     bankform.py test   balance
     bankform.py report balance     [--xlsx]
@@ -67,7 +67,7 @@ Notes:
     MySQL configuration requirements:
         MySQL server daemon must be up and running when bankform.py is started.
         Config file 'my.ini' or 'my.cfg' must contain host, user, password to allow mysql.exe calls.
-        mysql*.exe must be in PATH. If not in PATH run utils\ini.bat or utils\ini.py with correct path to mysql. 
+        mysql*.exe must be in PATH. If not in PATH run utils\ini.bat or utils\ini.py with correct path to mysql.
 """
 
 from docopt import docopt
@@ -102,39 +102,38 @@ def get_db_name(arg, db_dict=DB_NAMES):
     for param in db_dict:
         if arg[param]:
             return [db_dict[param]]
-            
-    db_dict.values()
+
+    return list(db_dict.values())
 
 if __name__ == '__main__':
     arg = docopt(__doc__)
     form = get_selected_form(arg)
     date_range = get_date_range_from_command_line(arg)
-    
+
     if form:
-        # todo: need not printing it 
+        # todo: need not printing it
         create_directories(DIRLIST[form])
 
     # 1. General database operations
-    def general_database_operations(arg, db_name):    
+    def general_database_operations(arg, db_name):
         if arg['delete']:
             delete_and_create_db(db_name)
         if arg['load']:
             load_db_from_dump(db_name)
         if arg['save']:
             save_db_to_dump(db_name)
-        if arg['reset']:            
+        if arg['reset']:
             delete_and_create_db(db_name)
-            load_db_from_dump(db_name)  
+            load_db_from_dump(db_name)
             if arg['final']:
-                 import_alloc()
-                 import_tables()    
-    
+                import_alloc()
+                import_tables()
+
     if arg['database']:
         db_names = get_db_name(arg, DB_NAMES)
-        
+
         for db_name in db_names:
                 general_database_operations(arg, db_name)
-
 
     # 2.1 DBF file import
 
@@ -158,24 +157,23 @@ if __name__ == '__main__':
             # import CSV for selected dates into raw database
             if arg['import'] and arg['csv']:
                 import_csv(isodate, form)
-            
+
             # do all data import operations
             if arg['update']:
                 download_form(isodate, form)
                 unpack(isodate, form)
                 dbf2csv(isodate, form)
                 import_csv(isodate, form)
-                
+
     # 2.2 Text file import
-    if arg["--private-data"]:    
+    if arg["--private-data"]:
             # convert text to CSV
             if arg['make'] and arg['csv']:
-                convert_txt_directory_to_csv() 
-                
+                convert_txt_directory_to_csv()
+
             # import CSV into raw database
             if arg['import'] and arg['csv']:
                 import_csv_derived_from_text_files()
-    
 
     # 3. Dataset manipulation in raw and final database
     if arg['dataset']:
@@ -183,7 +181,7 @@ if __name__ == '__main__':
             # bankform.py make dataset <FORM>
             # Replicates replicate following behavior:
             # mysql --database dbf_db3 -e "call insert_f101();"
-            # todo: need to change this when adding more forms 
+            # todo: need to change this when adding more forms
             create_final_dataset_in_raw_database()
 
         if arg['save']:
@@ -204,13 +202,11 @@ if __name__ == '__main__':
 
     if arg['make'] and arg['balance']:
         make_balance()
-        
+
     if arg['test'] and arg['balance']:
         test_balance()
 
     if arg['report'] and (arg['balance'] or arg['form']):
-        report_balance_tables_csv()  
+        report_balance_tables_csv()
         if arg['--xlsx']:
-            report_balance_tables_xls() 
-              
-        
+            report_balance_tables_xls()
