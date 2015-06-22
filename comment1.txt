@@ -29,14 +29,10 @@ Encountered before:
 What license?    
    
 
-		 
 NOT TODO
 ========
-Critical
---------
-f101 integrity check
-
-check test results / full circle tests
+Listed in *issues*
+------------------
 
 explicit regn and date limit when truncating raw database (hardcoded in database)
     bankform.py make dataset <FORM> --regn=<regn_list> --regn-file<file> --dates 2012 2015
@@ -44,27 +40,7 @@ explicit regn and date limit when truncating raw database (hardcoded in database
 	must look for regn.txt in current directory or DIRLIST['global']['tables']
 	now regn list is hard-coded in views f101_long, f101_*.
 	
-top-30 bank test
-
 import form 102
-
-update readme.md
-
-final uses of data: typical charts/forms/text comment
-    projection model / forecast (in Pandas)
-	top 5 bank balance output 
-
-<ccorp> output
-
-audit previous versions of cbr_db
-
-audit previous php/python implementations, html, database keys
-
-run on linux
-
-Optional
---------
-instead on myslimport can run LOAD DATA INFILE '/full/path/to/temp.txt' - with mysqlconnector, no using mysqlimport necessary
 
 directory structure: 
 	same in public/private
@@ -75,8 +51,32 @@ directory structure:
 	  txt
 	different path to local data folder (non-standard)
 	no 'veb' in folder or database names
-	
-more documentation to readme.md (was - folder 'doc')
+
+Critical
+--------
+1. Testing 
+   f101 integrity check
+   check test results / full circle tests
+   top-30 bank test
+   
+2. Final uses 
+   final uses of data: typical charts/forms/text comment
+      projection model / forecast (in Pandas)
+   top 5 bank balance output 
+   <ccorp> output
+   
+3. Previous versions audit
+   audit previous versions of cbr_db
+   audit previous php/python implementations, html, database keys
+   
+4. Other
+   run locally on linux
+
+Optional
+--------
+instead on myslimport can run LOAD DATA INFILE '/full/path/to/temp.txt' - with mysqlconnector, no using mysqlimport necessary
+
+more documentation to readme.md and  folder 'doc'
 python bankform.py reset database 
 write to existing file openpyxl
 add --alldates key in commandline interface 
@@ -87,10 +87,6 @@ sql outputs to screen
 timer
 sqla abstraction/sql optimisation
 show all available dates
-if behind firewall, do not invoke download - catch error below
-  urllib.error.URLError: <urlopen error [WinError 10060] Попытка установить соединение была безуспешной, т.к. от другого к
-  требуемое время не получен нужный отклик, или было разорвано уже установленное соединение из-за неверного отклика уже п
-  компьютера>
 Join conn.py and download?
 
 COMMENT
@@ -148,6 +144,7 @@ save7z.bat - makes archive of the folder except data and output
 delete 'csv_to_excel' folder in root in repository as it was moved to issues
 
 2015-06-22
+update readme.md
 create folder py3/utils and move following files there (intent - keep command files to run scripts and script files separately)
 17.06.2015  00:44               175 ini.bat
 17.06.2015  00:44               740 ini.py
