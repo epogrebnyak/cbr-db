@@ -20,14 +20,6 @@ linux help - if I want to run the script on linux from scratch - what would be t
 
 'used in ...' docstrings in database.py not very meaningful, may go over them. better add what the function does (very concisely), not whwere it is used. can omit docstring where behavoir is self-evident.
 
-create folder py3/utils and move following files there (intent - keep command files to run scripts and script files separately)
-17.06.2015  00:44               175 ini.bat
-17.06.2015  00:44               740 ini.py
-17.06.2015  10:55                33 start_unit_tests.bat
-17.06.2015  00:44               492 test-one-date.bat
-17.06.2015  00:44             1 631 test-one-date.py
-
-
 RISKS
 =====
 Encountered before:
@@ -154,4 +146,12 @@ there are warnings in mysqlimport of standard csv files, need to find out reason
 2015-06-18 10:15 AM
 save7z.bat - makes archive of the folder except data and output 
 delete 'csv_to_excel' folder in root in repository as it was moved to issues
+
+2015-06-22
+create folder py3/utils and move following files there (intent - keep command files to run scripts and script files separately)
+17.06.2015  00:44               175 ini.bat
+17.06.2015  00:44               740 ini.py
+17.06.2015  10:55                33 start_unit_tests.bat
+17.06.2015  00:44               492 test-one-date.bat
+17.06.2015  00:44             1 631 test-one-date.py
 
