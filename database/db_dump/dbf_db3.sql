@@ -79,6 +79,31 @@ CREATE TABLE `bulk_f101veb` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `cfg_date_limit`
+--
+
+DROP TABLE IF EXISTS `cfg_date_limit`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `cfg_date_limit` (
+  `dt_start` date DEFAULT NULL,
+  `dt_end` date DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `cfg_regn_in_focus`
+--
+
+DROP TABLE IF EXISTS `cfg_regn_in_focus`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `cfg_regn_in_focus` (
+  `regn` smallint(6) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `f101`
 --
 
@@ -418,6 +443,39 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `temp_init_truncation_limits` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = '' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50020 DEFINER=`test_user`@`localhost`*/ /*!50003 PROCEDURE `temp_init_truncation_limits`()
+BEGIN
+
+
+
+create table if not exists cfg_date_limit as
+
+select min(dt) dt_start, max(dt) dt_end from f101; 
+
+
+
+create table if not exists cfg_regn_in_focus as
+
+select distinct regn from f101; 
+
+
+
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `test_f101_residual` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -429,16 +487,26 @@ DELIMITER ;
 /*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 /*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `test_f101_residual`()
-BEGIN
-SELECT f.dt AS dt,f.regn AS regn, SUM((CASE WHEN (f.a_p = 1) THEN f.itogo ELSE 0 END)) AS ap1, 
-SUM((CASE WHEN (f.a_p = 2) THEN f.itogo ELSE 0 END)) AS ap2,
-(SUM((CASE WHEN (f.a_p = 1) THEN f.itogo ELSE 0 END)) - SUM((CASE WHEN (f.a_p = 2) THEN f.itogo ELSE 0 END))) AS diff, 
-ROUND((ABS(((SUM((CASE WHEN (f.a_p = 1) THEN f.itogo ELSE 0 END)) / 
-SUM((CASE WHEN (f.a_p = 2) THEN f.itogo ELSE 0 END))) - 1)) * POW(10,9)),2) AS diff_p
-FROM f101 f
-WHERE (f.conto < 80000)
-GROUP BY f.dt,f.regn
-HAVING (diff <> 0);
+BEGIN
+
+SELECT f.dt AS dt,f.regn AS regn, SUM((CASE WHEN (f.a_p = 1) THEN f.itogo ELSE 0 END)) AS ap1, 
+
+SUM((CASE WHEN (f.a_p = 2) THEN f.itogo ELSE 0 END)) AS ap2,
+
+(SUM((CASE WHEN (f.a_p = 1) THEN f.itogo ELSE 0 END)) - SUM((CASE WHEN (f.a_p = 2) THEN f.itogo ELSE 0 END))) AS diff, 
+
+ROUND((ABS(((SUM((CASE WHEN (f.a_p = 1) THEN f.itogo ELSE 0 END)) / 
+
+SUM((CASE WHEN (f.a_p = 2) THEN f.itogo ELSE 0 END))) - 1)) * POW(10,9)),2) AS diff_p
+
+FROM f101 f
+
+WHERE (f.conto < 80000)
+
+GROUP BY f.dt,f.regn
+
+HAVING (diff <> 0);
+
 END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -543,4 +611,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-05-29 14:14:09
+-- Dump completed on 2015-06-22 17:51:20
