@@ -38,22 +38,18 @@ Usage:
     bankform.py delete  database [raw | final]
     bankform.py load    database [raw | final]
     bankform.py reset   database [raw | final]
-
     bankform.py download   <FORM> (<timestamp1> [<timestamp2>] | --all-dates)
     bankform.py make csv   <FORM> (<timestamp1> [<timestamp2>] | --all-dates)
     bankform.py unpack     <FORM> (<timestamp1> [<timestamp2>] | --all-dates)
     bankform.py make csv   <FORM> (<timestamp1> [<timestamp2>] | --all-dates)
     bankform.py import csv <FORM> (<timestamp1> [<timestamp2>] | --all-dates)
     bankform.py update     <FORM> (<timestamp1> [<timestamp2>] | --all-dates)
-
     bankform.py make csv   <FORM> --private-data [--all-dates]
     bankform.py import csv <FORM> --private-data [--all-dates]
-
     bankform.py make    dataset <FORM>
     bankform.py save    dataset <FORM>
     bankform.py import  dataset <FORM>
     bankform.py migrate dataset <FORM>
-
     bankform.py import alloc
     bankform.py import tables
     bankform.py make   balance
@@ -89,9 +85,9 @@ EOL = "\n"
 SUPPORTED_FORMS = ['101', '102', '123', '134', '135']
 
 
-def get_selected_form(arg):
-    form = arg["<FORM>"]
-    return form if form in SUPPORTED_FORMS else None
+def get_selected_form(arg):    
+    cli_form = arg["<FORM>"]
+    return cli_form if cli_form in SUPPORTED_FORMS else None
 
 
 def get_db_name(arg, db_dict=DB_NAMES):
