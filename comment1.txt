@@ -1,38 +1,16 @@
 TODO
 ====
-main task:
-----------
+L:
+--
 Add more forms, other that import of form 102. This is a bigger task, please send some time reviewing you understand the requirement and know what to do about it. I have put everything related to task in in 'issues/import_more_forms' forder. Please write back soon with any questions about the task. 
 
+B:
+--
+pandas dataframe - more explicit data aggregation algorithm 
 
-minor changes:
---------------
-linux help - if I want to run the script on linux from scratch - what would be the sequence on commands?
-	create directory - what part of the file system?
-	install git client
-	git clone project directory 
-	configure mysql username/password
-	run script
-   (I have a linux virtual machine at home computer, want to start learn using it)
-
-   What GUI editors do you use for python on linux (not EMACS/VIM)?
-
-
-'used in ...' docstrings in database.py not very meaningful, may go over them. better add what the function does (very concisely), not whwere it is used. can omit docstring where behavoir is self-evident.
-
-RISKS
-=====
-Encountered before:
-   CSV written to file not complete (fwere lines than other)
-   f101 has residuals not 0
-   
-What license?    
-   
-
-NOT TODO
-========
-Listed in *issues*
-------------------
+Listed in *Github Issues*
+==================
+write to existing file openpyxl
 
 explicit regn and date limit when truncating raw database (hardcoded in database)
     bankform.py make dataset <FORM> --regn=<regn_list> --regn-file<file> --dates 2012 2015
@@ -50,7 +28,7 @@ directory structure:
 	  dbf
 	  txt
 	different path to local data folder (non-standard)
-	no 'veb' in folder or database names
+	no 'www' in folder or database names
 
 Critical
 --------
@@ -75,10 +53,7 @@ Critical
 Optional
 --------
 instead on myslimport can run LOAD DATA INFILE '/full/path/to/temp.txt' - with mysqlconnector, no using mysqlimport necessary
-
 more documentation to readme.md and  folder 'doc'
-python bankform.py reset database 
-write to existing file openpyxl
 add --alldates key in commandline interface 
 read from DBF to final database directly
 sql outputs to screen
@@ -86,16 +61,23 @@ sql outputs to screen
    date formats
 timer
 sqla abstraction/sql optimisation
-show all available dates
-Join conn.py and download?
+show all available dates in directory
+
+RISKS
+=====
+Encountered before:
+   CSV written to file not complete (fwere lines than other)
+   f101 has residuals not 0
+   
+What license? 
 
 COMMENT
 =======
 bottle framework to put to localhost/web 
 something to start mysql server/daemon (now manually in Windows)
-pandas dataframe - more explicit data aggregation algorithm 
 SQLA abstraction of SQL queries
 ‘Import tables’ is not very clean, it is actually about importing names/plan from files
+join files conn.py and download?
 
 DONE
 ====
@@ -151,4 +133,7 @@ create folder py3/utils and move following files there (intent - keep command fi
 17.06.2015  10:55                33 start_unit_tests.bat
 17.06.2015  00:44               492 test-one-date.bat
 17.06.2015  00:44             1 631 test-one-date.py
+
+(not checked ) 'used in ...' docstrings in database.py not very meaningful, may go over them. better add what the function does (very concisely), not whwere it is used. can omit docstring where behavoir is self-evident.
+
 
