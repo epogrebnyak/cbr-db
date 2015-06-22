@@ -1,0 +1,42 @@
+QUESTION:
+linux help - if I want to run the script on linux from scratch - what would be the sequence on commands?
+	create directory - what part of the file system?
+	install git client
+	git clone project directory 
+	configure mysql username/password
+	run script
+   (I have a linux virtual machine at home computer, want to start learn using it)
+
+   What GUI editors do you use for python on linux (not EMACS/VIM)?
+   
+ANSWER:
+f I want to run the script on linux from scratch - what would be the sequence on commands?
+
+1. Create directory - what part of the file system?
+
+You can put it in the home directory of the unprivileged user who will run the scripts. You can also put it in /opt or even create a /www or anything in the root if you want, but I prefer the first option.
+
+2. Using the package manager. For example, in Arch Linux / Manjaro, you install with:
+
+$ sudo pacman -S git
+
+In debian-like distros:
+
+$ sudo apt-get install git
+
+3. git clone project directory 
+
+$ cd /home/evgeny
+$ git clone https://github.com/epogrebnyak/cbr-db.git
+
+4. Configure mysql username/password
+
+This is usually done when installing mysql, but varies between distributions. You must take care as some linux distributions (as Manjaro) have changed mysql for cassandra. I've tested on it, and it is not compatible (the scripts will fail). Stick to the oracle mysql version that you've used in windows, or the closest one.
+
+To test the script, run the Python 'launcher' that I've made (translated from the .bat):
+
+$ python test-one-date.py
+
+5. what GUI editors do you use for python on linux (not EMACS/VIM)?
+
+When using Linux, I'm a vim user (as you can see in the screenshots). But you can also use the Spyder editor. I've used it and it is great and simple for general Python, not just scientific Python besides being mostly used for it).  There are more advanced editors like PyCham and WingIDE, but they are not of my taste.
