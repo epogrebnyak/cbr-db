@@ -1170,25 +1170,52 @@ DELIMITER ;;
 BEGIN
 
 
-CALL balance_report_line_dt(1481);
+
+set session group_concat_max_len=100000;
 
 
-CALL balance_report_line_dt(354);
+
+# Сбер
+
+CALL temp_balance_report_line_dt(1481);
 
 
-CALL balance_report_line_dt(1000);
+
+# Газпромбанк
+
+CALL temp_balance_report_line_dt(354);
 
 
-CALL balance_report_line_dt(3349);
+
+# ВТБ
+
+CALL temp_balance_report_line_dt(1000);
 
 
-CALL balance_report_line_dt(1942);
+
+# РСXБ
+
+CALL temp_balance_report_line_dt(3349);
 
 
-CALL balance_report_line_dt(1470);
+
+#Глобэкс 
+
+CALL temp_balance_report_line_dt(1942);
 
 
-CALL balance_report_line_dt_3tables();
+
+#Связь 
+
+CALL temp_balance_report_line_dt(1470);
+
+
+
+#Связь 
+
+# CALL balance_report_line_dt_3tables();
+
+
 
 END */;;
 DELIMITER ;
@@ -1215,9 +1242,8 @@ SET @sql_text = CONCAT (sql_line
 
 		 ,	" into outfile '"
 
-       , "D:\\\\clean_db\\\\output\\\\"
+       , "D:\\\\databases\\\\dump\\\\"       
 
-       
        , DATE_FORMAT( NOW(), '%Y%m%d')
 
        , '_' 
@@ -2049,4 +2075,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-06-19 11:58:23
+-- Dump completed on 2015-06-22 16:19:26
