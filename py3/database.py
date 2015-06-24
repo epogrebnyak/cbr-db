@@ -39,10 +39,14 @@ def run_sql_string(string, database=None, verbose=False):
 
     terminal(call_string)
 
-
+def get_forward_slashed_path(path):
+    new_path = path.replace('\\', '/')
+    return new_path   
+    
 def source_sql_file(sql_filename, db_name):
-    path = os.path.normpath(sql_filename)
-    command = "source {0}".format(path)
+    path = get_forward_slashed_path(sql_filename) 
+    print(path)    
+    command = r"source {0}".format(path)
     run_sql_string(command, database=db_name)
 
 ############################################################################### 
@@ -131,7 +135,8 @@ def get_db_dumpfile_path(db_name):
     """
     directory = DIRLIST['global']['database']
     sql_filename = db_name + ".sql"
-    path = os.path.join(directory, sql_filename)
+    path = os.path.join(directory, sql_filename).replace("\\","/")
+    # path.replace(\\", '/') 
     return path
 
 
