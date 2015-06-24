@@ -45,7 +45,6 @@ def get_forward_slashed_path(path):
     
 def source_sql_file(sql_filename, db_name):
     path = get_forward_slashed_path(sql_filename) 
-    print(path)    
     command = r"source {0}".format(path)
     run_sql_string(command, database=db_name)
 
