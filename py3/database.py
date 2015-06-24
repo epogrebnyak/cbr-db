@@ -245,7 +245,7 @@ def create_final_dataset_in_raw_database():
     """
     db_name = DB_NAMES['raw']
     # risk: harcoded function
-    run_sql_string("call insert_f101();", db_name)
+    run_sql_string("call f101_make_dataset();", db_name)
 
 
 ################################################################
