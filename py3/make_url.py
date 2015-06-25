@@ -14,10 +14,15 @@ def download_form(isodate_input, form_input):
 
 def get_url(date=None, isodate=None, form=None):
     """
-    Creates URL based on date for form 101
+    Creates URL based on date for forms 101 and 102
+    TODO: remove harcoded form check
     """
-    if str(form) == '101':
+    form = str(form)    
+    
+    if form in ('101', '102'):
         return "http://www.cbr.ru/credit/forms/" + get_ziprar_filename(date, isodate, form)
+    else:
+        raise ValueError('Form {} not supported yet.'.format(form))
 
 def get_ziprar_filename(date=None, isodate=None, form=None):
     if isodate is not None:
@@ -29,14 +34,17 @@ def get_ziprar_filename(date=None, isodate=None, form=None):
     month = zero_padded_month(date.month)
     year = date.year
     extension = get_extension(date)
+    
+    form = str(form)
 
-    if str(form) == '101':
-        return "101-{0}{1}01.{2}".format(year, month, extension)
-
+    if form in ('101', '102'):
+        return "{}-{}{}01.{}".format(form, year, month, extension)
+    else:
+        raise ValueError('Form {} not supported yet.'.format(form))
 
 def get_extension(date):
     # dbf files are avaialble since Feb-2004. They are in zip format up to Dec-2008
-    zip_start_date = datetime.date(2004, 2, 1)
+    zip_start_date = datetime.date(2004, 1, 1)
     zip_end_date = datetime.date(2008, 12, 31)
 
     if zip_start_date <= date <= zip_end_date:
@@ -50,11 +58,7 @@ def get_extension(date):
         return 'rar'
 
 if __name__ == "__main__":
-    if len(sys.argv) == 1:
-        date_floor = None
-        date_most_recent = None
-    elif len(sys.argv) == 3:
-        date_floor = sys.argv[1]
-        date_most_recent = sys.argv[2]
-    else:
-        raise ValueError("Must have none or two parameters YYYY-MM-DD YYYY-MM-DD")
+    assert len(sys.argv) == 3, "Usage: make_url.py form date"
+    form = sys.argv[1]
+    date = sys.argv[2]
+    print(get_url(isodate=date, form=form))

@@ -13,4 +13,3 @@ python bankform.py import tables
 python bankform.py make balance
 python bankform.py test balance
 python bankform.py report balance
-
