@@ -23,6 +23,28 @@ class DateEngineTest(unittest.TestCase):
             date_engine.shift_month_ahead,
             date(2013, 3, 31)
         )
+        
+    def test_shift_month_behind(self):
+        self.assertEqual(
+            date_engine.shift_month_behind(date(2015, 12, 1)),
+            date(2015, 11, 1)
+        )
+        
+        self.assertEqual(
+            date_engine.shift_month_behind(date(1988, 7, 1)),
+            date(1988, 6, 1)
+        )
+
+        self.assertEqual(
+            date_engine.shift_month_behind(date(2012, 1, 1)),
+            date(2011, 12, 1)
+        )
+
+        self.assertRaises(
+            ValueError,
+            date_engine.shift_month_behind,
+            date(2013, 3, 31)
+        )
 
     def test_get_date_range(self):
         self.assertEqual(
@@ -88,6 +110,48 @@ class DateEngineTest(unittest.TestCase):
         self.assertEqual(
             date_engine.isodate2timestamp('101', '2014-01-05'),
             '122013'
+        )
+    
+    def test_quarter2date(self):
+        self.assertEqual(
+            date_engine.quarter2date(2000, 1),
+            date(2000, 4, 1)        
+        )
+        
+        self.assertEqual(
+            date_engine.quarter2date(2000, 2),
+            date(2000, 7, 1)        
+        )
+        
+        self.assertEqual(
+            date_engine.quarter2date(2000, 3),
+            date(2000, 10, 1)        
+        )
+        
+        self.assertEqual(
+            date_engine.quarter2date(2000, 4),
+            date(2001, 1, 1)        
+        )
+        
+    def test_date2quarter(self):
+        self.assertEqual(
+            date_engine.date2quarter(date(2000, 4, 1)),          
+            (2000, 1)
+        )
+        
+        self.assertEqual(
+            date_engine.date2quarter(date(2000, 7, 1)),          
+            (2000, 2)
+        )
+        
+        self.assertEqual(
+            date_engine.date2quarter(date(2000, 10, 1)),          
+            (2000, 3)
+        )
+        
+        self.assertEqual(
+            date_engine.date2quarter(date(2001, 1, 1)),          
+            (2000, 4)
         )
 
 if __name__ == '__main__':

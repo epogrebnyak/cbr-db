@@ -28,7 +28,7 @@ def _verify_start_of_month(*args):
 
 def shift_month_ahead(date):
     """
-    Returns date month ahead of <date> arguement with day set to 1.
+    Returns date one month ahead of <date> arguement with day set to 1.
     """
     _verify_start_of_month(date)
 
@@ -37,6 +37,20 @@ def shift_month_ahead(date):
     else:
         date = date.replace(month=1)
         date = date.replace(year=date.year + 1)
+
+    return date
+    
+def shift_month_behind(date):
+    """
+    Returns date one month behind of <date> arguement with day set to 1.
+    """
+    _verify_start_of_month(date)
+
+    if date.month > 1:
+        date = date.replace(month=date.month - 1)
+    else:
+        date = date.replace(month=12)
+        date = date.replace(year=date.year - 1)
 
     return date
 
@@ -90,3 +104,19 @@ def zero_padded_month(month):
     Returns 01, 02, ... 10, 11, 12.
     """    
     return "0" + str(month) if month < 10 else str(month)
+        
+def date2quarter(date):
+    """
+    Returns a (year, quarter) tuple from a <date> object.
+    Note: the first quarter corresponds to month 4, not 1.
+    """
+    date = shift_month_behind(date)
+    return date.year, date.month // 3
+
+def quarter2date(year, quarter):
+    """
+    Returns a date from <year> and <quarter>.
+    Note: the first quarter corresponds to month 4, not 1.
+    """
+    dt = datetime.date(year=year, month=quarter * 3, day=1)
+    return shift_month_ahead(dt)

@@ -32,6 +32,27 @@ class CliDatesTest(unittest.TestCase):
         self.assertEqual(cli_dates.get_date('2014q3')[0], date(2014, 10, 1))
         self.assertEqual(cli_dates.get_date('2014q4')[0], date(2015, 1, 1))
 
+    def test_get_last_quarter_month(self):
+        for month in range(1, 4):        
+            self.assertEqual(
+                cli_dates.get_last_quarter_month(month), 1
+            )
+        
+        for month in range(4, 7):        
+            self.assertEqual(
+                cli_dates.get_last_quarter_month(month), 4
+            )
+            
+        for month in range(7, 10):        
+            self.assertEqual(
+                cli_dates.get_last_quarter_month(month), 7
+            )
+            
+        for month in range(10, 13):        
+            self.assertEqual(
+                cli_dates.get_last_quarter_month(month), 10
+            )
+
     def test_get_date_range_from_command_line(self):
         args1 = {
             'pass': True,
@@ -57,6 +78,20 @@ class CliDatesTest(unittest.TestCase):
         self.assertEqual(
             list(cli_dates.get_date_range_from_command_line(args2)),
             ['2004-10-01', '2004-11-01', '2004-12-01', '2005-01-01', '2005-02-01']
+        )
+        
+        args3 = {
+            'pass': True,
+            'form': '102',
+            '<timestamp1>': '2004q3',
+            '<timestamp2>': '1q2005',
+            '--all-dates': False
+        }
+
+        self.assertEqual(
+            list(cli_dates.get_date_range_from_command_line(args3)),
+            ['2004-10-01', '2004-11-01', '2004-12-01', '2005-01-01',
+             '2005-02-01', '2005-03-01', '2005-04-01']
         )
 
 if __name__ == '__main__':
