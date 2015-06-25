@@ -3,7 +3,7 @@ import csv
 from datetime import datetime
 from global_ini import DIRLIST, FORM_DATA
 from dbfread import DBF
-from date_engine import isodate2timestamp, iso2date
+from date_engine import isodate2timestamp, iso2date, date2quarter
 
 CODEPAGE = "cp866"
 
@@ -57,8 +57,10 @@ def write_csv_by_path(dbf_path, csv_path, field_name_selection, form, dt):
                         rec_dict[c] = 0
                 
                 # add year and quarter
-                rec_dict["YEAR"] = dt.year
-                rec_dict["QUART"] = (dt.month - 1) // 3
+                qt_year, qt_month = date2quarter(dt)                
+                
+                rec_dict["YEAR"] = qt_year
+                rec_dict["QUART"] = qt_month
                     
             if skip:
                 n_skipped += 1
