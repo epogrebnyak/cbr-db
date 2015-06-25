@@ -1,4 +1,4 @@
-exec ini.bat
+call ini.bat
 cd ..
 python bankform.py reset database raw
 python bankform.py reset database final

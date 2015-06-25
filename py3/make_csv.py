@@ -29,24 +29,37 @@ def make_dbf_filename(isodate, postfix, form):
     dbf_filename = ts + postfix + ".DBF"
     return dbf_filename
 
-def write_csv_by_path(dbf_path, csv_path, field_name_selection):
+def write_csv_by_path(dbf_path, csv_path, field_name_selection, form):
     # not todo - make time wrapper
     startTime = datetime.now()
     # ----------------------
     with open(csv_path, 'w') as csvfile:
         writer = csv.DictWriter(csvfile, delimiter='\t', lineterminator='\n',  fieldnames=field_name_selection)
         writer.writeheader()
+        
         n_skipped = 0
 
         for rec_dict in get_records(dbf_path, field_name_selection):
-            if "NUM_SC" in field_name_selection and rec_dict["NUM_SC"] != "ITGAP":
-                for c in ("IITG", "ITOGO"):
-                    if c in field_name_selection:
-                        rec_dict[c] = int(rec_dict[c])
-
-                writer.writerow(rec_dict)
-            else:
+            skip = False
+            
+            if form == "101":
+                if "NUM_SC" in field_name_selection and rec_dict["NUM_SC"] != "ITGAP":
+                    for c in ("IITG", "ITOGO"):
+                        if c in field_name_selection:
+                            rec_dict[c] = int(rec_dict[c])
+                else:
+                    skip = True
+            
+            if form == "102":
+                # fix missing SIM_R, SIM_V (fill with zeros)
+                for c in ("SIM_R", "SIM_V"):
+                    if c in field_name_selection and rec_dict[c] is None:
+                        rec_dict[c] = 0
+                    
+            if skip:
                 n_skipped += 1
+            else:
+                writer.writerow(rec_dict)
     # ----------------------
     msg = "Time elapsed: {0}".format(datetime.now() - startTime)
 
@@ -55,14 +68,14 @@ def write_csv_by_path(dbf_path, csv_path, field_name_selection):
 
     print(msg)
 
-def write_csv(dbf_filename=None, field_name_selection=None, db_table_name=None, dbf_dir=None, csv_dir=None):
+def write_csv(dbf_filename, field_name_selection, db_table_name, dbf_dir, csv_dir, form):
     csv_filename = make_csv_filename(dbf_filename, db_table_name)
     csv_path = os.path.join(csv_dir, csv_filename)
     dbf_path = os.path.join(dbf_dir, dbf_filename)
 
     if os.path.isfile(dbf_path):
         print("Converting {0} to csv file {1}".format(dbf_filename, csv_filename))
-        write_csv_by_path(dbf_path, csv_path, field_name_selection)
+        write_csv_by_path(dbf_path, csv_path, field_name_selection, form)
     else:
         print("File {0} not found".format(dbf_filename))
 
@@ -77,7 +90,8 @@ def dbf2csv(isodate, form):
                   field_name_selection=info['dbf_fields'],
                   db_table_name=info['db_table'],
                   dbf_dir=DIRLIST[form]['dbf'],
-                  csv_dir=DIRLIST[form]['csv'])
+                  csv_dir=DIRLIST[form]['csv'],
+                  form=form)
 
 def list_csv_filepaths_by_date(isodate, form):
     for subform, info in FORM_DATA[form].items():
