@@ -79,6 +79,42 @@ CREATE TABLE `bulk_f101veb` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `bulk_f102_p`
+--
+
+DROP TABLE IF EXISTS `bulk_f102_p`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `bulk_f102_p` (
+  `regn` int(11) NOT NULL,
+  `quart` int(1) NOT NULL,
+  `year` int(11) NOT NULL,
+  `code` varchar(10) NOT NULL,
+  `itogo` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`regn`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `bulk_f102_p`
+--
+
+DROP TABLE IF EXISTS `bulk_f102_p1`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `bulk_f102_p1` (
+  `regn` int(11) NOT NULL,
+  `quart` int(1) NOT NULL,
+  `year` int(11) NOT NULL,
+  `code` varchar(10) NOT NULL,
+  `ir` bigint(20) DEFAULT NULL,
+  `iv` bigint(20) DEFAULT NULL,
+  `itogo` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`regn`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `cfg_date_in_focus`
 --
 
