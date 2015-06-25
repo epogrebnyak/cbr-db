@@ -11,6 +11,11 @@ from docopt import docopt
 from date_engine import get_date_range, shift_month_ahead
 
 def date_from_quarter(string):
+   """
+   TODO:
+   Add docstring here
+   What is the output of function? First day of next quarter?
+   """
     parts = string.upper().split('Q')
     
     if len(parts) != 2:
@@ -43,17 +48,37 @@ def try_format(string, fmt):
 
     return z, fmt
 
+# TODO: 
+# Comment: it would be more straight-forward under follwoing pseudocode
+# Please implement
+    
+    # def get_date_from_monthly_timestamp(string, formats=DATE_FORMATS):
+    #    same as get_date() was
+    
+    # def get_date_from_quarterly_timestamp(string):
+    #    returns a strat-of-next-quarter date based on 1q2010, 2010Q1 format of <string>
+    
+    # def get_date(string)
+    # if there is 'Q' in string.upper()
+    #    out = get_date_from_quarterly_timestamp(string)
+    # else: 
+    #    out = get_date_from_monthly_timestamp(string)
+
+
+
 def get_date(string, formats=DATE_FORMATS, special_formats=SPECIAL_FORMATS):
     """
     Tries to parse the date in string by using several predefined <formats>
     and <special_formats>.
     """
+    
     for fmt in formats:
         out = try_format(string, fmt)
         if out[0]:
             return out
             
     for sp in special_formats:
+        # this is very unclear fomulation below, it is hard to guess what the expression does as it involves several changes of names
         out = sp(string)
         if out[0]:
             return out
@@ -98,6 +123,8 @@ def get_date_endpoints(args):
             e = s
 
     # process second timestamp
+    # TODO: need to process special case when form is 102 and second time stamp is 2015 and current month is not end of quarter.
+    #       get_last_date_in_year() must be sensisitve to 'form'
     if args['<timestamp2>'] is not None:
         ts2, f2 = get_date(args['<timestamp2>'])
         if f2 == "%Y":
