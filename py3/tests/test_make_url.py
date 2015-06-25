@@ -8,7 +8,7 @@ from datetime import date
 class MakeURLTest(unittest.TestCase):
     
     def test_get_extension(self):
-        self.assertEqual(None, make_url.get_extension(date(2004, 1, 30)))
+        self.assertEqual(None, make_url.get_extension(date(2003, 12, 30)))
         self.assertEqual('zip', make_url.get_extension(date(2004, 2, 10)))
         self.assertEqual('zip', make_url.get_extension(date(2008, 12, 30)))
         self.assertEqual('rar', make_url.get_extension(date(2009, 1, 1)))
