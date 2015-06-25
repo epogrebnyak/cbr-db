@@ -75,7 +75,7 @@ def get_last_quarter_month(month):
     Returns the last completed quarter from <month>.
     Note: returns month 1, 4 or 7 or 10.
     """
-    quarter = (month - 1) // 3
+    quarter = (month - 1)     
     return quarter * 3 + 1
 
 def get_last_date_in_year(dt, form):

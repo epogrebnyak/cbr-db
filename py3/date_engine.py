@@ -94,8 +94,8 @@ def date2timestamp(form, dt):
         return zero_padded_month(month) + str(year)
     elif form == '102':
         # deals in quarters
-        quarter = ((dt.month - 1) // 3)
-        return "{}{}".format(quarter, dt.year)
+        year, quarter = date2quarter(dt)
+        return "{}{}".format(quarter, year)
     else:
         raise ValueError("Form not supported: " + form)
 
