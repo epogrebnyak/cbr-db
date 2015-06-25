@@ -3,7 +3,7 @@ import csv
 from datetime import datetime
 from global_ini import DIRLIST, FORM_DATA
 from dbfread import DBF
-from date_engine import isodate2timestamp
+from date_engine import isodate2timestamp, iso2date
 
 CODEPAGE = "cp866"
 
@@ -29,7 +29,7 @@ def make_dbf_filename(isodate, postfix, form):
     dbf_filename = ts + postfix + ".DBF"
     return dbf_filename
 
-def write_csv_by_path(dbf_path, csv_path, field_name_selection, form):
+def write_csv_by_path(dbf_path, csv_path, field_name_selection, form, dt):
     # not todo - make time wrapper
     startTime = datetime.now()
     # ----------------------
@@ -51,10 +51,14 @@ def write_csv_by_path(dbf_path, csv_path, field_name_selection, form):
                     skip = True
             
             if form == "102":
-                # fix missing SIM_R, SIM_V (fill with zeros)
+                # fix (fill with zeros) SIM_R and SIM_V
                 for c in ("SIM_R", "SIM_V"):
                     if c in field_name_selection and rec_dict[c] is None:
                         rec_dict[c] = 0
+                
+                # add year and quarter
+                rec_dict["YEAR"] = dt.year
+                rec_dict["QUART"] = (dt.month - 1) // 3
                     
             if skip:
                 n_skipped += 1
@@ -68,14 +72,15 @@ def write_csv_by_path(dbf_path, csv_path, field_name_selection, form):
 
     print(msg)
 
-def write_csv(dbf_filename, field_name_selection, db_table_name, dbf_dir, csv_dir, form):
+def write_csv(dbf_filename, field_name_selection, db_table_name, dbf_dir, csv_dir, form,
+              dt):
     csv_filename = make_csv_filename(dbf_filename, db_table_name)
     csv_path = os.path.join(csv_dir, csv_filename)
     dbf_path = os.path.join(dbf_dir, dbf_filename)
 
     if os.path.isfile(dbf_path):
         print("Converting {0} to csv file {1}".format(dbf_filename, csv_filename))
-        write_csv_by_path(dbf_path, csv_path, field_name_selection, form)
+        write_csv_by_path(dbf_path, csv_path, field_name_selection, form, dt)
     else:
         print("File {0} not found".format(dbf_filename))
 
@@ -91,7 +96,8 @@ def dbf2csv(isodate, form):
                   db_table_name=info['db_table'],
                   dbf_dir=DIRLIST[form]['dbf'],
                   csv_dir=DIRLIST[form]['csv'],
-                  form=form)
+                  form=form,
+                  dt=iso2date(isodate))
 
 def list_csv_filepaths_by_date(isodate, form):
     for subform, info in FORM_DATA[form].items():

@@ -136,7 +136,7 @@ f102 = {
         'name': "form 102 – short data",
         'postfix': "_P",
         'db_table': 'bulk_f102_P',
-        'dbf_fields': ['REGN', 'CODE', 'ITOGO'],
+        'dbf_fields': ['REGN', 'QUART', 'YEAR', 'CODE', 'ITOGO'],
         'regex': r"^([1-4])(20[0-9]{2})(_P).DBF$"
     },
 
@@ -145,7 +145,7 @@ f102 = {
         'name': "form 102 – long data",
         'postfix': "_P1",
         'db_table': 'bulk_f102_P1',
-        'dbf_fields': ['REGN', 'CODE', 'SIM_R', 'SIM_V', 'SIM_ITOGO'],
+        'dbf_fields': ['REGN', 'QUART', 'YEAR', 'CODE', 'SIM_R', 'SIM_V', 'SIM_ITOGO'],
         'regex': r"^([1-4])(20[0-9]{2})(_P1).DBF$"
     }
 }
