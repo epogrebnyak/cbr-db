@@ -9,7 +9,27 @@ Usage:
 from datetime import datetime, date
 from docopt import docopt
 from date_engine import get_date_range
+
+def date_from_quarter(string):
+    parts = string.upper().split('Q')
+    
+    if len(parts) != 2:
+        return None
+    else:
+        # swap to year, quarter if needed
+        if len(parts[0]) == 1:
+            parts[0], parts[1] = parts[1], parts[0]        
+        
+        year, quarter = int(parts[0]), int(parts[1])
+        if quarter not in range(1, 5):
+            raise ValueError("Quarter must be between 1 to 4 (inclusive)")
+        
+        month = (quarter - 1) * 3 + 1
+        
+        return date(year=year, month=month, day=1), "quarter"
+
 DATE_FORMATS = ['%Y', '%d.%m.%Y', '%m.%Y', '%Y-%m', '%Y-%m-%d']
+SPECIAL_FORMATS = [date_from_quarter]
 
 def try_format(string, fmt):
     """
@@ -24,15 +44,20 @@ def try_format(string, fmt):
 
     return z, fmt
 
-def get_date(string, formats=DATE_FORMATS):
+def get_date(string, formats=DATE_FORMATS, special_formats=SPECIAL_FORMATS):
     """
-    Applies several date <formats> to parse <string>.
+    Tries to parse the date in string by using several predefined <formats>
+    and <special_formats>.
     """
     for fmt in formats:
-        z, fmt = try_format(string, fmt)
-
-        if z:
-            return z, fmt
+        out = try_format(string, fmt)
+        if out[0]:
+            return out
+            
+    for sp in special_formats:
+        out = sp(string)
+        if out[0]:
+            return out
 
 def get_last_date_in_year(dt):
     """
