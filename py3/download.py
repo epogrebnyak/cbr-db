@@ -1,4 +1,5 @@
 from urllib import request, parse
+from urllib.error import URLError
 from os import path, makedirs
 import shutil
 import arrow

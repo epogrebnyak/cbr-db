@@ -130,7 +130,30 @@ f101 = {
     }
 }
 
-FORM_DATA = {'101': f101}
+f102 = {
+    'f102_P': {
+        'tag': 'f102_P',
+        'name': "form 102 – short data",
+        'postfix': "_P",
+        'db_table': 'bulk_f102_P',
+        'dbf_fields': ['DT', 'REGN', 'CODE',  'ITOGO'],
+        'regex': r"^([1-4])(20[0-9]{2})(_P).DBF$"
+    },
+
+    'f102P1': {
+        'tag': 'f102_P',
+        'name': "form 102 – long data",
+        'postfix': "_P",
+        'db_table': 'bulk_f102P1',
+        'dbf_fields': ['REGN', 'CODE', 'SIM_R', 'SIM_V',  'SIM_ITOGO'],
+        'regex': r"^([1-4])(20[0-9]{2})(_P).DBF$"
+    }
+}
+
+FORM_DATA = {
+    '101': f101,
+    '102': f102
+}
 
 ############################################################################# 
 # 4. Additional paths

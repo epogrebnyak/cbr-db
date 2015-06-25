@@ -66,8 +66,10 @@ def date2timestamp(form, dt):
     """
     Returns timestamp string used in <form> filenames based on <dt> argument.    
     """
+    form = str(form)    
+    
     # Risk: must keet this hardcoded, different code will apply to different <form>
-    if str(form) == "101":
+    if form == "101":
         # filename timestamp is one month behind
         if dt.month == 1:
             year = dt.year - 1
@@ -76,8 +78,12 @@ def date2timestamp(form, dt):
             year = dt.year
             month = dt.month - 1
         return zero_padded_month(month) + str(year)
-    else: 
-        raise ValueError("Form not supported: " + str(form))
+    elif form == '102':
+        # deals in quarters
+        quarter = ((dt.month - 1) // 3)
+        return "{}{}".format(quarter, dt.year)
+    else:
+        raise ValueError("Form not supported: " + form)
 
 def zero_padded_month(month):
     """

@@ -2,7 +2,7 @@ import datetime
 import sys
 from date_engine import iso2date, zero_padded_month
 from global_ini import DIRLIST
-from download import download
+from download import download, URLError
 
 def download_form(isodate_input, form_input):
     """
@@ -10,8 +10,13 @@ def download_form(isodate_input, form_input):
     """
     url = get_url(isodate=isodate_input, form=form_input)
     dir_ = DIRLIST[form_input]['rar']
-    download(url, dir_)
-
+    
+    try:    
+        download(url, dir_)
+    except URLError as e:
+        print('Skipping download of form {} data.\nReason: {}'.format(
+            form_input, str(e)))
+    
 def get_url(date=None, isodate=None, form=None):
     """
     Creates URL based on date for forms 101 and 102
