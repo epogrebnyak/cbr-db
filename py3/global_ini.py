@@ -23,17 +23,18 @@ PATH = {'unrar': os.path.join(DIR_ROOT, 'bin', 'unrar.exe'),
 #       see composition of DIRLIST
 #       maybe add fuctions such as:
 
+# Form directories
+DIR_DATA = os.path.join(DIR_ROOT, 'data.downloadable')
 
-# Making of DIR101 ---------------------------------------------------------
-DIR_DATA    = os.path.join(DIR_ROOT, 'data.downloadable')
- 
-DIR101 = {
-    'rar': os.path.join(DIR_DATA, '101', 'rarzip'  ),
-    'dbf': os.path.join(DIR_DATA, '101', 'dbf'     ),
-    'csv': os.path.join(DIR_DATA, '101', 'csv.full'),
-#   'sql': DIR_SQL_101,
-    'output': os.path.join(DIR_ROOT, 'output')
-}
+def get_form_dirs(form):
+    return {
+        'rar': os.path.join(DIR_DATA, form, 'rarzip'  ),
+        'dbf': os.path.join(DIR_DATA, form, 'dbf'     ),
+        'csv': os.path.join(DIR_DATA, form, 'csv.full'),
+        'output': os.path.join(DIR_ROOT, 'output')
+        # 'sql': DIR_SQL_101,
+    }
+
 # todo: 'output' may be a global directory in GLOB_DIR, not a form 101  directory
 #        find where it is used and change
 
@@ -56,7 +57,8 @@ EXTRA_DIR = {'101':
             
 # Final assembly ------------------------------------------------------------
 DIRLIST = {
-    '101'    : DIR101,
+    '101'    : get_form_dirs('101'),
+    '102'    : get_form_dirs('102'),
     'global' : GLOB_DIR,
     'private': EXTRA_DIR
 }
