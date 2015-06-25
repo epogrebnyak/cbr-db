@@ -44,7 +44,7 @@ def get_ziprar_filename(date=None, isodate=None, form=None):
 
 def get_extension(date):
     # dbf files are avaialble since Feb-2004. They are in zip format up to Dec-2008
-    zip_start_date = datetime.date(2004, 1, 1)
+    zip_start_date = datetime.date(2004, 2, 1)
     zip_end_date = datetime.date(2008, 12, 31)
 
     if zip_start_date <= date <= zip_end_date:

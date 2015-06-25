@@ -9,7 +9,7 @@ class CliDatesTest(unittest.TestCase):
 
     def test_get_date_fmt(self):
         test_strings = ['2005', '01.01.2005',  '1.1.2005', '1.2005', '2005-01',
-                        '2005-01-01', '2005Q1', '1q2005']
+                        '2005-01-01', '2004Q4', '4q2004']
         test_format = ['%Y', '%d.%m.%Y', '%d.%m.%Y', '%m.%Y', '%Y-%m',
                        '%Y-%m-%d', 'quarter', 'quarter']
         target_date = date(2005, 1, 1)
@@ -26,11 +26,11 @@ class CliDatesTest(unittest.TestCase):
         self.assertEqual(cli_dates.get_date('12.2030')[0], date(2030, 12, 1))
         self.assertEqual(cli_dates.get_date('2015-01-05')[0], date(2015, 1, 5))
         self.assertEqual(cli_dates.get_date('1977-12')[0], date(1977, 12, 1))
-        self.assertEqual(cli_dates.get_date('1Q1988')[0], date(1988, 1, 1))
-        self.assertEqual(cli_dates.get_date('2014q1')[0], date(2014, 1, 1))
-        self.assertEqual(cli_dates.get_date('2014q2')[0], date(2014, 4, 1))
-        self.assertEqual(cli_dates.get_date('2014q3')[0], date(2014, 7, 1))
-        self.assertEqual(cli_dates.get_date('2014q4')[0], date(2014, 10, 1))
+        self.assertEqual(cli_dates.get_date('1Q1988')[0], date(1988, 4, 1))
+        self.assertEqual(cli_dates.get_date('2014q1')[0], date(2014, 4, 1))
+        self.assertEqual(cli_dates.get_date('2014q2')[0], date(2014, 7, 1))
+        self.assertEqual(cli_dates.get_date('2014q3')[0], date(2014, 10, 1))
+        self.assertEqual(cli_dates.get_date('2014q4')[0], date(2015, 1, 1))
 
     def test_get_date_range_from_command_line(self):
         args1 = {

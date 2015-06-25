@@ -8,7 +8,7 @@ Usage:
 
 from datetime import datetime, date
 from docopt import docopt
-from date_engine import get_date_range
+from date_engine import get_date_range, shift_month_ahead
 
 def date_from_quarter(string):
     parts = string.upper().split('Q')
@@ -24,9 +24,8 @@ def date_from_quarter(string):
         if quarter not in range(1, 5):
             raise ValueError("Quarter must be between 1 to 4 (inclusive)")
         
-        month = (quarter - 1) * 3 + 1
-        
-        return date(year=year, month=month, day=1), "quarter"
+        month = quarter * 3
+        return shift_month_ahead(date(year=year, month=month, day=1)), "quarter"
 
 DATE_FORMATS = ['%Y', '%d.%m.%Y', '%m.%Y', '%Y-%m', '%Y-%m-%d']
 SPECIAL_FORMATS = [date_from_quarter]
