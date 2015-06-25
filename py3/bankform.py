@@ -38,24 +38,24 @@ Usage:
     bankform.py delete  database [raw | final]
     bankform.py load    database [raw | final]
     bankform.py reset   database [raw | final]
-    bankform.py download   <FORM> (<timestamp1> [<timestamp2>] | --all-dates)
-    bankform.py make csv   <FORM> (<timestamp1> [<timestamp2>] | --all-dates)
-    bankform.py unpack     <FORM> (<timestamp1> [<timestamp2>] | --all-dates)
-    bankform.py make csv   <FORM> (<timestamp1> [<timestamp2>] | --all-dates)
-    bankform.py import csv <FORM> (<timestamp1> [<timestamp2>] | --all-dates)
-    bankform.py update     <FORM> (<timestamp1> [<timestamp2>] | --all-dates)
-    bankform.py make csv   <FORM> --private-data [--all-dates]
-    bankform.py import csv <FORM> --private-data [--all-dates]
-    bankform.py make    dataset <FORM>
-    bankform.py save    dataset <FORM>
-    bankform.py import  dataset <FORM>
-    bankform.py migrate dataset <FORM>
+    bankform.py download   <form> (<timestamp1> [<timestamp2>] | --all-dates)
+    bankform.py make csv   <form> (<timestamp1> [<timestamp2>] | --all-dates)
+    bankform.py unpack     <form> (<timestamp1> [<timestamp2>] | --all-dates)
+    bankform.py make csv   <form> (<timestamp1> [<timestamp2>] | --all-dates)
+    bankform.py import csv <form> (<timestamp1> [<timestamp2>] | --all-dates)
+    bankform.py update     <form> (<timestamp1> [<timestamp2>] | --all-dates)
+    bankform.py make csv   <form> --private-data [--all-dates]
+    bankform.py import csv <form> --private-data [--all-dates]
+    bankform.py make    dataset <form>
+    bankform.py save    dataset <form>
+    bankform.py import  dataset <form>
+    bankform.py migrate dataset <form>
     bankform.py import alloc
     bankform.py import tables
     bankform.py make   balance
     bankform.py test   balance
     bankform.py report balance     [--xlsx]
-    bankform.py report form <FORM> [--xlsx]
+    bankform.py report form <form> [--xlsx]
 
 
 Notes:
@@ -86,7 +86,7 @@ SUPPORTED_FORMS = ['101', '102', '123', '134', '135']
 
 
 def get_selected_form(arg):    
-    cli_form = arg["<FORM>"]
+    cli_form = arg["<form>"]
     return cli_form if cli_form in SUPPORTED_FORMS else None
 
 
@@ -174,7 +174,7 @@ if __name__ == '__main__':
     # 3. Dataset manipulation in raw and final database
     if arg['dataset']:
         if arg['make']:
-            # bankform.py make dataset <FORM>
+            # bankform.py make dataset <form>
             # Replicates replicate following behavior:
             # mysql --database dbf_db3 -e "call insert_f101();"
             # todo: need to change this when adding more forms
