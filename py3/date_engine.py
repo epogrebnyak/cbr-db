@@ -54,7 +54,7 @@ def shift_month_behind(date):
 
     return date
 
-def get_date_range(start_date, end_date):
+def get_date_range(start_date, end_date, step=1):
     """
     Returns a list with dates between <start_date> and <end_date> including end point dates.
     """  
@@ -63,7 +63,9 @@ def get_date_range(start_date, end_date):
 
     while date <= end_date:
         date_range.append(date)
-        date = shift_month_ahead(date)
+        
+        for s in range(step):                
+            date = shift_month_ahead(date)
 
     return date_range    
 

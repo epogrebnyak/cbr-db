@@ -77,6 +77,17 @@ def get_last_quarter_month(month):
     """
     quarter = (month - 1) // 3  
     return quarter * 3 + 1
+    
+def get_next_quarter_end_date(dt):
+    """
+    Returns the date corresponding to the next quarter end from <dt>.
+    For example, if the current month is 1, it is currently in a valid
+    quarter end. Months 2 and 3 would be changed to 4.
+    """
+    while (dt.month - 1) % 3 != 0:
+        dt = shift_month_ahead(dt)
+    
+    return dt
 
 def get_last_date_in_year(dt, form):
     """
@@ -95,8 +106,6 @@ def get_last_date_in_year(dt, form):
         else:
             # go back to the last valid quarter
             dt = dt.replace(month=get_last_quarter_month(dt.month))
-    else:
-        raise ValueError('Form {} is not supported yet.'.format(form))
     
     return dt
 
@@ -105,9 +114,13 @@ def get_date_range_from_command_line(args):
     Returns date range specified in command line as a list of dates in iso format.
     """
     s, e = get_date_endpoints(args)
+    step = 1
+    
+    if args['<form>'] == '102':
+        step = 3
 
     if s and e:
-        return [d.isoformat() for d in get_date_range(s, e)]
+        return [d.isoformat() for d in get_date_range(s, e, step)]
 
 def get_date_endpoints(args):
     """
@@ -115,6 +128,7 @@ def get_date_endpoints(args):
     """
     s = None  # start date
     e = None  # end date
+    form = args['<form>']
 
     if args['--all-dates']:
         # Risk: hard-coded constant
@@ -126,15 +140,23 @@ def get_date_endpoints(args):
         ts1, f1 = get_date(args['<timestamp1>'])
         s = ts1
         if f1 == "%Y":
-            e = get_last_date_in_year(ts1, args['<form>'])
+            e = get_last_date_in_year(ts1, form)
         else:
             e = s
+        
+        if form == '102':
+            # first quarter starts from month 4
+            if f1 == "%Y":
+                s = s.replace(month=4)
+            
+            # get current or next valid quarter
+            s = get_next_quarter_end_date(s)
 
     # process second timestamp
     if args['<timestamp2>'] is not None:
         ts2, f2 = get_date(args['<timestamp2>'])
         if f2 == "%Y":
-            e = get_last_date_in_year(ts2, args['<form>'])
+            e = get_last_date_in_year(ts2, form)
         else:
             e = ts2
 

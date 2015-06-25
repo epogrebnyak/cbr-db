@@ -53,10 +53,10 @@ class CliDatesTest(unittest.TestCase):
                 cli_dates.get_last_quarter_month(month), 10
             )
 
-    def test_get_date_range_from_command_line(self):
+    def test_get_date_range_from_command_line_101(self):
         args1 = {
             'pass': True,
-            'form': '101',
+            '<form>': '101',
             '<timestamp1>': '2005-01',
             '<timestamp2>': '2005-05',
             '--all-dates': False
@@ -69,7 +69,7 @@ class CliDatesTest(unittest.TestCase):
 
         args2 = {
             'pass': True,
-            'form': '101',
+            '<form>': '101',
             '<timestamp1>': '2004-10',
             '<timestamp2>': '2005-02',
             '--all-dates': False
@@ -80,18 +80,59 @@ class CliDatesTest(unittest.TestCase):
             ['2004-10-01', '2004-11-01', '2004-12-01', '2005-01-01', '2005-02-01']
         )
         
-        args3 = {
+    def test_get_date_range_from_command_line_102(self):
+        args1 = {
             'pass': True,
-            'form': '102',
+            '<form>': '102',
             '<timestamp1>': '2004q3',
             '<timestamp2>': '1q2005',
             '--all-dates': False
         }
 
         self.assertEqual(
+            list(cli_dates.get_date_range_from_command_line(args1)),
+            ['2004-10-01', '2005-01-01', '2005-04-01']
+        )
+        
+        args2 = {
+            'pass': True,
+            '<form>': '102',
+            '<timestamp1>': '2004-02',
+            '<timestamp2>': '2004-11',
+            '--all-dates': False
+        }
+
+        self.assertEqual(
+            list(cli_dates.get_date_range_from_command_line(args2)),
+            ['2004-04-01', '2004-07-01', '2004-10-01']
+        )
+        
+        args3 = {
+            'pass': True,
+            '<form>': '102',
+            '<timestamp1>': '2013',
+            '<timestamp2>': '2014',
+            '--all-dates': False
+        }
+
+        self.assertEqual(
             list(cli_dates.get_date_range_from_command_line(args3)),
-            ['2004-10-01', '2004-11-01', '2004-12-01', '2005-01-01',
-             '2005-02-01', '2005-03-01', '2005-04-01']
+            ['2013-04-01', '2013-07-01', '2013-10-01', '2014-01-01',
+             '2014-04-01', '2014-07-01', '2014-10-01', '2015-01-01']
+        )
+        
+        args4 = {
+            'pass': True,
+            '<form>': '102',
+            '<timestamp1>': '2013q1',
+            '<timestamp2>': '4q2014',
+            '--all-dates': False
+        }
+
+        self.assertEqual(
+            list(cli_dates.get_date_range_from_command_line(args4)),
+            ['2013-04-01', '2013-07-01', '2013-10-01', '2014-01-01',
+             '2014-04-01', '2014-07-01', '2014-10-01', '2015-01-01']
         )
 
 if __name__ == '__main__':
