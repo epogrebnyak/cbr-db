@@ -239,13 +239,12 @@ def import_dataset_from_sql(form):
     read_table_sql(database, form, file)
 
 
-def create_final_dataset_in_raw_database():
+def create_final_dataset_in_raw_database(form):
     """
     Processes the data from the raw database, creating the final dataset.
     """
     db_name = DB_NAMES['raw']
-    # risk: harcoded function
-    run_sql_string("call f101_make_dataset();", db_name)
+    run_sql_string("call f{}_make_dataset();".format(form), db_name)
 
 
 ################################################################

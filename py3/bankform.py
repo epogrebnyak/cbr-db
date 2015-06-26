@@ -175,10 +175,7 @@ if __name__ == '__main__':
     if arg['dataset']:
         if arg['make']:
             # bankform.py make dataset <form>
-            # Replicates replicate following behavior:
-            # mysql --database dbf_db3 -e "call insert_f101();"
-            # todo: need to change this when adding more forms
-            create_final_dataset_in_raw_database()
+            create_final_dataset_in_raw_database(form)
 
         if arg['save']:
             save_dataset_as_sql(form)

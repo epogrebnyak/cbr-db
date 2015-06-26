@@ -419,47 +419,24 @@ DELIMITER ;;
 /*!50003 CREATE*/ /*!50020 DEFINER=`test_user`@`localhost`*/ /*!50003 PROCEDURE `f101_make_dataset`()
 BEGIN
 
-
-
 # call reset_table_f101;
-
 drop table if exists f101;
 
-
-
 # Note: this is the longest file for insert and running create speeds up the script
-
 create table f101 as 
-
 select dt, regn, conto, a_p,  ir,  iv, itogo, has_iv, conto_3 from f101_part_f101b1;
 
-
-
 insert f101
-
 select dt, regn, conto, a_p,  ir,  iv, itogo, has_iv, conto_3 from f101_part_f101_b;
 
-
-
 insert f101
-
 select dt, regn, conto, a_p,  ir,  iv, itogo, has_iv, conto_3 from f101_part_f101_private;
-
-
-
-
 
 # add primary key and index
 
 ALTER TABLE	f101 ADD PRIMARY KEY (`dt`, `regn`, `conto`, `itogo`);
-
 ALTER TABLE	f101 ADD INDEX `i_conto` (`conto`);
-
 ALTER TABLE	f101 ADD INDEX `i_regn` (`regn`);
-
-
-
-
 
 END */;;
 DELIMITER ;
@@ -479,8 +456,6 @@ DELIMITER ;
 DELIMITER ;;
 /*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `insert_f101`()
 BEGIN
-
-
 
 call reset_table_f101;
 
@@ -824,6 +799,40 @@ CALL check_residuals ('bulk_f101_B');
 CALL check_residuals ('bulk_f101B1');
 CALL check_residuals ('bulk_f101veb');
 
+
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+
+/*!50003 DROP PROCEDURE IF EXISTS `f102_make_dataset` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = '' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50020 DEFINER=`test_user`@`localhost`*/ /*!50003 PROCEDURE `f102_make_dataset`()
+BEGIN
+
+drop table if exists f102;
+
+create table f102 as 
+select regn, quart, year, code, ir,  iv, itogo, has_iv from f102_long;
+
+insert f102
+select regn, quart, year, code, ir,  iv, itogo, has_iv from f102_short;
+
+# add primary key and index
+
+ALTER TABLE f102 ADD PRIMARY KEY (`regn`, `quart`, `year`, `code`, `itogo`);
+ALTER TABLE f102 ADD INDEX `i_regn` (`regn`);
+ALTER TABLE f102 ADD INDEX `i_code` (`code`);
 
 END */;;
 DELIMITER ;
