@@ -79,42 +79,6 @@ CREATE TABLE `bulk_f101veb` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `bulk_f102_p`
---
-
-DROP TABLE IF EXISTS `bulk_f102_p`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `bulk_f102_p` (
-  `regn` int(11) NOT NULL,
-  `quart` int(1) NOT NULL,
-  `year` int(11) NOT NULL,
-  `code` varchar(10) NOT NULL,
-  `itogo` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`regn`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `bulk_f102_p`
---
-
-DROP TABLE IF EXISTS `bulk_f102_p1`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `bulk_f102_p1` (
-  `regn` int(11) NOT NULL,
-  `quart` int(1) NOT NULL,
-  `year` int(11) NOT NULL,
-  `code` varchar(10) NOT NULL,
-  `ir` bigint(20) DEFAULT NULL,
-  `iv` bigint(20) DEFAULT NULL,
-  `itogo` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`regn`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `cfg_date_in_focus`
 --
 
@@ -297,6 +261,84 @@ SET character_set_client = utf8;
   `itogo` bigint(20),
   `has_iv` int(1),
   `conto_3` binary(0)
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+
+--
+-- Table structure for table `bulk_f102_p`
+--
+
+-- lots of duplicate regn and date. Seems strange that they all be a composite primary key.
+DROP TABLE IF EXISTS `bulk_f102_p`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `bulk_f102_p` (
+  `regn` int(11) NOT NULL,
+  `quart` int(1) NOT NULL,
+  `year` int(11) NOT NULL,
+  `code` varchar(10) NOT NULL,
+  `itogo` bigint(20) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`regn`,`quart`,`year`,`code`,`itogo`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `bulk_f102_p1`
+--
+
+-- lots of duplicate regn and date. Seems strange that they all be a composite primary key.
+DROP TABLE IF EXISTS `bulk_f102_p1`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `bulk_f102_p1` (
+  `regn` int(11) NOT NULL,
+  `quart` int(1) NOT NULL,
+  `year` int(11) NOT NULL,
+  `code` varchar(10) NOT NULL,
+  `ir` bigint(20) DEFAULT NULL,
+  `iv` bigint(20) DEFAULT NULL,
+  `itogo` bigint(20) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`regn`,`quart`,`year`,`code`,`itogo`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+
+--
+-- Temporary table structure for view `f102_small`
+--
+
+DROP TABLE IF EXISTS `f102_small`;
+/*!50001 DROP VIEW IF EXISTS `f102_small`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `f102_small` (
+  `regn` int(11),
+  `quart` int(1),
+  `year` int(11),
+  `code` varchar(10),
+  `ir` bigint(20),
+  `iv` bigint(20),
+  `itogo` bigint(20)
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `f102_long`
+--
+
+DROP TABLE IF EXISTS `f102_long`;
+/*!50001 DROP VIEW IF EXISTS `f102_long`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `f102_long` (
+  `regn` int(11),
+  `quart` int(1),
+  `year` int(11),
+  `code` varchar(10),
+  `ir` bigint(20),
+  `iv` bigint(20),
+  `itogo` bigint(20)
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
 
@@ -912,5 +954,44 @@ DELIMITER ;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+--
+-- Final view structure for view `f102_long`
+--
+
+/*!50001 DROP TABLE IF EXISTS `f102_long`*/;
+/*!50001 DROP VIEW IF EXISTS `f102_long`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `f102_long` AS select `bulk_f102_p1`.`regn` AS `regn`,`bulk_f102_p1`.`quart` AS `quart`,`bulk_f102_p1`.`year` AS `year`,`bulk_f102_p1`.`code` AS `code`,`bulk_f102_p1`.`ir` AS `ir`,`bulk_f102_p1`.`iv` AS `iv`,`bulk_f102_p1`.`itogo` AS `itogo`, 1 AS `has_iv`, NULL AS `conto_3` from `bulk_f102_p1` where ((`bulk_f102_p1`.`regn` in (1481,354,1000,1623,2748,3349,1326,1470,1942,2790,3340)) and (`bulk_f102_p1`.`year` >= 2012)) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `f102_small`
+--
+
+/*!50001 DROP TABLE IF EXISTS `f101_small`*/;
+/*!50001 DROP VIEW IF EXISTS `f101_small`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `f102_short` AS select `bulk_f102_p`.`regn` AS `regn`,`bulk_f102_p`.`quart` AS `quart`,`bulk_f102_p`.`year` AS `year`,`bulk_f102_p`.`code` AS `code`,0 AS `ir`,0 AS `iv`,`bulk_f102_p`.`itogo` AS `itogo`, 0 AS `has_iv`, NULL AS `conto_3` from `bulk_f102_p` where ((`bulk_f102_p`.`regn` in (1481,354,1000,1623,2748,3349,1326,1470,1942,2790,3340)) and (`bulk_f102_p`.`year` >= 2012)) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
 
 -- Dump completed on 2015-06-23 16:23:09
