@@ -43,7 +43,7 @@ Usage:
     bankform.py unpack     <form> (<timestamp1> [<timestamp2>] | --all-dates)
     bankform.py make csv   <form> (<timestamp1> [<timestamp2>] | --all-dates)
     bankform.py import csv <form> (<timestamp1> [<timestamp2>] | --all-dates)
-    bankform.py update     <form> (<timestamp1> [<timestamp2>] | --all-dates)
+    bankform.py update     <form> (<timestamp1> [<timestamp2>] | --all-dates) [--no-download]
     bankform.py make csv   <form> --private-data [--all-dates]
     bankform.py import csv <form> --private-data [--all-dates]
     bankform.py make    dataset <form>
@@ -156,7 +156,8 @@ if __name__ == '__main__':
 
             # do all data import operations
             if arg['update']:
-                download_form(isodate, form)
+                if not arg['--no-download']:
+                   download_form(isodate, form)                   
                 unpack(isodate, form)
                 dbf2csv(isodate, form)
                 import_csv(isodate, form)
