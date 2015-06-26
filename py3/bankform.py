@@ -174,7 +174,6 @@ if __name__ == '__main__':
     # 3. Dataset manipulation in raw and final database
     if arg['dataset']:
         if arg['make']:
-            # bankform.py make dataset <form>
             create_final_dataset_in_raw_database(form)
 
         if arg['save']:
@@ -182,7 +181,7 @@ if __name__ == '__main__':
         if arg['import']:
             import_dataset_from_sql(form)
         if arg['migrate']:
-            create_final_dataset_in_raw_database()
+            #create_final_dataset_in_raw_database(form) # was called again!
             save_dataset_as_sql(form)
             import_dataset_from_sql(form)
 

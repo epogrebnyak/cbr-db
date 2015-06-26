@@ -157,17 +157,19 @@ CREATE TABLE `f101` (
 --
 -- Table structure for table `f102`
 --
-
 DROP TABLE IF EXISTS `f102`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `f102` (
-  `regn` int(11) NOT NULL,
-  `quart` int(1) NOT NULL,
-  `year` int(11) NOT NULL,
-  `code` varchar(10) NOT NULL,
-  `itogo` float DEFAULT NULL,
-  PRIMARY KEY (`year`,`quart`,`regn`,`code`)
+  `regn` int(11),
+  `quart` int(1),
+  `year` int(11),
+  `code` varchar(10),
+  `ir` bigint(20),
+  `iv` bigint(20),
+  `itogo` bigint(20),
+  `has_iv` tinyint(4) DEFAULT NULL,
+  PRIMARY KEY (`regn`, `quart`, `year`, `code`, `itogo`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -822,108 +824,210 @@ DELIMITER ;
 /*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE DEFINER=`test_user`@`localhost` PROCEDURE `balance_make_saldo_198_298`()
-BEGIN
-
-
-
-
-
-drop table if exists saldo_198_298;
-
-
-
-create temporary table saldo_198_298 as
-
-
-
-
-
-
-
-select 
-
-   a.dt, a.line, a.lev, a.la_p, a.regn, a.has_iv,
-
-   case when (a.ir > b.ir) then (a.ir - b.ir) else 0 end ir,
-
-	case when (a.iv > b.iv) then (a.iv - b.iv) else 0 end iv,
-
-   
-
-	case when (a.ir > b.ir) then (a.ir - b.ir) else 0 end
-
- +	case when (a.iv > b.iv) then (a.iv - b.iv) else 0 end  itogo	
-
-from balance a
-
-left join balance b 
-
-on a.dt = b.dt and a.regn = b.regn 
-
-where a.line = 198000 
-
-and b.line = 298000 
-
-
-
-group by a.dt, a.line, a.lev, a.la_p, a.regn
-
-
-
-UNION ALL
-
-
-
-
-
-
-
-select 
-
-   b.dt, b.line, b.lev, b.la_p, b.regn, b.has_iv,
-
-	case when (a.ir < b.ir) then (- a.ir + b.ir) else 0 end ir, 
-
-	case when (a.iv < b.iv) then (- a.iv + b.iv) else 0 end iv, 
-
-   
-
-	case when (a.ir < b.ir) then (- a.ir + b.ir) else 0 end  
-
- + case when (a.iv < b.iv) then (- a.iv + b.iv) else 0 end itogo 
-
-	from balance a
-
-left join balance b 
-
-on a.dt = b.dt and a.regn = b.regn 
-
-where a.line = 198000 
-
-and b.line = 298000
-
-
-
-
-
-group by b.dt, b.line, b.lev, b.la_p, b.regn;
-
-
-
-
-
-delete from balance where line = 198000;
-
-delete from balance where line = 298000;
-
-
-
-insert into balance
-
-select * from saldo_198_298;
-
-
-
+BEGIN
+
+
+
+
+
+
+
+
+
+
+
+drop table if exists saldo_198_298;
+
+
+
+
+
+
+
+create temporary table saldo_198_298 as
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+select 
+
+
+
+   a.dt, a.line, a.lev, a.la_p, a.regn, a.has_iv,
+
+
+
+   case when (a.ir > b.ir) then (a.ir - b.ir) else 0 end ir,
+
+
+
+	case when (a.iv > b.iv) then (a.iv - b.iv) else 0 end iv,
+
+
+
+   
+
+
+
+	case when (a.ir > b.ir) then (a.ir - b.ir) else 0 end
+
+
+
+ +	case when (a.iv > b.iv) then (a.iv - b.iv) else 0 end  itogo	
+
+
+
+from balance a
+
+
+
+left join balance b 
+
+
+
+on a.dt = b.dt and a.regn = b.regn 
+
+
+
+where a.line = 198000 
+
+
+
+and b.line = 298000 
+
+
+
+
+
+
+
+group by a.dt, a.line, a.lev, a.la_p, a.regn
+
+
+
+
+
+
+
+UNION ALL
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+select 
+
+
+
+   b.dt, b.line, b.lev, b.la_p, b.regn, b.has_iv,
+
+
+
+	case when (a.ir < b.ir) then (- a.ir + b.ir) else 0 end ir, 
+
+
+
+	case when (a.iv < b.iv) then (- a.iv + b.iv) else 0 end iv, 
+
+
+
+   
+
+
+
+	case when (a.ir < b.ir) then (- a.ir + b.ir) else 0 end  
+
+
+
+ + case when (a.iv < b.iv) then (- a.iv + b.iv) else 0 end itogo 
+
+
+
+	from balance a
+
+
+
+left join balance b 
+
+
+
+on a.dt = b.dt and a.regn = b.regn 
+
+
+
+where a.line = 198000 
+
+
+
+and b.line = 298000
+
+
+
+
+
+
+
+
+
+
+
+group by b.dt, b.line, b.lev, b.la_p, b.regn;
+
+
+
+
+
+
+
+
+
+
+
+delete from balance where line = 198000;
+
+
+
+delete from balance where line = 298000;
+
+
+
+
+
+
+
+insert into balance
+
+
+
+select * from saldo_198_298;
+
+
+
+
+
+
+
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
