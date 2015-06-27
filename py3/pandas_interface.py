@@ -33,6 +33,65 @@ balance = pd.read_sql_table('balance', con)
 print("Datasets loaded in %f seconds" % (time.time() - start_time))
 
 
+def insert_totals(balancedf):
+    '''
+    Pandas equivalent to balance_make_insert_totals sql procedure.
+    '''
+    #create balance total temporary dataframe
+    btotal1 = balancedf.reset_index()
+    btotal1 = btotal1[(btotal1.line!=100000) & (btotal1.la_p==1) & (btotal1.lev==10)]
+    if(btotal1.shape[0] > 0):
+        btotal1['line'] = 100000; btotal1['lev'] = 1; btotal1['la_p'] = 1
+    btotal_grpdf = btotal1.groupby(['regn', 'dt']).agg({'ir':np.sum,
+                                                       'iv':np.sum,
+                                                       'itogo':np.sum})
+    btotal1 = btotal1.drop(['ir', 'iv', 'itogo'], axis=1)
+    btotal1 = btotal1.set_index(['regn', 'dt'])
+    btotal1 = btotal1.join(btotal_grpdf)
+    
+    #add rows for line 200000 into balance total temprorary dataframe
+    btotal2 = balancedf.reset_index()
+    btotal2 = btotal2[(btotal2.line!=200000) & (btotal2.la_p==2) & (btotal2.lev==10)]
+    if(btotal2.shape[0]>0):
+        btotal2['line'] = 200000; btotal2['lev'] = 1; btotal2['la_p'] = 2
+    bnet_grpdf = btotal2.groupby(['regn', 'dt']).agg({'ir':np.sum,
+                                                   'iv':np.sum,
+                                                   'itogo':np.sum})
+    btotal2 = btotal2.drop(['ir', 'iv', 'itogo'], axis=1)
+    btotal2 = btotal2.set_index(['regn', 'dt'])
+    btotal2 = btotal2.join(bnet_grpdf)
+    
+    #create final balance total dataframe
+    btotal = pd.concat([btotal1, btotal2])
+    
+    #create balance net temporary dataframe
+    bnet_tmp = btotal.reset_index()
+    b = bnet_tmp[bnet_tmp.line == 100000] 
+    z = bnet_tmp[bnet_tmp.line == 200000]
+    bnet_tmp = b.merge(z, on=['dt', 'regn'], how='left', suffixes=('_b','_z'))
+    bnet = pd.DataFrame()
+    bnet['ir'] = bnet_tmp['ir_b'] - bnet_tmp['ir_z']
+    bnet['iv'] = bnet_tmp['iv_b'] - bnet_tmp['iv_z']
+    bnet['itogo'] = bnet_tmp['itogo_b'] - bnet_tmp['itogo_z']
+    bnet['dt'] = bnet_tmp['dt']; bnet['regn'] = bnet_tmp['regn']
+    for col in ['has_iv', 'line', 'lev', 'la_p']:
+        bnet[col] = bnet_tmp[col+'_b']
+    bnet['line'] = 500; bnet['lev'] = 1; bnet['la_p'] = 0
+    bnet = bnet.set_index(['regn', 'dt'])
+    
+    #insert rows from bnet and btotal into balance dataframe
+    balancedf = balancedf.reset_index()
+    balancedf = balancedf.set_index(['regn', 'dt'])
+    balancedf = pd.tools.merge.concat([balancedf, btotal, bnet], axis=0)
+    #set original indexing of balance dataframe
+    balancedf = balancedf.reset_index()
+    balancedf = balancedf.set_index(['dt', 'line', 'regn'])
+    balancedf = balancedf.drop_duplicates()
+    
+    return balancedf
+    
+    
+
 def insert_entries(balancedf):
     '''
     pandas equivalent of sql procedure balance_make_saldo_198_298 
@@ -43,47 +102,58 @@ def insert_entries(balancedf):
     b = tempdf[tempdf['line']==298000]
     
     #merge dataframes
-    saldo = a.merge(b, on=['dt', 'regn'], how='left', suffixes=('_a', '_b'))    
+    join_cols = ['dt', 'regn']
+    saldo = a.merge(b, on=join_cols, how='left', suffixes=('_a', '_b'))    
     
-    #assign values to iv, ir and itogo as per the cases
-    saldo_ext = pd.DataFrame(np.zeros((saldo.shape[0],3)), 
-                             columns=['ir', 'iv', 'itogo'])
-    saldo_ext.index = saldo.index
+    #assign values to iv, ir and itogo as per the cases    
+    cols = ['line', 'lev', 'la_p', 'has_iv']
+    saldo_a = pd.DataFrame(np.zeros((saldo.shape[0],9)), 
+                             columns=cols+join_cols+['ir', 'iv', 'itogo'])
+    saldo_a.index = saldo.index
+    
+    saldo_b = pd.DataFrame(np.zeros((saldo.shape[0],9)), 
+                             columns=cols+join_cols+['ir', 'iv', 'itogo'])
+    saldo_b.index = saldo.index
     
     #set ir column values    
     for col in ['ir', 'iv']:
         cola = col+'_a'; colb = col+'_b'
         a_gt_b = saldo[cola] > saldo[colb]
         a_lt_b = saldo[cola] < saldo[colb]        
-        saldo_ext.ix[a_gt_b, col] = (saldo.ix[a_gt_b,cola] - saldo.ix[a_gt_b, colb]).values
-        saldo_ext.ix[a_lt_b, col] = (saldo.ix[a_lt_b,colb] - saldo.ix[a_lt_b, cola]).values
+        saldo_a.ix[a_gt_b, col] = (saldo.ix[a_gt_b,cola] - saldo.ix[a_gt_b, colb]).values
+        saldo_b.ix[a_lt_b, col] = (saldo.ix[a_lt_b,colb] - saldo.ix[a_lt_b, cola]).values
         
     #set itogo column values
-    saldo_ext.ix[:,'itogo'] = (saldo_ext.ix[:,'ir'] + saldo_ext.ix[:, 'iv']).values
+    saldo_a.ix[:,'itogo'] = (saldo_a.ix[:,'ir'] + saldo_a.ix[:, 'iv']).values
+    saldo_b.ix[:,'itogo'] = (saldo_b.ix[:,'ir'] + saldo_b.ix[:, 'iv']).values
 
-    
-    #select relevant columns from saldo
-    #TODO: 
+    #set other columns of a and b
+    saldo_a.ix[:, join_cols] = saldo.ix[:, join_cols].values
+    saldo_b.ix[:, join_cols] = saldo.ix[:, join_cols].values
+    saldo_a.ix[:, cols] = saldo.ix[:, [c+'_a' for c in cols]].values
+    saldo_b.ix[:, cols] = saldo.ix[:, [c+'_b' for c in cols]].values
     
     #groupby 
-    #TODO: 
+    saldo_a = saldo_a.set_index(['dt', 'line', 'lev', 'la_p', 'regn'])
+    saldo_b = saldo_b.set_index(['dt', 'line', 'lev', 'la_p', 'regn']) 
+    
+    #UNION ALL
+    saldo_ab = pd.concat([saldo_a, saldo_b]) #Note : this will keep duplicate rows
+    saldo_ab = saldo_ab.reset_index()
+    saldo_ab = saldo_ab.set_index(['dt', 'line', 'regn']) #set index same as balancedf index 
     
     #delete rows from balacedf for lines 198K and 298K
     tempdf = tempdf[tempdf.line != 198000]
     tempdf = tempdf[tempdf.line != 298000]
+    balancedf = tempdf.set_index(['dt', 'line', 'regn'])
     
-    #insert rows in balancedf using saldo dataframe
-    #TODO:
+    #insert rows in balancedf using saldo_ab dataframe
+    balancedf = pd.concat([balancedf, saldo_ab])
+    
+    #drop duplicates
+    balancedf = balancedf.drop_duplicates() 
     
     return balancedf
-
-
-def insert_totals(balancedf):
-    '''
-    Pandas equivalent to balance_make_insert_totals sql procedure.
-    '''
-    #TODO:
-    pass
 
 
 def init_balancedf():
@@ -114,7 +184,9 @@ def init_balancedf():
     
     #add remaining columns from the grouped sum
     balancedf = balancedf.join(balancedf_grpdf)
-    #TODO: check if we need to remove duplicates, need original sql balance table for that
+    
+    #drop duplicates 
+    balancedf = balancedf.drop_duplicates()
     
     return balancedf
 
