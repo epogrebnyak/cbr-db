@@ -32,6 +32,17 @@ class CliDatesTest(unittest.TestCase):
         self.assertEqual(cli_dates.get_date('2014q3')[0], date(2014, 10, 1))
         self.assertEqual(cli_dates.get_date('2014q4')[0], date(2015, 1, 1))
 
+    def test_get_date_from_quarter_string(self):
+        self.assertEqual(
+            cli_dates.get_date_from_quarter_string("2000q1"),
+            (date(2000, 4, 1), "quarter")
+        )
+        
+        self.assertEqual(
+            cli_dates.get_date_from_quarter_string("2000q4"),
+            (date(2001, 1, 1), "quarter")
+        )
+
     def test_get_last_quarter_month(self):
         for month in range(1, 4):        
             self.assertEqual(
@@ -51,6 +62,36 @@ class CliDatesTest(unittest.TestCase):
         for month in range(10, 13):        
             self.assertEqual(
                 cli_dates.get_last_quarter_month(month), 10
+            )
+    
+    def test_get_next_quarter_end_date(self):
+        self.assertEqual(        
+            cli_dates.get_next_quarter_end_date(date(2003, 1, 1)),
+            date(2003, 1, 1)
+        )
+        
+        for month in range(2, 5):        
+            self.assertEqual(
+                cli_dates.get_next_quarter_end_date(date(2003, month, 1)),
+                date(2003, 4, 1)
+            )
+            
+        for month in range(5, 8):        
+            self.assertEqual(
+                cli_dates.get_next_quarter_end_date(date(2003, month, 1)),
+                date(2003, 7, 1)
+            )
+            
+        for month in range(8, 11):        
+            self.assertEqual(
+                cli_dates.get_next_quarter_end_date(date(2003, month, 1)),
+                date(2003, 10, 1)
+            )
+            
+        for month in range(11, 12):        
+            self.assertEqual(
+                cli_dates.get_next_quarter_end_date(date(2003, month, 1)),
+                date(2004, 1, 1)
             )
 
     def test_get_date_range_from_command_line_101(self):
