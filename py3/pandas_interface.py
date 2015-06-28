@@ -37,6 +37,10 @@ def insert_totals(balancedf):
     '''
     Pandas equivalent to balance_make_insert_totals sql procedure.
     '''
+    
+    #  todo:  creating 'btotal1_grpdf' and 'btotal2_grpdf' seems symmetric, make function get_balance_toal(balance_line, la_p) to avoid code duplication
+    #  get_balance_toal(balance_line, la_p) must return btotal1_grpdf as in line 57
+    
     #create balance total temporary dataframe
     btotal1 = balancedf.reset_index()
     btotal1 = btotal1[(btotal1.line!=100000) & (btotal1.la_p==1) & (btotal1.lev==10)]
@@ -46,6 +50,7 @@ def insert_totals(balancedf):
                                                        'la_p':lambda x:  1,
                                                        'lev': lambda x:  1})
     #add has_iv column
+    # Need comment: why adding has_iv is important/difficult and requires 4 lines of code? is iv used anywhere in the code below?  
     xx = btotal1.set_index(['regn', 'dt'])['has_iv']
     xx = xx.reset_index().drop_duplicates()
     xx = xx.set_index(['regn', 'dt'])
@@ -66,6 +71,7 @@ def insert_totals(balancedf):
     btotal2_grpdf = pd.tools.merge.concat([btotal2_grpdf, xx], axis=1) 
     
     #create final balance total dataframe
+    # Need comment: what does pd.concat do? a union of the frames? 
     btotal = pd.concat([btotal1_grpdf, btotal2_grpdf])
     
     #create balance net temporary dataframe
@@ -79,8 +85,9 @@ def insert_totals(balancedf):
     bnet['has_iv'] = bnet['has_iv_b']
     bnet['line'] = 500; bnet['lev'] = 1; bnet['la_p'] = 0    
     bnet = bnet[['ir', 'iv', 'itogo', 'line', 'lev', 'la_p', 'has_iv']]
-    
     #insert rows from bnet and btotal into balance dataframe
+    
+    # need comment: can reset_index().set_index be done before this statement?
     balancedf = pd.tools.merge.concat([balancedf, 
                                        btotal.reset_index().set_index(['dt', 'line', 'regn']), 
                                        bnet.reset_index().set_index(['dt', 'line', 'regn'])], 
@@ -92,16 +99,21 @@ def insert_entries(balancedf):
     '''
     pandas equivalent of sql procedure balance_make_saldo_198_298 
     '''
-    #subset dataframes
+    #subset dataframes - work with lines 198000 and 298000
+    
     tempdf = balancedf.reset_index()
+    # not todo: rename 'a' and 'b' 
     a = tempdf[tempdf['line']==198000]
     b = tempdf[tempdf['line']==298000]
     
     #merge dataframes
+    # Need comment: what is _a, _b? how does that affect column names?
     join_cols = ['dt', 'regn']
     saldo = a.merge(b, on=join_cols, how='left', suffixes=('_a', '_b'))    
     
-    #assign values to iv, ir and itogo as per the cases    
+    #assign values to iv, ir and itogo as per the cases
+    # todo: comment above unclear
+    # Need comment: what is the intent of np.zeros((saldo.shape[0],9)
     cols = ['line', 'lev', 'la_p', 'has_iv']
     saldo_a = pd.DataFrame(np.zeros((saldo.shape[0],9), dtype=np.int), 
                              columns=cols+join_cols+['ir', 'iv', 'itogo'])
@@ -116,6 +128,7 @@ def insert_entries(balancedf):
         cola = col+'_a'; colb = col+'_b'
         a_gt_b = saldo[cola] > saldo[colb]
         a_lt_b = saldo[cola] < saldo[colb]        
+        # Need comment: what is .ix? 
         saldo_a.ix[a_gt_b, col] = (saldo.ix[a_gt_b,cola] - saldo.ix[a_gt_b, colb]).values
         saldo_b.ix[a_lt_b, col] = (saldo.ix[a_lt_b,colb] - saldo.ix[a_lt_b, cola]).values
         
@@ -135,6 +148,7 @@ def insert_entries(balancedf):
     
     #UNION ALL
     saldo_ab = pd.concat([saldo_a, saldo_b]) #Note : this will keep duplicate rows
+    # Need comment: why need reset and set index?
     saldo_ab = saldo_ab.reset_index()
     saldo_ab = saldo_ab.set_index(['dt', 'line', 'regn']) #set index same as balancedf index 
     
@@ -152,11 +166,26 @@ def insert_entries(balancedf):
 def init_balancedf():
     '''
     Initializes balance dataframe from alloc and f101 tables, 
-    Equivalent to 'balance_make_step_1' sql procedure
+    Equivalent to 'balance_make_step_1' sql procedure: 
+    
+    create table if not exists balance as 
+    SELECT  dt, line, 
+            lev, la_p,
+            regn,
+            has_iv,
+            sum(   ir*mult) ir,
+            sum(   iv*mult) iv,
+            sum(itogo*mult) itogo
+    from alloc a left join f101 v on v.conto = a.conto
+    where v.conto Is not null
+    group by dt, line, regn;
+    
     '''
     
     #left join alloc and f101 on 'conto' to create initial balance data frame
+    # Need comment: why apply this to 'alloc', not 'f101'?
     allocdf = alloc[~alloc['conto'].isnull()] #exclude rows where account is null
+    
     joineddf = allocdf.merge(f101, on='conto', how='left')
     
     #ir, iv, itogo multipy with mult
@@ -168,12 +197,16 @@ def init_balancedf():
     grpdf = joineddf.groupby(['dt', 'line', 'regn']).agg({'ir':np.sum,'iv':np.sum, 'itogo':np.sum})
     
     #take other relevant columns, la_p, ha_iv and lev from joined dataframe i.e. joineddf
+    # Need comment: what is the role of .set_index, . reset_index?
     joineddf = joineddf.set_index(keys=['dt', 'line', 'regn'])    
+    # Need comment: what is hapenning to joineddf in line below? reducing all of joineddf to three columns?   
     joineddf = joineddf[['lev', 'la_p', 'has_iv']]
     joineddf = joineddf.reset_index().drop_duplicates().dropna()
     joineddf = joineddf.set_index(keys=['dt', 'line', 'regn'])
-    
     #assign columns to balancedf
+    # Need comment: what is axis = 1?
+    # Need comment: we are efffectively making two dataframes and joining them together to get 'balancedf'
+    #               can there be a different startegy or is this the only way to implement?           
     balancedf = pd.tools.merge.concat([grpdf, joineddf], axis=1)
     
     return balancedf
