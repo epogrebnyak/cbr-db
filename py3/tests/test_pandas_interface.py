@@ -15,11 +15,16 @@ class Test(unittest.TestCase):
     def test_make_balance(self):
         con = pdi.get_sqla_connection()
         self.assertNotEqual(None, con, msg="connection to sql database failed")
+        
         balance_df = pdi.make_balance()
         balance_table = pd.read_sql_table('balance', con)
-        assert_frame_equal(balance_df, balance_table, 
-                           check_names=True, 
-                           check_dtype=True)
+        
+        #set index of table read from database
+        balance_table = balance_table.set_index(['dt', 'line', 'regn'])
+        
+        assert_frame_equal(balance_table.sort(axis=1), balance_df.sort(axis=1), 
+                           check_names=True,
+                           check_dtype=False)
 
 
 if __name__ == "__main__":

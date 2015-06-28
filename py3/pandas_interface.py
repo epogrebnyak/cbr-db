@@ -40,56 +40,52 @@ def insert_totals(balancedf):
     #create balance total temporary dataframe
     btotal1 = balancedf.reset_index()
     btotal1 = btotal1[(btotal1.line!=100000) & (btotal1.la_p==1) & (btotal1.lev==10)]
-    if(btotal1.shape[0] > 0):
-        btotal1['line'] = 100000; btotal1['lev'] = 1; btotal1['la_p'] = 1
-    btotal_grpdf = btotal1.groupby(['regn', 'dt']).agg({'ir':np.sum,
-                                                       'iv':np.sum,
-                                                       'itogo':np.sum})
-    btotal1 = btotal1.drop(['ir', 'iv', 'itogo'], axis=1)
-    btotal1 = btotal1.set_index(['regn', 'dt'])
-    btotal1 = btotal1.join(btotal_grpdf)
+    btotal1_grpdf = btotal1.groupby(['regn', 'dt']).agg({'ir':np.sum, 'iv':np.sum,
+                                                       'itogo':np.sum, 
+                                                       'line':lambda x:  100000,
+                                                       'la_p':lambda x:  1,
+                                                       'lev': lambda x:  1})
+    #add has_iv column
+    xx = btotal1.set_index(['regn', 'dt'])['has_iv']
+    xx = xx.reset_index().drop_duplicates()
+    xx = xx.set_index(['regn', 'dt'])
+    btotal1_grpdf = pd.tools.merge.concat([btotal1_grpdf, xx], axis=1) 
     
     #add rows for line 200000 into balance total temprorary dataframe
     btotal2 = balancedf.reset_index()
     btotal2 = btotal2[(btotal2.line!=200000) & (btotal2.la_p==2) & (btotal2.lev==10)]
-    if(btotal2.shape[0]>0):
-        btotal2['line'] = 200000; btotal2['lev'] = 1; btotal2['la_p'] = 2
-    bnet_grpdf = btotal2.groupby(['regn', 'dt']).agg({'ir':np.sum,
-                                                   'iv':np.sum,
-                                                   'itogo':np.sum})
-    btotal2 = btotal2.drop(['ir', 'iv', 'itogo'], axis=1)
-    btotal2 = btotal2.set_index(['regn', 'dt'])
-    btotal2 = btotal2.join(bnet_grpdf)
+    btotal2_grpdf = btotal2.groupby(['regn', 'dt']).agg({'ir':np.sum,'iv':np.sum,
+                                                      'itogo':np.sum,
+                                                      'line':lambda x:  200000,
+                                                      'la_p':lambda x:  2,
+                                                      'lev': lambda x:  1})
+    #add has_iv column
+    xx = btotal1.set_index(['regn', 'dt'])['has_iv']
+    xx = xx.reset_index().drop_duplicates()
+    xx = xx.set_index(['regn', 'dt'])
+    btotal2_grpdf = pd.tools.merge.concat([btotal2_grpdf, xx], axis=1) 
     
     #create final balance total dataframe
-    btotal = pd.concat([btotal1, btotal2])
+    btotal = pd.concat([btotal1_grpdf, btotal2_grpdf])
     
     #create balance net temporary dataframe
     bnet_tmp = btotal.reset_index()
     b = bnet_tmp[bnet_tmp.line == 100000] 
-    z = bnet_tmp[bnet_tmp.line == 200000]
-    bnet_tmp = b.merge(z, on=['dt', 'regn'], how='left', suffixes=('_b','_z'))
-    bnet = pd.DataFrame()
-    bnet['ir'] = bnet_tmp['ir_b'] - bnet_tmp['ir_z']
-    bnet['iv'] = bnet_tmp['iv_b'] - bnet_tmp['iv_z']
-    bnet['itogo'] = bnet_tmp['itogo_b'] - bnet_tmp['itogo_z']
-    bnet['dt'] = bnet_tmp['dt']; bnet['regn'] = bnet_tmp['regn']
-    for col in ['has_iv', 'line', 'lev', 'la_p']:
-        bnet[col] = bnet_tmp[col+'_b']
-    bnet['line'] = 500; bnet['lev'] = 1; bnet['la_p'] = 0
-    bnet = bnet.set_index(['regn', 'dt'])
+    z = bnet_tmp[bnet_tmp.line == 200000]     
+    bnet = b.merge(z, on=['dt', 'regn'], how='left', suffixes=('_b','_z'))
+    bnet = bnet.set_index(['dt', 'regn']) #i.e. groupby 
+    for col in ['ir', 'iv', 'itogo']:
+        bnet[col] = bnet[col+'_b'] - bnet[col+'_z']
+    bnet['has_iv'] = bnet['has_iv_b']
+    bnet['line'] = 500; bnet['lev'] = 1; bnet['la_p'] = 0    
+    bnet = bnet[['ir', 'iv', 'itogo', 'line', 'lev', 'la_p', 'has_iv']]
     
     #insert rows from bnet and btotal into balance dataframe
-    balancedf = balancedf.reset_index()
-    balancedf = balancedf.set_index(['regn', 'dt'])
-    balancedf = pd.tools.merge.concat([balancedf, btotal, bnet], axis=0)
-    #set original indexing of balance dataframe
-    balancedf = balancedf.reset_index()
-    balancedf = balancedf.set_index(['dt', 'line', 'regn'])
-    balancedf = balancedf.drop_duplicates()
-    
+    balancedf = pd.tools.merge.concat([balancedf, 
+                                       btotal.reset_index().set_index(['dt', 'line', 'regn']), 
+                                       bnet.reset_index().set_index(['dt', 'line', 'regn'])], 
+                                      axis=0)
     return balancedf
-    
     
 
 def insert_entries(balancedf):
@@ -107,11 +103,11 @@ def insert_entries(balancedf):
     
     #assign values to iv, ir and itogo as per the cases    
     cols = ['line', 'lev', 'la_p', 'has_iv']
-    saldo_a = pd.DataFrame(np.zeros((saldo.shape[0],9)), 
+    saldo_a = pd.DataFrame(np.zeros((saldo.shape[0],9), dtype=np.int), 
                              columns=cols+join_cols+['ir', 'iv', 'itogo'])
     saldo_a.index = saldo.index
     
-    saldo_b = pd.DataFrame(np.zeros((saldo.shape[0],9)), 
+    saldo_b = pd.DataFrame(np.zeros((saldo.shape[0],9), dtype=np.int), 
                              columns=cols+join_cols+['ir', 'iv', 'itogo'])
     saldo_b.index = saldo.index
     
@@ -150,9 +146,6 @@ def insert_entries(balancedf):
     #insert rows in balancedf using saldo_ab dataframe
     balancedf = pd.concat([balancedf, saldo_ab])
     
-    #drop duplicates
-    balancedf = balancedf.drop_duplicates() 
-    
     return balancedf
 
 
@@ -161,32 +154,27 @@ def init_balancedf():
     Initializes balance dataframe from alloc and f101 tables, 
     Equivalent to 'balance_make_step_1' sql procedure
     '''
-    #left join alloc and f101 on 'conto' to create initial balance data frame
-    balancedf = alloc.merge(f101, on='conto', how='left')    
     
-    #drop rows with null conto values
-    balancedf = balancedf[~balancedf['conto'].isnull()]
+    #left join alloc and f101 on 'conto' to create initial balance data frame
+    allocdf = alloc[~alloc['conto'].isnull()] #exclude rows where account is null
+    joineddf = allocdf.merge(f101, on='conto', how='left')
     
     #ir, iv, itogo multipy with mult
-    balancedf['ir'] = balancedf['ir']*balancedf['mult']
-    balancedf['iv'] = balancedf['iv']*balancedf['mult']
-    balancedf['itogo'] = balancedf['itogo']*balancedf['mult']
+    joineddf['ir'] = joineddf['ir']*joineddf['mult']
+    joineddf['iv'] = joineddf['iv']*joineddf['mult']
+    joineddf['itogo'] = joineddf['itogo']*joineddf['mult']
     
     #groupby dt, line and regn and sum
-    balancedf_grp = balancedf.groupby(['dt', 'line', 'regn'], sort=False)
-    balancedf_grpdf = balancedf_grp.agg({'ir':sum,'iv':sum,'itogo':sum})
+    grpdf = joineddf.groupby(['dt', 'line', 'regn']).agg({'ir':np.sum,'iv':np.sum, 'itogo':np.sum})
     
-    #take relevant columns, la_p, ha_iv and lev
-    balancedf = balancedf[['dt', 'line', 'regn', 'lev', 'la_p', 'has_iv']]
+    #take other relevant columns, la_p, ha_iv and lev from joined dataframe i.e. joineddf
+    joineddf = joineddf.set_index(keys=['dt', 'line', 'regn'])    
+    joineddf = joineddf[['lev', 'la_p', 'has_iv']]
+    joineddf = joineddf.reset_index().drop_duplicates().dropna()
+    joineddf = joineddf.set_index(keys=['dt', 'line', 'regn'])
     
-    #index on dt, line and regn
-    balancedf = balancedf.set_index(keys=['dt', 'line', 'regn'])
-    
-    #add remaining columns from the grouped sum
-    balancedf = balancedf.join(balancedf_grpdf)
-    
-    #drop duplicates 
-    balancedf = balancedf.drop_duplicates()
+    #assign columns to balancedf
+    balancedf = pd.tools.merge.concat([grpdf, joineddf], axis=1)
     
     return balancedf
 
@@ -207,8 +195,3 @@ def make_balance():
     balancedf = insert_totals(balancedf)
     
     return balancedf
-
-
-
-
-
