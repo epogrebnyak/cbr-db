@@ -3,7 +3,8 @@ Usage:
    cli_dates.py pass <form> (<timestamp1> [<timestamp2>] | --all-dates)
 
    Notes:
-   (1) Format for timestamps is YYYY-MM-DD (ISO), YYYY-MM, DD.MM.YYYY, MM.YYYY or YYYY
+   (1) Format for monthly timestamps is YYYY-MM-DD (ISO), YYYY-MM, DD.MM.YYYY, MM.YYYY or YYYY
+   (2) Format for quarterly timestamps is [1-4]q[YYYY], [1-4]Q[YYYY], [YYYY]q[1-4], [YYYY]Q[1-4]
 """
 
 from datetime import datetime, date
@@ -12,8 +13,9 @@ from date_engine import get_date_range, shift_month_ahead
 
 def get_date_from_quarter_string(string):
     """
-    Returns a date object from a <string> describing a date using a quarter
-    notation, like 1Q2005, 4q2003, 2003Q3 or 2003q2.
+    Returns a date as date object based on <string>. 
+    <string> describes a date using a quarter notation
+    Example of notation: 4Q2005, 4q2005, 2005Q4 or 2005q4 for 4th quater of 2005.
     """
     # break into year, quarter or quarter, year
     parts = string.upper().split('Q')
@@ -56,8 +58,7 @@ def try_format(string, fmt):
 
 def get_date(string, formats=DATE_FORMATS, special_formats=SPECIAL_FORMATS):
     """
-    Tries to parse the date in string by using several predefined <formats>
-    and <special_formats>.
+    Parses <string> as date using several predefined text <formats> and <special_formats> functions.
     """
     
     # tries the pattern formats one by one up to the first that parses the date
@@ -65,13 +66,15 @@ def get_date(string, formats=DATE_FORMATS, special_formats=SPECIAL_FORMATS):
         parse_output = try_format(string, fmt)
         if parse_output[0]: return parse_output
         
-    # tries the special formats one by one, same as above
+    # tries the special formats one by one, same as above. special_format is a function.
     for special_format in special_formats:
         parse_output = special_format(string)
         if parse_output[0]: return parse_output
             
 def get_last_quarter_month(month):
     """
+    todo: docstring contradicts code and 'Note:', rewrite. 
+    
     Returns the last completed quarter from <month>.
     Note: returns month 1, 4 or 7 or 10.
     """
@@ -95,13 +98,13 @@ def get_last_date_in_year(dt, form):
     Example: In June 2015 will return 2015-06 for dt = 2015-12.
     In forms with quarter notation, returns the last valid quarter.
     """
-    c1 = datetime.today().replace(day=1).date()
-    c2 = dt.replace(month=12)
-    dt = min(c1, c2)
+    current_date_day_1 = datetime.today().replace(day=1).date()
+    current_year_dec1_date = dt.replace(month=12)
+    dt = min(current_date_day_1, current_year_dec1_date)
             
-    if form == '102': # quarter notation
-        if c2 == dt:
-            # we can get the end of the 4º quarter that is in the next year
+    if form == '102': # use quarter notation
+        if current_year_dec1_date == dt:
+            # we can get the end of the 4 quarter that is in the next year
             dt = dt.replace(year=dt.year+1, month=1)
         else:
             # go back to the last valid quarter
