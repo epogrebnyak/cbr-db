@@ -1,15 +1,23 @@
-TODO
-====
-L:
---
-Add more forms, other that import of form 102. This is a bigger task, please send some time reviewing you understand the requirement and know what to do about it. I have put everything related to task in in 'issues/import_more_forms' forder. Please write back soon with any questions about the task. 
+Blocks of work
+==============
 
-B:
---
-pandas dataframe - more explicit data aggregation algorithm 
+f101 + f102 + side tables 
+different directory for database data - config file
+truncation cli + sql queries 
+
+f102 import from private file
+
+pandas abstraction
+www frontend (commands + 'output' directory)
+
+as listed in 'critical'
+
+csv + xlsx style results 
+
+replicate "fitch"-style tables and aggregates
 
 Listed in *Github Issues*
-==================
+=========================
 write to existing file openpyxl
 
 explicit regn and date limit when truncating raw database (hardcoded in database)
@@ -29,6 +37,9 @@ directory structure:
 	  txt
 	different path to local data folder (non-standard)
 	no 'www' in folder or database names
+
+pandas dataframe - more explicit data aggregation algorithm 
+
 
 Critical
 --------
@@ -66,7 +77,7 @@ show all available dates in directory
 RISKS
 =====
 Encountered before:
-   CSV written to file not complete (fwere lines than other)
+   CSV written to file not complete (fewer lines than other)
    f101 has residuals not 0
    
 What license? 
@@ -135,5 +146,3 @@ create folder py3/utils and move following files there (intent - keep command fi
 17.06.2015  00:44             1 631 test-one-date.py
 
 (not checked ) 'used in ...' docstrings in database.py not very meaningful, may go over them. better add what the function does (very concisely), not whwere it is used. can omit docstring where behavoir is self-evident.
-
-
