@@ -226,6 +226,8 @@ def init_balancedf():
     # Need comment: we are efffectively making two dataframes and joining them together to get 'balancedf'
     #               can there be a different startegy or is this the only way to implement?
     # comment: There is one other strategy, but will have to try it and see if it works, using solely groupby operation.
+    # update: tried other strategy with "apply" function on groupby frame, but apply doesn't function on 
+    # multiple columns, thus will lead to same amount of code. 
     balancedf = pd.tools.merge.concat([grpdf, joineddf], axis=1)
 
     return balancedf
