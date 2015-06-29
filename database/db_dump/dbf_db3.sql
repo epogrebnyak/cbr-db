@@ -303,6 +303,26 @@ SET character_set_client = utf8;
 SET character_set_client = @saved_cs_client;
 
 --
+-- Table structure for table `f102`
+--
+
+DROP TABLE IF EXISTS `f102`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `f102` (
+  `dt` date DEFAULT NULL,
+  `regn` int(11) NOT NULL,
+  `quart` int(1) NOT NULL,
+  `year` int(11) NOT NULL,
+  `code` varchar(10) CHARACTER SET utf8 NOT NULL,
+  `ir` bigint(20) DEFAULT NULL,
+  `iv` bigint(20) DEFAULT NULL,
+  `itogo` bigint(20) NOT NULL DEFAULT '0',
+  `has_iv` int(1) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Temporary table structure for view `f102_part_p`
 --
 
@@ -709,67 +729,46 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8 */ ;
 /*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = '' */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE DEFINER=`test_user`@`localhost` PROCEDURE `temp_init_truncation_limits`()
-BEGIN
-
-
-
-
-
-
-
-
-
-
-
-
-
-create table if not exists cfg_date_limit as
-
-select min(dt) dt_start, max(dt) dt_end from f101; 
-
-
-
-
-
-select dt_start from cfg_date_limit INTO @start_date;
-
-select dt_end from cfg_date_limit INTO @end_date;
-
-
-
-
-
-
-
-drop table if exists cfg_date_in_focus;
-
-create table cfg_date_in_focus as
-
-select distinct dt from bulk_f101b1 where dt >= @start_date and dt <= @end_date;
-
-
-
-
-
-
-
-create table if not exists cfg_regn_in_focus as
-
-select distinct regn from bulk_f101b1
-
-UNION ALL
-
-select distinct regn from bulk_f101_b
-
-UNION ALL
-
-select distinct regn from bulk_f101veb; 
-
-
-
+BEGIN
+
+drop table if exists cfg_date_limit;
+
+create table if not exists cfg_date_limit as
+select min(dt) dt_start, max(dt) dt_end from bulk_f101b1; 
+
+
+
+select dt_start from cfg_date_limit INTO @start_date;
+select dt_end from cfg_date_limit INTO @end_date;
+
+
+drop table if exists cfg_date_in_focus;
+create table cfg_date_in_focus as
+select distinct dt from bulk_f101b1 where dt >= @start_date and dt <= @end_date;
+
+
+
+
+
+
+
+create table if not exists cfg_regn_in_focus as
+
+select distinct regn from bulk_f101b1
+
+UNION ALL
+
+select distinct regn from bulk_f101_b
+
+UNION ALL
+
+select distinct regn from bulk_f101veb; 
+
+
+
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1006,4 +1005,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-06-29  1:54:32
+-- Dump completed on 2015-06-29  3:41:27
