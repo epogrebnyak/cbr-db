@@ -32,47 +32,45 @@ balance = pd.read_sql_table('balance', con)
 
 print("Datasets loaded in %f seconds" % (time.time() - start_time))
 
-def insert_totals(balancedf):
-    '''
-    Pandas equivalent to balance_make_insert_totals sql procedure.
-    '''
 
-    #  todo:  creating 'btotal1_grpdf' and 'btotal2_grpdf' seems symmetric, make function get_balance_toal(balance_line, la_p) to avoid code duplication
-    #  get_balance_toal(balance_line, la_p) must return btotal1_grpdf as in line 57
-
-    #create balance total temporary dataframe
-    btotal1 = balancedf.reset_index()
-    btotal1 = btotal1[(btotal1.line!=100000) & (btotal1.la_p==1) & (btotal1.lev==10)]
-    btotal1_grpdf = btotal1.groupby(['regn', 'dt']).agg({'ir':np.sum, 'iv':np.sum,
+def get_balance_total(balancedf, line, la_p):
+    '''
+    A utitility function. Returns balance  dataframe for given line and la_p values, grouped by 
+    'regn' and 'dt
+    '''
+    btotal = balancedf.reset_index()
+    btotal = btotal[(btotal.line!=line) & (btotal.la_p==la_p) & (btotal.lev==10)]
+    btotal_grpdf = btotal.groupby(['regn', 'dt']).agg({'ir':np.sum, 'iv':np.sum,
                                                        'itogo':np.sum,
-                                                       'line':lambda x:  100000,
-                                                       'la_p':lambda x:  1,
-                                                       'lev': lambda x:  1})
+                                                       'line':lambda x:  line,
+                                                       'la_p':lambda x:  la_p,
+                                                       'lev': lambda x:  1})    
     #add has_iv column
     # Need comment: why adding has_iv is important/difficult and requires 4 lines of code? is iv used anywhere in the code below?
     # comment: has_iv is present in sql table too so to be same as in database it has to be added.
     # I too was not sure if it is needed, but has to be aligned with sql tables, so added it.
     # I couldn't find a very effective way to do it using groupby operation above, as this column has
     # no reduce operation (sum, count, etc) assigned to it, so had to handled separately.
-    xx = btotal1.set_index(['regn', 'dt'])['has_iv']
+    xx = btotal.set_index(['regn', 'dt'])['has_iv']
     xx = xx.reset_index().drop_duplicates()
     xx = xx.set_index(['regn', 'dt'])
-    btotal1_grpdf = pd.tools.merge.concat([btotal1_grpdf, xx], axis=1)
+    btotal_grpdf = pd.tools.merge.concat([btotal_grpdf, xx], axis=1)
+    
+    return btotal_grpdf
+    
+    
+def insert_totals(balancedf):
+    '''
+    Pandas equivalent to balance_make_insert_totals sql procedure.
+    '''
 
-    #add rows for line 200000 into balance total temprorary dataframe
-    btotal2 = balancedf.reset_index()
-    btotal2 = btotal2[(btotal2.line!=200000) & (btotal2.la_p==2) & (btotal2.lev==10)]
-    btotal2_grpdf = btotal2.groupby(['regn', 'dt']).agg({'ir':np.sum,'iv':np.sum,
-                                                      'itogo':np.sum,
-                                                      'line':lambda x:  200000,
-                                                      'la_p':lambda x:  2,
-                                                      'lev': lambda x:  1})
-    #add has_iv column
-    xx = btotal1.set_index(['regn', 'dt'])['has_iv']
-    xx = xx.reset_index().drop_duplicates()
-    xx = xx.set_index(['regn', 'dt'])
-    btotal2_grpdf = pd.tools.merge.concat([btotal2_grpdf, xx], axis=1)
+    #  done todo:  creating 'btotal1_grpdf' and 'btotal2_grpdf' seems symmetric, make function get_balance_toal(balance_line, la_p) to avoid code duplication
+    #  get_balance_toal(balance_line, la_p) must return btotal1_grpdf as in line 57
 
+    #create balance total temporary dataframes
+    btotal1_grpdf = get_balance_total(balancedf, line=100000, la_p=1) 
+    btotal2_grpdf = get_balance_total(balancedf, line=200000, la_p=2)
+    
     #create final balance total dataframe
     # Need comment: what does pd.concat do? a union of the frames?
     # comment: yes, it is like UNION ALL operation with duplicate rows allowed,
