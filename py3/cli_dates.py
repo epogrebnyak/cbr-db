@@ -13,26 +13,26 @@ from date_engine import get_date_range, shift_month_ahead
 
 def get_date_from_quarter_string(string):
     """
-    Returns a date as date object based on <string>. 
+    Returns a date as date object based on <string>.
     <string> describes a date using a quarter notation
     Example of notation: 4Q2005, 4q2005, 2005Q4 or 2005q4 for 4th quater of 2005.
     """
     # break into year, quarter or quarter, year
     parts = string.upper().split('Q')
-    
+
     if len(parts) != 2:
         # not in a quarter format, break
         return None
     else:
         # make sure the order is year, quater
         if len(parts[0]) == 1:
-            parts[0], parts[1] = parts[1], parts[0]        
-        
+            parts[0], parts[1] = parts[1], parts[0]
+
         # convert to integer checking the range
         year, quarter = int(parts[0]), int(parts[1])
         if quarter not in range(1, 5):
             raise ValueError("Quarter must be between 1 to 4 (inclusive)")
-        
+
         # first quarter: month 4. last quarter: first month of next year
         month = quarter * 3
         dt = date(year=year, month=month, day=1)
@@ -60,27 +60,26 @@ def get_date(string, formats=DATE_FORMATS, special_formats=SPECIAL_FORMATS):
     """
     Parses <string> as date using several predefined text <formats> and <special_formats> functions.
     """
-    
+
     # tries the pattern formats one by one up to the first that parses the date
     for fmt in formats:
         parse_output = try_format(string, fmt)
         if parse_output[0]: return parse_output
-        
+
     # tries the special formats one by one, same as above. special_format is a function.
     for special_format in special_formats:
         parse_output = special_format(string)
         if parse_output[0]: return parse_output
-            
+
 def get_last_quarter_month(month):
     """
-    todo: docstring contradicts code and 'Note:', rewrite. 
-    
-    Returns the last completed quarter from <month>.
-    Note: returns month 1, 4 or 7 or 10.
+    Returns the last completed quarter from <month>. For example, if the
+    month is 1, 2 or 3, the last completed quarter was at month 1.
+    Note: always returns month 1, 4, 7 or 10.
     """
-    quarter = (month - 1) // 3  
+    quarter = (month - 1) // 3
     return quarter * 3 + 1
-    
+
 def get_next_quarter_end_date(dt):
     """
     Returns the date corresponding to the next quarter end from <dt>.
@@ -89,7 +88,7 @@ def get_next_quarter_end_date(dt):
     """
     while (dt.month - 1) % 3 != 0:
         dt = shift_month_ahead(dt)
-    
+
     return dt
 
 def get_last_date_in_year(dt, form):
@@ -101,15 +100,15 @@ def get_last_date_in_year(dt, form):
     current_date_day_1 = datetime.today().replace(day=1).date()
     current_year_dec1_date = dt.replace(month=12)
     dt = min(current_date_day_1, current_year_dec1_date)
-            
-    if form == '102': # use quarter notation
+
+    if form == '102':  # use quarter notation
         if current_year_dec1_date == dt:
             # we can get the end of the 4 quarter that is in the next year
-            dt = dt.replace(year=dt.year+1, month=1)
+            dt = dt.replace(year=dt.year + 1, month=1)
         else:
             # go back to the last valid quarter
             dt = dt.replace(month=get_last_quarter_month(dt.month))
-    
+
     return dt
 
 def get_date_range_from_command_line(args):
@@ -118,7 +117,7 @@ def get_date_range_from_command_line(args):
     """
     s, e = get_date_endpoints(args)
     step = 1
-    
+
     if args['<form>'] == '102':
         step = 3
 
@@ -146,12 +145,12 @@ def get_date_endpoints(args):
             e = get_last_date_in_year(ts1, form)
         else:
             e = s
-        
+
         if form == '102':
             # first quarter starts from month 4
             if f1 == "%Y":
                 s = s.replace(month=4)
-            
+
             # get current or next valid quarter
             s = get_next_quarter_end_date(s)
 
