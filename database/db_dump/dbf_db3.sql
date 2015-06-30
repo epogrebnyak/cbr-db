@@ -86,6 +86,7 @@ DROP TABLE IF EXISTS `bulk_f102_p`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `bulk_f102_p` (
+  `dt` date NOT NULL,
   `regn` int(11) NOT NULL,
   `quart` int(1) NOT NULL,
   `year` int(11) NOT NULL,
@@ -103,6 +104,7 @@ DROP TABLE IF EXISTS `bulk_f102_p1`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `bulk_f102_p1` (
+  `dt` date NOT NULL,  
   `regn` int(11) NOT NULL,
   `quart` int(1) NOT NULL,
   `year` int(11) NOT NULL,
@@ -302,14 +304,14 @@ CREATE TABLE `f102` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Temporary table structure for view `f102_long`
+-- Temporary table structure for view `f102_part_p1`
 --
 
-DROP TABLE IF EXISTS `f102_long`;
-/*!50001 DROP VIEW IF EXISTS `f102_long`*/;
+DROP TABLE IF EXISTS `f102_part_p1`;
+/*!50001 DROP VIEW IF EXISTS `f102_part_p1`*/;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
-/*!50001 CREATE TABLE `f102_long` (
+/*!50001 CREATE TABLE `f102_part_p1` (
   `regn` int(11),
   `quart` int(1),
   `year` int(11),
@@ -323,14 +325,14 @@ SET character_set_client = utf8;
 SET character_set_client = @saved_cs_client;
 
 --
--- Temporary table structure for view `f102_short`
+-- Temporary table structure for view `f102_part_p`
 --
 
-DROP TABLE IF EXISTS `f102_short`;
-/*!50001 DROP VIEW IF EXISTS `f102_short`*/;
+DROP TABLE IF EXISTS `f102_part_p`;
+/*!50001 DROP VIEW IF EXISTS `f102_part_p`*/;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
-/*!50001 CREATE TABLE `f102_short` (
+/*!50001 CREATE TABLE `f102_part_p` (
   `regn` int(11),
   `quart` int(1),
   `year` int(11),
@@ -342,24 +344,6 @@ SET character_set_client = utf8;
   `conto_3` binary(0)
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
-
---
--- Table structure for table `f102_small`
---
-
-DROP TABLE IF EXISTS `f102_small`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `f102_small` (
-  `regn` int(11) DEFAULT NULL,
-  `quart` int(1) DEFAULT NULL,
-  `year` int(11) DEFAULT NULL,
-  `code` varchar(10) DEFAULT NULL,
-  `ir` bigint(20) DEFAULT NULL,
-  `iv` bigint(20) DEFAULT NULL,
-  `itogo` bigint(20) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping routines for database 'dbf_db3'
@@ -700,10 +684,10 @@ BEGIN
 drop table if exists f102;
 
 create table f102 as 
-select regn, quart, year, code, ir,  iv, itogo, has_iv from f102_long;
+select regn, quart, year, code, ir,  iv, itogo, has_iv from f102_part_p1;
 
 insert f102
-select regn, quart, year, code, ir,  iv, itogo, has_iv from f102_short;
+select regn, quart, year, code, ir,  iv, itogo, has_iv from f102_part_p;
 
 
 
@@ -1180,11 +1164,11 @@ DELIMITER ;
 /*!50001 SET collation_connection      = @saved_col_connection */;
 
 --
--- Final view structure for view `f102_long`
+-- Final view structure for view `f102_part_p1`
 --
 
-/*!50001 DROP TABLE IF EXISTS `f102_long`*/;
-/*!50001 DROP VIEW IF EXISTS `f102_long`*/;
+/*!50001 DROP TABLE IF EXISTS `f102_part_p1`*/;
+/*!50001 DROP VIEW IF EXISTS `f102_part_p1`*/;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
@@ -1193,17 +1177,17 @@ DELIMITER ;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `f102_long` AS select `bulk_f102_p1`.`regn` AS `regn`,`bulk_f102_p1`.`quart` AS `quart`,`bulk_f102_p1`.`year` AS `year`,`bulk_f102_p1`.`code` AS `code`,`bulk_f102_p1`.`ir` AS `ir`,`bulk_f102_p1`.`iv` AS `iv`,`bulk_f102_p1`.`itogo` AS `itogo`,1 AS `has_iv`,NULL AS `conto_3` from `bulk_f102_p1` where ((`bulk_f102_p1`.`regn` in (1481,354,1000,1623,2748,3349,1326,1470,1942,2790,3340)) and (`bulk_f102_p1`.`year` >= 2012)) */;
+/*!50001 VIEW `f102_part_p1` AS select `sa`.`regn` AS `regn`, `sa`.`quart` AS `quart`, `sa`.`year` AS `year`, `sa`.`code` AS `code`, `sa`.`ir` AS `ir`, `sa`.`iv` AS `iv`, `sa`.`itogo` AS `itogo`, 1 AS `has_iv`, NULL AS `conto_3` from ((`cfg_date_in_focus` `d` join `cfg_regn_in_focus` `r` on(1)) left join `bulk_f102_p1` `sa` on(((`sa`.`dt` = `d`.`dt`) and (`r`.`regn` = `sa`.`regn`)))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
 
 --
--- Final view structure for view `f102_short`
+-- Final view structure for view `f102_part_p`
 --
 
-/*!50001 DROP TABLE IF EXISTS `f102_short`*/;
-/*!50001 DROP VIEW IF EXISTS `f102_short`*/;
+/*!50001 DROP TABLE IF EXISTS `f102_part_p`*/;
+/*!50001 DROP VIEW IF EXISTS `f102_part_p`*/;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
@@ -1212,7 +1196,7 @@ DELIMITER ;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `f102_short` AS select `bulk_f102_p`.`regn` AS `regn`,`bulk_f102_p`.`quart` AS `quart`,`bulk_f102_p`.`year` AS `year`,`bulk_f102_p`.`code` AS `code`,0 AS `ir`,0 AS `iv`,`bulk_f102_p`.`itogo` AS `itogo`,0 AS `has_iv`,NULL AS `conto_3` from `bulk_f102_p` where ((`bulk_f102_p`.`regn` in (1481,354,1000,1623,2748,3349,1326,1470,1942,2790,3340)) and (`bulk_f102_p`.`year` >= 2012)) */;
+/*!50001 VIEW `f102_part_p` AS select `sa`.`regn` AS `regn`, `sa`.`quart` AS `quart`, `sa`.`year` AS `year`, `sa`.`code` AS `code`, 0 AS `ir`, 0 AS `iv`, `sa`.`itogo` AS `itogo`, 0 AS `has_iv`, NULL AS `conto_3` from ((`cfg_date_in_focus` `d` join `cfg_regn_in_focus` `r` on(1)) left join `bulk_f102_p` `sa` on(((`sa`.`dt` = `d`.`dt`) and (`r`.`regn` = `sa`.`regn`)))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
