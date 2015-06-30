@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.6.16, for Win32 (x86)
+-- MySQL dump 10.13  Distrib 5.5.9, for Win32 (x86)
 --
 -- Host: localhost    Database: dbf_db3
 -- ------------------------------------------------------
--- Server version	5.6.16
+-- Server version	5.5.9-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -86,7 +86,6 @@ DROP TABLE IF EXISTS `bulk_f102_p`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `bulk_f102_p` (
-  `dt` date DEFAULT NULL,
   `regn` int(11) NOT NULL,
   `quart` int(1) NOT NULL,
   `year` int(11) NOT NULL,
@@ -104,7 +103,6 @@ DROP TABLE IF EXISTS `bulk_f102_p1`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `bulk_f102_p1` (
-  `dt` date DEFAULT NULL,
   `regn` int(11) NOT NULL,
   `quart` int(1) NOT NULL,
   `year` int(11) NOT NULL,
@@ -185,15 +183,15 @@ DROP TABLE IF EXISTS `f101_long`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 /*!50001 CREATE TABLE `f101_long` (
-  `dt` tinyint NOT NULL,
-  `regn` tinyint NOT NULL,
-  `conto` tinyint NOT NULL,
-  `a_p` tinyint NOT NULL,
-  `ir` tinyint NOT NULL,
-  `iv` tinyint NOT NULL,
-  `itogo` tinyint NOT NULL,
-  `has_iv` tinyint NOT NULL,
-  `conto_3` tinyint NOT NULL
+  `dt` date,
+  `regn` smallint(6),
+  `conto` mediumint(9),
+  `a_p` tinyint(4),
+  `ir` bigint(20),
+  `iv` bigint(20),
+  `itogo` bigint(20),
+  `has_iv` int(1),
+  `conto_3` binary(0)
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
 
@@ -206,15 +204,15 @@ DROP TABLE IF EXISTS `f101_part_f101_b`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 /*!50001 CREATE TABLE `f101_part_f101_b` (
-  `dt` tinyint NOT NULL,
-  `regn` tinyint NOT NULL,
-  `conto` tinyint NOT NULL,
-  `a_p` tinyint NOT NULL,
-  `ir` tinyint NOT NULL,
-  `iv` tinyint NOT NULL,
-  `itogo` tinyint NOT NULL,
-  `has_iv` tinyint NOT NULL,
-  `conto_3` tinyint NOT NULL
+  `dt` date,
+  `regn` smallint(6),
+  `conto` mediumint(9),
+  `a_p` tinyint(4),
+  `ir` int(1),
+  `iv` int(1),
+  `itogo` bigint(20),
+  `has_iv` int(1),
+  `conto_3` decimal(9,0)
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
 
@@ -227,15 +225,15 @@ DROP TABLE IF EXISTS `f101_part_f101_private`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 /*!50001 CREATE TABLE `f101_part_f101_private` (
-  `dt` tinyint NOT NULL,
-  `regn` tinyint NOT NULL,
-  `conto` tinyint NOT NULL,
-  `a_p` tinyint NOT NULL,
-  `ir` tinyint NOT NULL,
-  `iv` tinyint NOT NULL,
-  `itogo` tinyint NOT NULL,
-  `has_iv` tinyint NOT NULL,
-  `conto_3` tinyint NOT NULL
+  `dt` date,
+  `regn` int(3),
+  `conto` bigint(20),
+  `a_p` tinyint(4),
+  `ir` bigint(20),
+  `iv` bigint(20),
+  `itogo` bigint(20),
+  `has_iv` int(1),
+  `conto_3` decimal(20,0)
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
 
@@ -248,36 +246,15 @@ DROP TABLE IF EXISTS `f101_part_f101b1`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 /*!50001 CREATE TABLE `f101_part_f101b1` (
-  `dt` tinyint NOT NULL,
-  `regn` tinyint NOT NULL,
-  `conto` tinyint NOT NULL,
-  `a_p` tinyint NOT NULL,
-  `ir` tinyint NOT NULL,
-  `iv` tinyint NOT NULL,
-  `itogo` tinyint NOT NULL,
-  `has_iv` tinyint NOT NULL,
-  `conto_3` tinyint NOT NULL
-) ENGINE=MyISAM */;
-SET character_set_client = @saved_cs_client;
-
---
--- Temporary table structure for view `f101_small`
---
-
-DROP TABLE IF EXISTS `f101_small`;
-/*!50001 DROP VIEW IF EXISTS `f101_small`*/;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-/*!50001 CREATE TABLE `f101_small` (
-  `dt` tinyint NOT NULL,
-  `regn` tinyint NOT NULL,
-  `conto` tinyint NOT NULL,
-  `a_p` tinyint NOT NULL,
-  `ir` tinyint NOT NULL,
-  `iv` tinyint NOT NULL,
-  `itogo` tinyint NOT NULL,
-  `has_iv` tinyint NOT NULL,
-  `conto_3` tinyint NOT NULL
+  `dt` date,
+  `regn` smallint(6),
+  `conto` mediumint(9),
+  `a_p` tinyint(4),
+  `ir` bigint(20),
+  `iv` bigint(20),
+  `itogo` bigint(20),
+  `has_iv` int(1),
+  `conto_3` decimal(9,0)
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
 
@@ -290,15 +267,15 @@ DROP TABLE IF EXISTS `f101_veb`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 /*!50001 CREATE TABLE `f101_veb` (
-  `dt` tinyint NOT NULL,
-  `regn` tinyint NOT NULL,
-  `conto` tinyint NOT NULL,
-  `a_p` tinyint NOT NULL,
-  `ir` tinyint NOT NULL,
-  `iv` tinyint NOT NULL,
-  `itogo` tinyint NOT NULL,
-  `has_iv` tinyint NOT NULL,
-  `conto_3` tinyint NOT NULL
+  `dt` date,
+  `regn` int(3),
+  `conto` bigint(20),
+  `a_p` tinyint(4),
+  `ir` bigint(20),
+  `iv` bigint(20),
+  `itogo` bigint(20),
+  `has_iv` int(1),
+  `conto_3` binary(0)
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
 
@@ -310,7 +287,6 @@ DROP TABLE IF EXISTS `f102`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `f102` (
-  `dt` date DEFAULT NULL,
   `regn` int(11) NOT NULL,
   `quart` int(1) NOT NULL,
   `year` int(11) NOT NULL,
@@ -318,56 +294,297 @@ CREATE TABLE `f102` (
   `ir` bigint(20) DEFAULT NULL,
   `iv` bigint(20) DEFAULT NULL,
   `itogo` bigint(20) NOT NULL DEFAULT '0',
-  `has_iv` int(1) NOT NULL DEFAULT '0'
+  `has_iv` int(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`regn`,`quart`,`year`,`code`,`itogo`),
+  KEY `i_regn` (`regn`),
+  KEY `i_code` (`code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Temporary table structure for view `f102_part_p`
+-- Temporary table structure for view `f102_long`
 --
 
-DROP TABLE IF EXISTS `f102_part_p`;
-/*!50001 DROP VIEW IF EXISTS `f102_part_p`*/;
+DROP TABLE IF EXISTS `f102_long`;
+/*!50001 DROP VIEW IF EXISTS `f102_long`*/;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
-/*!50001 CREATE TABLE `f102_part_p` (
-  `regn` tinyint NOT NULL,
-  `quart` tinyint NOT NULL,
-  `year` tinyint NOT NULL,
-  `code` tinyint NOT NULL,
-  `ir` tinyint NOT NULL,
-  `iv` tinyint NOT NULL,
-  `itogo` tinyint NOT NULL,
-  `has_iv` tinyint NOT NULL,
-  `conto_3` tinyint NOT NULL
+/*!50001 CREATE TABLE `f102_long` (
+  `regn` int(11),
+  `quart` int(1),
+  `year` int(11),
+  `code` varchar(10),
+  `ir` bigint(20),
+  `iv` bigint(20),
+  `itogo` bigint(20),
+  `has_iv` int(1),
+  `conto_3` binary(0)
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
 
 --
--- Temporary table structure for view `f102_part_p1`
+-- Temporary table structure for view `f102_short`
 --
 
-DROP TABLE IF EXISTS `f102_part_p1`;
-/*!50001 DROP VIEW IF EXISTS `f102_part_p1`*/;
+DROP TABLE IF EXISTS `f102_short`;
+/*!50001 DROP VIEW IF EXISTS `f102_short`*/;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
-/*!50001 CREATE TABLE `f102_part_p1` (
-  `dt` tinyint NOT NULL,
-  `regn` tinyint NOT NULL,
-  `quart` tinyint NOT NULL,
-  `year` tinyint NOT NULL,
-  `code` tinyint NOT NULL,
-  `ir` tinyint NOT NULL,
-  `iv` tinyint NOT NULL,
-  `itogo` tinyint NOT NULL,
-  `has_iv` tinyint NOT NULL,
-  `conto_3` tinyint NOT NULL
+/*!50001 CREATE TABLE `f102_short` (
+  `regn` int(11),
+  `quart` int(1),
+  `year` int(11),
+  `code` varchar(10),
+  `ir` int(1),
+  `iv` int(1),
+  `itogo` bigint(20),
+  `has_iv` int(1),
+  `conto_3` binary(0)
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
+
+--
+-- Table structure for table `f102_small`
+--
+
+DROP TABLE IF EXISTS `f102_small`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `f102_small` (
+  `regn` int(11) DEFAULT NULL,
+  `quart` int(1) DEFAULT NULL,
+  `year` int(11) DEFAULT NULL,
+  `code` varchar(10) DEFAULT NULL,
+  `ir` bigint(20) DEFAULT NULL,
+  `iv` bigint(20) DEFAULT NULL,
+  `itogo` bigint(20) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping routines for database 'dbf_db3'
 --
+/*!50003 DROP PROCEDURE IF EXISTS `cfg_init` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = '' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50020 DEFINER=`test_user`@`localhost`*/ /*!50003 PROCEDURE `cfg_init`()
+BEGIN
+
+
+
+##### Init dates ########
+
+
+
+# set date limit to min and max dates in the dataset
+
+call cfg_init_reset_date_limit;
+
+# populate dateset with dates between min and max 
+
+call cfg_init_populate_dates;
+
+
+
+#########################
+
+
+
+
+
+##### Init regn ########
+
+
+
+# truncate regn by predefined dataset
+
+call cfg_init_regn_predefined_subset;
+
+
+
+# alternative:
+
+# insert all regn to final dataset
+
+# call cfg_init_regn_fullset;
+
+
+
+#########################
+
+
+
+
+
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `cfg_init_populate_dates` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = '' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50020 DEFINER=`test_user`@`localhost`*/ /*!50003 PROCEDURE `cfg_init_populate_dates`()
+BEGIN
+
+
+
+select dt_start from cfg_date_limit INTO @start_date;
+
+select dt_end from cfg_date_limit INTO @end_date;
+
+
+
+drop table if exists cfg_date_in_focus;
+
+create table cfg_date_in_focus as
+
+
+
+# Risk: uses dates only from bulk_f101b1
+
+select distinct dt from bulk_f101b1 where dt >= @start_date and dt <= @end_date;
+
+
+
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `cfg_init_regn_fullset` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = '' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50020 DEFINER=`test_user`@`localhost`*/ /*!50003 PROCEDURE `cfg_init_regn_fullset`()
+BEGIN
+
+
+
+drop table if exists cfg_regn_in_focus;
+
+create table if not exists cfg_regn_in_focus as
+
+select distinct regn from bulk_f101b1
+
+UNION ALL
+
+select distinct regn from bulk_f101_b
+
+UNION ALL
+
+select distinct regn from bulk_f101veb;
+
+
+
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `cfg_init_regn_predefined_subset` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = '' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50020 DEFINER=`test_user`@`localhost`*/ /*!50003 PROCEDURE `cfg_init_regn_predefined_subset`()
+BEGIN
+
+
+
+DELETE FROM `cfg_regn_in_focus`;
+
+INSERT INTO `cfg_regn_in_focus` (`regn`) VALUES
+
+  (1481),
+
+  (354),
+
+  (1000),
+
+  (1623),
+
+  (2748),
+
+  (3349),
+
+  (1326),
+
+  (1470),
+
+  (1942),
+
+  (2790),
+
+  (3340),
+
+  (964);
+
+
+
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `cfg_init_reset_date_limit` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = '' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50020 DEFINER=`test_user`@`localhost`*/ /*!50003 PROCEDURE `cfg_init_reset_date_limit`()
+BEGIN
+
+
+
+drop table if exists cfg_date_limit;
+
+create table if not exists cfg_date_limit as
+
+select min(dt) dt_start, max(dt) dt_end from bulk_f101b1; 
+
+
+
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `check_duplicates` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -378,7 +595,7 @@ SET character_set_client = @saved_cs_client;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `check_duplicates`(IN `table_name` CHAR(50))
+/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `check_duplicates`(IN `table_name` CHAR(50))
 BEGIN
 
 SET @prefix  = "SELECT dt, regn, conto, itogo, COUNT(*) cnt FROM ";
@@ -389,7 +606,7 @@ PREPARE s1 FROM @sql_text;
 EXECUTE s1;
 DROP PREPARE s1;
 
-END ;;
+END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -405,7 +622,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `check_residuals`(IN `table_name` CHAR(50))
+/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `check_residuals`(IN `table_name` CHAR(50))
 BEGIN
 
 SET @prefix = "SELECT f.dt AS dt, f.regn AS regn, " 
@@ -423,7 +640,7 @@ PREPARE s1 FROM @sql_text;
 EXECUTE s1;
 DROP PREPARE s1;
 
-END ;;
+END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -439,7 +656,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`test_user`@`localhost` PROCEDURE `f101_make_dataset`()
+/*!50003 CREATE*/ /*!50020 DEFINER=`test_user`@`localhost`*/ /*!50003 PROCEDURE `f101_make_dataset`()
 BEGIN
 
 
@@ -461,7 +678,7 @@ ALTER TABLE	f101 ADD PRIMARY KEY (`dt`, `regn`, `conto`, `itogo`);
 ALTER TABLE	f101 ADD INDEX `i_conto` (`conto`);
 ALTER TABLE	f101 ADD INDEX `i_regn` (`regn`);
 
-END ;;
+END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -475,28 +692,26 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8 */ ;
 /*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`test_user`@`localhost` PROCEDURE `f102_make_dataset`()
-BEGIN
-
-drop table if exists f102;
-
-create table f102 as 
-select dt, regn, quart, year, code, ir,  iv, itogo, has_iv from f102_part_p1;
-
-insert f102
-select dt, regn, quart, year, code, ir,  iv, itogo, has_iv from f102_part_p;
-
-
-
-ALTER TABLE f102 ADD PRIMARY KEY (`dt`, `regn`, `code`, `itogo`);
-# duplication
-# ALTER TABLE f102 ADD INDEX `i_regn` (`dt`);
-ALTER TABLE f102 ADD INDEX `i_regn` (`regn`);
-ALTER TABLE f102 ADD INDEX `i_code` (`code`);
-
-END ;;
+/*!50003 CREATE*/ /*!50020 DEFINER=`test_user`@`localhost`*/ /*!50003 PROCEDURE `f102_make_dataset`()
+BEGIN
+
+drop table if exists f102;
+
+create table f102 as 
+select regn, quart, year, code, ir,  iv, itogo, has_iv from f102_long;
+
+insert f102
+select regn, quart, year, code, ir,  iv, itogo, has_iv from f102_short;
+
+
+
+ALTER TABLE f102 ADD PRIMARY KEY (`regn`, `quart`, `year`, `code`, `itogo`);
+ALTER TABLE f102 ADD INDEX `i_regn` (`regn`);
+ALTER TABLE f102 ADD INDEX `i_code` (`code`);
+
+END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -512,7 +727,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_f101`()
+/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `insert_f101`()
 BEGIN
 
 call reset_table_f101;
@@ -567,7 +782,7 @@ update f101 set conto_3 = round(conto/100,0);
 
 
 
-END ;;
+END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -583,7 +798,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `reset_db`()
+/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `reset_db`()
 BEGIN
 
 call reset_table_f101;
@@ -591,7 +806,7 @@ call reset_table_f101b1;
 call reset_table_f101_b;
 call reset_table_f101veb;
 
-END ;;
+END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -607,7 +822,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `reset_table_f101`()
+/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `reset_table_f101`()
 BEGIN
 
 drop table f101;
@@ -628,7 +843,7 @@ CREATE TABLE f101 (
 COLLATE='utf8_general_ci'
 ENGINE=InnoDB;
 
-END ;;
+END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -644,7 +859,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `reset_table_f101b1`()
+/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `reset_table_f101b1`()
 BEGIN
 
 DROP TABLE bulk_f101b1;
@@ -664,7 +879,7 @@ ENGINE=InnoDB;
 
 
 
-END ;;
+END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -680,10 +895,10 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `reset_table_f101veb`()
+/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `reset_table_f101veb`()
 BEGIN
 delete from bulk_f101veb;
-END ;;
+END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -699,7 +914,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `reset_table_f101_b`()
+/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `reset_table_f101_b`()
 BEGIN
 
 drop table  bulk_f101_b;
@@ -715,7 +930,7 @@ CREATE TABLE bulk_f101_b (
 COLLATE='utf8_general_ci'
 ENGINE=InnoDB;
 
-END ;;
+END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -729,47 +944,72 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8 */ ;
 /*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`test_user`@`localhost` PROCEDURE `temp_init_truncation_limits`()
-BEGIN
-
-drop table if exists cfg_date_limit;
-
-create table if not exists cfg_date_limit as
-select min(dt) dt_start, max(dt) dt_end from bulk_f101b1; 
-
-
-
-select dt_start from cfg_date_limit INTO @start_date;
-select dt_end from cfg_date_limit INTO @end_date;
-
-
-drop table if exists cfg_date_in_focus;
-create table cfg_date_in_focus as
-select distinct dt from bulk_f101b1 where dt >= @start_date and dt <= @end_date;
-
-
-
-
-
-
-
-create table if not exists cfg_regn_in_focus as
-
-select distinct regn from bulk_f101b1
-
-UNION ALL
-
-select distinct regn from bulk_f101_b
-
-UNION ALL
-
-select distinct regn from bulk_f101veb; 
-
-
-
-END ;;
+/*!50003 CREATE*/ /*!50020 DEFINER=`test_user`@`localhost`*/ /*!50003 PROCEDURE `temp_init_truncation_limits`()
+BEGIN
+
+
+
+call cfg_init_reset_date_limit;
+
+
+
+
+
+/*
+
+drop table if exists cfg_date_limit;
+
+create table if not exists cfg_date_limit as
+
+select min(dt) dt_start, max(dt) dt_end from bulk_f101b1; 
+
+
+
+select dt_start from cfg_date_limit INTO @start_date;
+
+select dt_end from cfg_date_limit INTO @end_date;
+
+
+
+
+
+
+
+drop table if exists cfg_date_in_focus;
+
+create table cfg_date_in_focus as
+
+select distinct dt from bulk_f101b1 where dt >= @start_date and dt <= @end_date;
+
+
+
+drop table if exists cfg_regn_in_focus;
+
+
+
+create table if not exists cfg_regn_in_focus as
+
+select distinct regn from bulk_f101b1
+
+UNION ALL
+
+select distinct regn from bulk_f101_b
+
+UNION ALL
+
+select distinct regn from bulk_f101veb; 
+
+*/
+
+
+
+
+
+
+
+END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -785,7 +1025,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `test_f101_residual`()
+/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `test_f101_residual`()
 BEGIN
 
 SELECT f.dt AS dt,f.regn AS regn, SUM((CASE WHEN (f.a_p = 1) THEN f.itogo ELSE 0 END)) AS ap1, 
@@ -806,7 +1046,7 @@ GROUP BY f.dt,f.regn
 
 HAVING (diff <> 0);
 
-END ;;
+END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -822,7 +1062,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `test_import`()
+/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `test_import`()
 BEGIN
 
 
@@ -837,7 +1077,7 @@ CALL check_residuals ('bulk_f101B1');
 CALL check_residuals ('bulk_f101veb');
 
 
-END ;;
+END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -921,25 +1161,6 @@ DELIMITER ;
 /*!50001 SET collation_connection      = @saved_col_connection */;
 
 --
--- Final view structure for view `f101_small`
---
-
-/*!50001 DROP TABLE IF EXISTS `f101_small`*/;
-/*!50001 DROP VIEW IF EXISTS `f101_small`*/;
-/*!50001 SET @saved_cs_client          = @@character_set_client */;
-/*!50001 SET @saved_cs_results         = @@character_set_results */;
-/*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8 */;
-/*!50001 SET character_set_results     = utf8 */;
-/*!50001 SET collation_connection      = utf8_general_ci */;
-/*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `f101_small` AS select `bulk_f101_b`.`dt` AS `dt`,`bulk_f101_b`.`regn` AS `regn`,`bulk_f101_b`.`num_sc` AS `conto`,`bulk_f101_b`.`a_p` AS `a_p`,0 AS `ir`,0 AS `iv`,`bulk_f101_b`.`itogo` AS `itogo`,0 AS `has_iv`,NULL AS `conto_3` from `bulk_f101_b` where ((`bulk_f101_b`.`regn` in (1481,354,1000,1623,2748,3349,1326,1470,1942,2790,3340)) and (`bulk_f101_b`.`dt` >= '2012-01-01')) */;
-/*!50001 SET character_set_client      = @saved_cs_client */;
-/*!50001 SET character_set_results     = @saved_cs_results */;
-/*!50001 SET collation_connection      = @saved_col_connection */;
-
---
 -- Final view structure for view `f101_veb`
 --
 
@@ -959,11 +1180,11 @@ DELIMITER ;
 /*!50001 SET collation_connection      = @saved_col_connection */;
 
 --
--- Final view structure for view `f102_part_p`
+-- Final view structure for view `f102_long`
 --
 
-/*!50001 DROP TABLE IF EXISTS `f102_part_p`*/;
-/*!50001 DROP VIEW IF EXISTS `f102_part_p`*/;
+/*!50001 DROP TABLE IF EXISTS `f102_long`*/;
+/*!50001 DROP VIEW IF EXISTS `f102_long`*/;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
@@ -972,17 +1193,17 @@ DELIMITER ;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `f102_part_p` AS select `bulk_f102_p`.`regn` AS `regn`,`bulk_f102_p`.`quart` AS `quart`,`bulk_f102_p`.`year` AS `year`,`bulk_f102_p`.`code` AS `code`,0 AS `ir`,0 AS `iv`,`bulk_f102_p`.`itogo` AS `itogo`,0 AS `has_iv`,NULL AS `conto_3` from `bulk_f102_p` where ((`bulk_f102_p`.`regn` in (1481,354,1000,1623,2748,3349,1326,1470,1942,2790,3340)) and (`bulk_f102_p`.`dt` >= '2012-01-01')) */;
+/*!50001 VIEW `f102_long` AS select `bulk_f102_p1`.`regn` AS `regn`,`bulk_f102_p1`.`quart` AS `quart`,`bulk_f102_p1`.`year` AS `year`,`bulk_f102_p1`.`code` AS `code`,`bulk_f102_p1`.`ir` AS `ir`,`bulk_f102_p1`.`iv` AS `iv`,`bulk_f102_p1`.`itogo` AS `itogo`,1 AS `has_iv`,NULL AS `conto_3` from `bulk_f102_p1` where ((`bulk_f102_p1`.`regn` in (1481,354,1000,1623,2748,3349,1326,1470,1942,2790,3340)) and (`bulk_f102_p1`.`year` >= 2012)) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
 
 --
--- Final view structure for view `f102_part_p1`
+-- Final view structure for view `f102_short`
 --
 
-/*!50001 DROP TABLE IF EXISTS `f102_part_p1`*/;
-/*!50001 DROP VIEW IF EXISTS `f102_part_p1`*/;
+/*!50001 DROP TABLE IF EXISTS `f102_short`*/;
+/*!50001 DROP VIEW IF EXISTS `f102_short`*/;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
@@ -991,7 +1212,7 @@ DELIMITER ;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `f102_part_p1` AS select `bulk_f102_p1`.`dt` AS `dt`,`bulk_f102_p1`.`regn` AS `regn`,`bulk_f102_p1`.`quart` AS `quart`,`bulk_f102_p1`.`year` AS `year`,`bulk_f102_p1`.`code` AS `code`,`bulk_f102_p1`.`ir` AS `ir`,`bulk_f102_p1`.`iv` AS `iv`,`bulk_f102_p1`.`itogo` AS `itogo`,1 AS `has_iv`,NULL AS `conto_3` from `bulk_f102_p1` where ((`bulk_f102_p1`.`regn` in (1481,354,1000,1623,2748,3349,1326,1470,1942,2790,3340)) and (`bulk_f102_p1`.`dt` >= '2012-01-01')) */;
+/*!50001 VIEW `f102_short` AS select `bulk_f102_p`.`regn` AS `regn`,`bulk_f102_p`.`quart` AS `quart`,`bulk_f102_p`.`year` AS `year`,`bulk_f102_p`.`code` AS `code`,0 AS `ir`,0 AS `iv`,`bulk_f102_p`.`itogo` AS `itogo`,0 AS `has_iv`,NULL AS `conto_3` from `bulk_f102_p` where ((`bulk_f102_p`.`regn` in (1481,354,1000,1623,2748,3349,1326,1470,1942,2790,3340)) and (`bulk_f102_p`.`year` >= 2012)) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -1005,4 +1226,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-06-29  3:41:27
+-- Dump completed on 2015-06-30 13:05:54
