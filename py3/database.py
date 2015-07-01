@@ -7,7 +7,6 @@ from terminal import terminal
 from conn import execute_sql, get_mysql_connection
 from global_ini import DB_NAMES, DIRLIST
 from make_csv import list_csv_filepaths_by_date, get_records
-import dbfread
 import os
 
 ################################################################
@@ -272,7 +271,8 @@ def import_dbf_generic(dbf_path, db, table, fields, verbose=False):
         cur = conn.cursor()    
     
         for record in get_records(dbf_path, fields):
-            cur.execute(insert_sql, list(record.values()))
+            ordered_values = [record[key] for key in fields]
+            cur.execute(insert_sql, ordered_values)
 
         conn.commit()    
         cur.close()

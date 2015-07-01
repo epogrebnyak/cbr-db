@@ -1,18 +1,20 @@
 import pymysql
+from global_ini import CODEPAGE
 
 DB_INI_DICT = {'host': 'localhost', 'port':3306, 'user':'test_user', 'passwd':'test_password'}
 
-def get_mysql_connection(credential_dict=DB_INI_DICT, database=None, autocommit=False):
+def get_mysql_connection(credential_dict=DB_INI_DICT, database=None, autocommit=False,
+                         charset=CODEPAGE):
     # todo: add try-except raise 
     #       maybe can add arg unpacking     
     if database is None:
         conn = pymysql.connect(host=credential_dict['host'], port=credential_dict['port'], 
                                user=credential_dict['user'], passwd=credential_dict['passwd'],
-                               autocommit=autocommit)
+                               autocommit=autocommit, charset=charset)
     else:
         conn = pymysql.connect(host=credential_dict['host'], port=credential_dict['port'], 
                                user=credential_dict['user'], passwd=credential_dict['passwd'],
-                               db=database, autocommit=autocommit)
+                               db=database, autocommit=autocommit, charset=charset)
     return conn                         
  
 
