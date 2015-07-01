@@ -5,7 +5,7 @@
 
 from terminal import terminal
 from conn import execute_sql, get_mysql_connection
-from global_ini import DB_NAMES, DIRLIST
+from global_ini import DB_NAMES, DIRLIST, NAMES_TABLE_INFO, ACCOUNT_NAMES_DBF
 from make_csv import list_csv_filepaths_by_date, get_records
 import os
 
@@ -258,14 +258,14 @@ def import_dbf_generic(dbf_path, db, table, fields, verbose=False):
     """
     fields = list(fields)  # to accept generators
     
-    # TODO: make sure that autocommit is off, or else there will be a
-    # performance penalty
     insert_sql = "INSERT INTO {} ({}) VALUES ({})".format(
         table,
         ",".join(fields),
         ",".join(["%s"]*len(fields))
     )
-    conn = get_mysql_connection(database=db)    
+    
+    # with autocommit turned off, the insertions should be fast
+    conn = get_mysql_connection(database=db, autocommit=False)    
     
     try:
         cur = conn.cursor()    
@@ -284,17 +284,11 @@ def get_import_dbf_path(target, form):
     Returns the path to the dbf file that contains the bank or account names
     for <form> to be imported to the final database. Mtarget> can be "bank"
     (bank names) or "plan" (account names).
-    TODO: separate data from code (avoid hardcoded values)
     """
     name = None    
     
     if target == "plan":
-        if form == "101":
-            name = "NAMES.DBF"
-        elif form == "102":
-            name = "SPRAV1.DBF"
-        else:
-            raise ValueError("Form {} is not supported yet.".format(form))
+        name = ACCOUNT_NAMES_DBF[form]
     elif target == "bank":
         # TODO: iterate in dir_, finding the latest dbf files
         pass
@@ -309,10 +303,8 @@ def get_import_dbf_information(target, form):
     imported from the dbf related to the bank (when target="bank") or
     account (when target="plan") names should go.
     """
-    if target == "plan" and form == "102":
-        return "sprav102", ("NOM", "PRSTR", "CODE", "NAME")
-    else:
-        raise ValueError("Invalid target / target not implemented yet")
+    info = NAMES_TABLE_INFO[target][form]
+    return info['table'], info['fields']
 
 def import_plan(form):
     """

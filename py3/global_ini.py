@@ -155,6 +155,24 @@ FORM_DATA = {
     '102': f102
 }
 
+ACCOUNT_NAMES_DBF = {
+    '101': 'NAMES.DBF',
+    '102': 'SPRAV1.DBF'
+}
+
+NAMES_TABLE_INFO = {
+    'plan': {
+        # TODO: fill information about other forms
+        '102': {
+            'table': "sprav102",
+            'fields': ("NOM", "PRSTR", "CODE", "NAME")
+        },
+    },
+    
+    'bank': {
+    }
+}
+
 ############################################################################# 
 # 4. Additional paths
 #############################################################################
