@@ -59,15 +59,15 @@ def import_generic(database, path):
         print("File not found:",  path)
 
 def mysqlimport(db_name, csv_path, ignore_lines = 1, add_mode = "ignore"):
-        command_line = r'mysqlimport --ignore_lines={0} --{1} {2} "{3}" --lines-terminated-by="\r\n"'.format(
-                ignore_lines, add_mode, db_name, csv_path)
-        run_mysqlimport_command_line(csv_path, command_line)
+    command_line = r'mysqlimport --ignore_lines={0} --{1} {2} "{3}" --lines-terminated-by="\r\n"'.format(
+                    ignore_lines, add_mode, db_name, csv_path)
+    run_mysqlimport_command_line(csv_path, command_line)
 
 def run_mysqlimport_command_line(csv_path, command_line):
-        if os.path.isfile(csv_path):            
-            terminal(command_line)
-        else:
-            print("File not found:",  csv_path)
+    if os.path.isfile(csv_path):            
+        terminal(command_line)
+    else:
+        print("File not found:",  csv_path)
             
 ############################################################################### 
 # mysqldump wrapppers
@@ -189,8 +189,8 @@ def import_csv_derived_from_text_files():
     directory = get_private_data_folder('101', 'csv')
     
     for filename in os.listdir(directory):
-         csv_path = os.path.join(directory, filename)  
-         mysqlimport(db_name, csv_path, ignore_lines=0)
+        csv_path = os.path.join(directory, filename)  
+        mysqlimport(db_name, csv_path, ignore_lines=0)
        
     print("\nFinished importing CSV files into raw data database.")
     print("Directory:", directory)
@@ -250,7 +250,7 @@ def create_final_dataset_in_raw_database(form):
 #             4. Working with the final dataset               #
 ################################################################
 
-def import_dbf_generic(dbf_path, db, table, fields, verbose=False):
+def import_dbf_generic(dbf_path, db, table, fields):
     """
     Imports a dbf file to a database directly, without using temporary files.
     The dbf file is located at <dbf_path>, and the data is imported to
@@ -282,8 +282,8 @@ def import_dbf_generic(dbf_path, db, table, fields, verbose=False):
 def get_import_dbf_path(target, form):
     """
     Returns the path to the dbf file that contains the bank or account names
-    for <form> to be imported to the final database. Mtarget> can be "bank"
-    (bank names) or "plan" (account names).
+    for <form> to be imported to the final database. <target> can be "bank"
+    (for dbf with bank names) or "plan" (for dbf with account names).
     """
     name = None    
     
@@ -311,8 +311,8 @@ def import_plan(form):
     Imports account names of <form> into the final database.
     """
     db = DB_NAMES['final']    
-    dbf = get_import_dbf_path("plan", form)
-    table, fields = get_import_dbf_information("plan", form)
+    dbf = get_import_dbf_path('plan', form)
+    table, fields = get_import_dbf_information('plan', form)
 
     import_dbf_generic(dbf, db, table, fields)
     
@@ -343,7 +343,7 @@ def import_tables():
 
 def make_balance():
     """
-   TODO: describe what this function does
+    TODO: describe what this function does
     """
     db_name = DB_NAMES['final']
     execute_sql("call alloc_make", db_name)
@@ -356,7 +356,7 @@ def make_balance():
 
 def test_balance():
     """
-   TODO: describe what this function does
+    TODO: describe what this function does
     """
     def do_output(sql):
         print('-> ' + sql)
@@ -381,14 +381,13 @@ def test_balance():
 from make_xlsx import make_xlsx
 
 def report_balance_tables_xls():
-    report_balance_tables_csv
+    report_balance_tables_csv()
     directory = DIRLIST['101']['output']
     make_xlsx(directory)    
 
 def report_balance_tables_csv():
     """
-    TODO: describe what this function does
-    # todo: change wording
+    TODO: describe what this function does and change wording
     """
     # prepare TABLES in database
     db_name = DB_NAMES['final']

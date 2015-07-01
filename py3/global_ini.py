@@ -104,7 +104,7 @@ def create_directories(dir_dict, verbose = False):
 DB_NAME_RAW = 'dbf_db3'
 DB_NAME_FINAL = 'cbr_db3'
 
-DB_NAMES = {'raw': DB_NAME_RAW,  "final": DB_NAME_FINAL}
+DB_NAMES = {'raw': DB_NAME_RAW, 'final': DB_NAME_FINAL}
 
 ############################################################################# 
 #                3. FORM DESCRIPTIONS
