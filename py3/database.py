@@ -250,6 +250,26 @@ def create_final_dataset_in_raw_database(form):
 #             4. Working with the final dataset               #
 ################################################################
 
+
+def make_insert_statement(table, fields):
+     # 
+     # TODO-1: 
+     #    Creating sql statement should be in this separate function.
+     #
+     #    It not transparent how 'fields' populate VALUES, because fields is assumes to be just field names. 
+     #    Better the call should be make_insert_statement(table, fields, values) to produce a fully qualified statement 
+     #
+     #    Creating sql statement should be in this separate function.
+     #    Can use 'replace' or 'ignore' in syntax, e.g. 'ignore' as default.
+
+     insert_sql = "INSERT INTO {} ({}) VALUES ({})".format(
+        table,
+        ",".join(fields),
+        ",".join(["%s"]*len(fields))
+     )
+     return insert_sql
+
+
 def import_dbf_generic(dbf_path, db, table, fields):
     """
     Imports a dbf file to a database directly, without using temporary files.
@@ -272,12 +292,23 @@ def import_dbf_generic(dbf_path, db, table, fields):
     
         for record in get_records(dbf_path, fields):
             ordered_values = [record[key] for key in fields]
+            # TODO-2: must use make_insert_statement() here.
             cur.execute(insert_sql, ordered_values)
 
         conn.commit()    
         cur.close()
     finally:
         conn.close()        
+
+#   TODO-3: get_import_dbf_path, get_import_dbf_information  must be replaced with the following
+#       
+#   from global_ini import get_account_name_parameters, get_bank_name_parameters
+#   dbf_path, table, fields = get_account_name_parameters(form) 
+#   dbf_path, table, fields = get_bank_name_parameters(form) 
+# 
+#   get_account_name_parameters, get_bank_name_parameters must use flat dictionaries to save data
+
+
 
 def get_import_dbf_path(target, form):
     """
@@ -290,7 +321,8 @@ def get_import_dbf_path(target, form):
     if target == "plan":
         name = ACCOUNT_NAMES_DBF[form]
     elif target == "bank":
-        # TODO: iterate in dir_, finding the latest dbf files
+        # ---TODO---: iterate in dir_, finding the latest dbf files
+        # This is not a todo, there is no iteration. 
         pass
     else:
         raise ValueError("Invalid target")
@@ -381,6 +413,9 @@ def test_balance():
 from make_xlsx import make_xlsx
 
 def report_balance_tables_xls():
+    """
+    TODO: describe what this function does
+    """
     report_balance_tables_csv()
     directory = DIRLIST['101']['output']
     make_xlsx(directory)    
