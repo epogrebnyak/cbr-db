@@ -11,27 +11,30 @@ from datetime import datetime, date
 from docopt import docopt
 from date_engine import get_date_range, shift_month_ahead
 
-def get_date_from_quarter_string(string):
+def get_date_from_quarter_string(timestamp):
     """
-    Returns a date as date object based on <string>.
-    <string> describes a date using a quarter notation
-    Example of notation: 4Q2005, 4q2005, 2005Q4 or 2005q4 for 4th quater of 2005.
+    Returns day 1 of quarter following <timestamp> argument. 
+    Example: for timestamp = '1q2015' returns date object with date '2015-04-01'
+    <timestamp describes a date using a quarter-year  notation [1-4]q[YYYY], [1-4]Q[YYYY], [YYYY]q[1-4], [YYYY]Q[1-4]
+    <timestamp> examples: 1Q2005, 2q2005, 2005Q3, 2005q4
     """
-    # break into year, quarter or quarter, year
-    parts = string.upper().split('Q')
+    # not todo: may use regex to catch year/quarter
+    
+    # break into (year, quarter) or (quarter, year)
+    parts = timestamp.upper().split('Q')
 
     if len(parts) != 2:
         # not in a quarter format, break
         return None
     else:
-        # make sure the order is year, quater
+        # make sure the order is (year, quater), swap to this format if otherwise 
         if len(parts[0]) == 1:
             parts[0], parts[1] = parts[1], parts[0]
 
         # convert to integer checking the range
         year, quarter = int(parts[0]), int(parts[1])
         if quarter not in range(1, 5):
-            raise ValueError("Quarter must be between 1 to 4 (inclusive)")
+            raise ValueError("Quarter must be 1, 2, 3 or 4")
 
         # first quarter: month 4. last quarter: first month of next year
         month = quarter * 3
@@ -71,12 +74,30 @@ def get_date(string, formats=DATE_FORMATS, special_formats=SPECIAL_FORMATS):
         parse_output = special_format(string)
         if parse_output[0]: return parse_output
 
-def get_last_quarter_month(month):
+def shift_month_to_quarter_start(month):
     """
-    Returns the last completed quarter from <month>. For example, if the
-    month is 1, 2 or 3, the last completed quarter was at month 1.
-    Note: always returns month 1, 4, 7 or 10.
+    Shifts <month> to start of quarter. Function used to obtain valid quarter reporting date. 
+    Always returns 1, 4, 7 or 10:
+    month | result
+    1 1
+    2 1
+    3 1
+    4 4
+    5 4
+    6 4
+    7 7
+    8 7
+    9 7
+    10 10
+    11 10 
+    12 10 
     """
+    # Note: former name 'get_last_quarter_month' contradicted function algorithm.
+    #"""
+    #Returns the last completed quarter from <month>. For example, if the
+    #month is 1, 2 or 3, the last completed quarter was at month 1.
+    #Note: always returns month 1, 4, 7 or 10.
+    #"""
     quarter = (month - 1) // 3
     return quarter * 3 + 1
 
@@ -106,8 +127,8 @@ def get_last_date_in_year(dt, form):
             # we can get the end of the 4 quarter that is in the next year
             dt = dt.replace(year=dt.year + 1, month=1)
         else:
-            # go back to the last valid quarter
-            dt = dt.replace(month=get_last_quarter_month(dt.month))
+            # go back to the last valid quarter reporting date
+            dt = dt.replace(month=shift_month_to_quarter_start(dt.month))
 
     return dt
 
