@@ -1,5 +1,30 @@
 Создание тестового www-интерфейса программы bankform.py
 2015-06-30 09:56 AM
+-----------------------------
+Project: https://github.com/epogrebnyak/cbr-db
+
+Need a simple localhost demo webpage to do the following:
+
+1. a button to clone latest program version from a repo
+2.1. text string input + OK to get bankform.py arguments
+2.2. run bankform.py with passed arguments
+2.3. show console output to html screen (can I see same ) 
+3. show a list of files in 'output' folders with downloadable links 
+
+All three sections are in one screen , minimal(technical) design. 
+
+Milestones:
+5%  Test you are able to run test-one-date-101.bat and test-one-date-102.bat (or similar bach scripts) on your machine
+10% html page design
+10% #1 
+35% #2.1-2.3
+15% #3
+25% clean-up and discussion 
+
+-----------------------------
+
+
+
 
 Основной функционал:
 1. клонировать текущую версию программы из репозитария на сервер
