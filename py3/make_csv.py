@@ -1,11 +1,9 @@
 import os
 import csv
 from datetime import datetime
-from global_ini import DIRLIST, FORM_DATA
+from global_ini import DIRLIST, FORM_DATA, CODEPAGE
 from dbfread import DBF
 from date_engine import isodate2timestamp, iso2date, date2quarter, date2iso
-
-CODEPAGE = "cp866"
 
 def get_records(dbf_filename, field_name_selection):
     table = DBF(dbf_filename, encoding=CODEPAGE)

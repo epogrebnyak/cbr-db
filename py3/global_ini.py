@@ -161,4 +161,9 @@ FORM_DATA = {
 
 MYSQL_PATH = [r'C:\Program Files (x86)\MySQL\MySQL Server 5.7\bin', r'C:\MySQL\bin']
 
+############################################################################# 
+# 5. General configuration
+#############################################################################
 
+# encoding of the dbf files
+CODEPAGE = "cp866"
