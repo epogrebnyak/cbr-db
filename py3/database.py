@@ -251,6 +251,58 @@ def create_final_dataset_in_raw_database(form):
 #             4. Working with the final dataset               #
 ################################################################
 
+def import_dbf_generic(dbf_path, db, table, fields):
+    """
+    Imports a dbf file to a database directly, without using temporary files.
+    The dbf file is located at <dbf_path>, and the data is imported to
+    <db>.<table>, using fields <fields>.
+    """
+    raise NotImplementedError("Not implemented yet")
+
+def find_latest_import_dbf(dir_, target, form):
+    """
+    Returns the path to the latest dbf file that contains the bank (when
+    target="bank") or account (when target="plan") names for <form>.
+    """
+    name = None    
+    
+    if target == "plan":
+        if form == "101":
+            name = "NAMES.DBF"
+        elif form == "102":
+            name = "SPRAV1.DBF"
+        else:
+            raise ValueError("Form {} is not supported yet.".format(form))
+    elif target == "bank":
+        # TODO: iterate in dir_, finding the latest dbf files
+        pass
+    else:
+        raise ValueError("Invalid target")
+            
+    return os.path.join(dir_, name)
+
+def get_import_dbf_information(target, form):
+    """
+    Returns the db table name and its corresponding fields to where the data
+    imported from the dbf related to the bank (when target="bank") or
+    account (when target="plan") names should go.
+    """
+    if target == "plan":
+        if form == "102":
+            return "sprav102", ("NOM", "PRSTR", "CODE", "NAME")
+    else:
+        raise ValueError("Invalid target / target not implemented yet")
+
+def import_plan(form):
+    """
+    Imports account names of <form> into the final database.
+    """
+    database = DB_NAMES['final']
+    dbf_dir = DIRLIST[form]['dbf']
+    latest_dbf = find_latest_import_dbf(dir_=dbf_dir, target="plan", form=form)    
+    table, fields = get_import_dbf_information(form)
+    import_dbf_generic(dbf_path=latest_dbf, db=database, table=table, fields=fields)
+    
 def import_alloc(filename='alloc_raw.txt'):
     """
     TODO: describe what this function does

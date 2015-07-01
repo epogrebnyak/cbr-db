@@ -28,6 +28,7 @@ Import bank sector statistics stored as archived DBF files at www.cbr.ru/credit/
     'migrate dataset' dumps final table from raw database and imports it to final database
 
 4. Working with final database:
+    'import plan' reads account names into final database
     'import alloc' and 'import tables' read supplementary tables to final database (allocation algorithm)
     'make balance' creates table 'balance' based on 'f101', 'alloc' and supplementary tables (for form 101)
     'report balance' dumps final reporting tables to csv or xls files
@@ -43,6 +44,7 @@ Usage:
     bankform.py unpack     <form> (<timestamp1> [<timestamp2>] | --all-dates)
     bankform.py make csv   <form> (<timestamp1> [<timestamp2>] | --all-dates)
     bankform.py import csv <form> (<timestamp1> [<timestamp2>] | --all-dates)
+    bankform.py import plan <form>
     bankform.py update     <form> (<timestamp1> [<timestamp2>] | --all-dates) [--no-download]
     bankform.py make csv   <form> --private-data [--all-dates]
     bankform.py import csv <form> --private-data [--all-dates]
@@ -56,7 +58,7 @@ Usage:
     bankform.py test   balance
     bankform.py report balance     [--xlsx]
     bankform.py report form <form> [--xlsx]
-
+    
 
 Notes:
     (1) Format for timestamps is YYYY-MM-DD (ISO), YYYY-MM, DD.MM.YYYY, MM.YYYY or YYYY
@@ -77,7 +79,7 @@ from database import delete_and_create_db, save_db_to_dump, load_db_from_dump
 from database import import_csv, import_csv_derived_from_text_files
 from private_form_txt import convert_txt_directory_to_csv
 from database import save_dataset_as_sql, import_dataset_from_sql, create_final_dataset_in_raw_database
-from database import import_alloc, import_tables
+from database import import_alloc, import_tables, import_plan
 from database import make_balance, test_balance, report_balance_tables_csv, report_balance_tables_xls
 
 
@@ -187,6 +189,9 @@ if __name__ == '__main__':
             import_dataset_from_sql(form)
 
     # 4. Working with final database
+    if arg['import'] and arg['plan']:
+        import_plan(form)
+
     if arg['import'] and arg['alloc']:
         import_alloc()
 
