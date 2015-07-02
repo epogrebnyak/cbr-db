@@ -196,6 +196,7 @@ def init_balancedf():
     #left join alloc and f101 on 'conto' to create initial balance data frame
     # Need comment: why apply this to 'alloc', not 'f101'?
     # comment: we are doing a left join on alloc, and this is how it is in sql code.
+    # Need further comment: in sql code we have where v.conto Is not null and v is f101. (see line 191 above)
     allocdf = alloc[~alloc['conto'].isnull()] #exclude rows where account is null
 
     joineddf = allocdf.merge(f101, on='conto', how='left')
