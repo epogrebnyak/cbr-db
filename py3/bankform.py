@@ -45,6 +45,7 @@ Usage:
     bankform.py make csv   <form> (<timestamp1> [<timestamp2>] | --all-dates)
     bankform.py import csv <form> (<timestamp1> [<timestamp2>] | --all-dates)
     bankform.py import plan <form>
+    bankform.py import bank
     bankform.py update     <form> (<timestamp1> [<timestamp2>] | --all-dates) [--no-download]
     bankform.py make csv   <form> --private-data [--all-dates]
     bankform.py import csv <form> --private-data [--all-dates]
@@ -78,7 +79,7 @@ from database import delete_and_create_db, save_db_to_dump, load_db_from_dump
 from database import import_csv, import_csv_derived_from_text_files
 from private_form_txt import convert_txt_directory_to_csv
 from database import save_dataset_as_sql, import_dataset_from_sql, create_final_dataset_in_raw_database
-from database import import_alloc, import_tables, import_plan
+from database import import_alloc, import_tables, import_plan, import_bank
 from database import make_balance, test_balance, report_balance_tables_csv, report_balance_tables_xls
 
 
@@ -196,6 +197,9 @@ if __name__ == '__main__':
     # 4. Working with final database
     if arg['import'] and arg['plan']:
         import_plan(form)
+        
+    if arg['import'] and arg['bank']:
+        import_bank()
 
     if arg['import'] and arg['alloc']:
         import_alloc()

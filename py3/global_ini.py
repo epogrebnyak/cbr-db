@@ -181,23 +181,16 @@ def get_account_name_parameters(form):
 
 # Bank names
 
-BANK_TABLE_NAME = {
-    '101': "bank101",
-    '102': "bank102"
-}
+BANK_NAMES_DBF = (
+    "[0-1][0-9][0-9][0-9][0-9][0-9]_N.DBF",
+    "[0-1][0-9][0-9][0-9][0-9][0-9]N1.DBF"
+)
+BANK_TABLE_NAME = "bank"
+BANK_TABLE_FIELDS = [("regn", "regn_name"), ("regn", "regn_name")]
+BANK_DBF_FIELDS = [("REGN", "NAME_B"), ("REGN", "NAME_B")]
 
-BANK_TABLE_FIELDS = {
-    '101': ("REGN", "NAME_B", "PRITZ", "PRITZ_P"),
-    '102': ("REGN", "NAME_B", "PRITZ", "PRITZ_P")
-}
-
-BANK_DBF_FIELDS = {
-    '101': ("REGN", "NAME_B", "PRITZ", "PRITZ_P"),
-    '102': ("REGN", "NAME_B", "PRITZ", "PRITZ_P")
-}
-
-def get_bank_name_parameters(form):
-    return BANK_TABLE_NAME[form], BANK_TABLE_FIELDS[form], BANK_DBF_FIELDS[form]
+def get_bank_name_parameters():
+    return BANK_TABLE_NAME, BANK_TABLE_FIELDS, BANK_DBF_FIELDS
 
 #############################################################################
 # 4. Additional paths

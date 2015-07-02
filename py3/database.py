@@ -5,10 +5,12 @@
 
 from terminal import terminal
 from conn import execute_sql, get_mysql_connection
-from global_ini import DB_NAMES, DIRLIST, ACCOUNT_NAMES_DBF, get_account_name_parameters
+from global_ini import DB_NAMES, DIRLIST, ACCOUNT_NAMES_DBF, BANK_NAMES_DBF
+from global_ini import get_bank_name_parameters, get_account_name_parameters
 from make_csv import list_csv_filepaths_by_date, get_records
 from cli_dates import get_date
 import os
+import re
 
 ################################################################
 #             0. Generic functions used in other calls         #
@@ -408,7 +410,7 @@ def import_dbf_generic(dbf_path, db, table, fields, dbf_fields=None):
         cur = conn.cursor()
 
         for record in get_records(dbf_path, dbf_fields):
-            ordered_values = [record[key] for key in fields]
+            ordered_values = [record[key] for key in dbf_fields]
             cur.execute(insert_sql, ordered_values)
 
         conn.commit()
@@ -421,20 +423,38 @@ def get_import_dbf_path(target, form):
     Returns the path to the dbf file that contains the bank or account names
     for <form> to be imported to the final database. <target> can be "bank"
     (for dbf with bank names) or "plan" (for dbf with account names).
+    
+    When <target> is "plan", a single string is returned. When <target> is "bank",
+    a list with two strings is returned, pointing to two distinct dbf files.
     """
     name = None
 
     if target == "plan":
         name = ACCOUNT_NAMES_DBF[form]
     elif target == "bank":
-        # TODO iterate in dir_, finding the latest dbf files
-        # patterns: mmyyyyN1.DBF and mmyyyy_N.DBF
-        pass
+        if form in ('101', '102'):
+            tops = [] # two different patterns        
+            
+            for pattern in BANK_NAMES_DBF:
+                expr = re.compile(pattern)
+                dir_ = DIRLIST['101']['dbf']
+                cand = []            
+                
+                for file in os.listdir(dir_):
+                    r = expr.search(file)
+                    if r:
+                        cand.append(r.string)
+                
+                cand.sort(key=lambda x: (x[2:6], x[0:2]), reverse=True)
+                tops.append(os.path.join(dir_, cand[0]))
+                
+            return tops
+        else:
+            raise ValueError("Invalid form / form not implemented yet")
     else:
         raise ValueError("Invalid target")
 
     return os.path.join(DIRLIST[form]['dbf'], name)
-
 
 def import_plan(form):
     """
@@ -444,9 +464,24 @@ def import_plan(form):
     db = DB_NAMES['final']
     dbf = get_import_dbf_path('plan', form)
     table, fields, dbf_fields = get_account_name_parameters(form)
-
+    
     clear_table(db, table)
     import_dbf_generic(dbf, db, table, fields, dbf_fields)
+    
+def import_bank():
+    """
+    Imports bank names into the final database, removing all
+    previous entries.
+    """
+    form = '101'
+    db = DB_NAMES['final']
+    dbf_names = get_import_dbf_path('bank', form)
+    table, fields_list, dbf_fields_list = get_bank_name_parameters()
+
+    clear_table(db, table)
+    
+    for dbf_name, fields, dbf_fields in zip(dbf_names, fields_list, dbf_fields_list):
+        import_dbf_generic(dbf_name, db, table, fields, dbf_fields)
 
 def import_alloc(filename='alloc_raw.txt'):
     """
