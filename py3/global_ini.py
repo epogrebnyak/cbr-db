@@ -154,6 +154,8 @@ FORM_DATA = {
     '102': f102
 }
 
+# Account names
+
 ACCOUNT_NAMES_DBF = {
     '101': 'NAMES.DBF',
     '102': 'SPRAV1.DBF'
@@ -169,6 +171,11 @@ ACCOUNT_TABLE_FIELDS = {
     '102': ("NOM", "PRSTR", "CODE", "NAME")
 }
 
+def get_account_name_parameters(form):
+    return ACCOUNT_TABLE_NAME[form], ACCOUNT_TABLE_FIELDS[form]
+
+# Bank names
+
 BANK_TABLE_NAME = {
     '101': "bank101",
     '102': "bank102"
@@ -177,9 +184,6 @@ BANK_TABLE_NAME = {
 BANK_TABLE_FIELDS = {
     '101': ("REGN", "NAME_B", "PRITZ", "PRITZ_P")
 }
-
-def get_account_name_parameters(form):
-    return ACCOUNT_TABLE_NAME[form], ACCOUNT_TABLE_FIELDS[form]
 
 def get_bank_name_parameters(form):
     return BANK_TABLE_NAME[form], BANK_TABLE_FIELDS[form]

@@ -262,13 +262,18 @@ def create_final_dataset_in_raw_database(form):
 ################################################################
 
 
-def make_insert_statement(table, fields):
+def make_insert_statement(table, fields, ignore=False):
     """
     Creates an insert SQL statement that insert a row into <table> using
     columns <fields>. The statement is built using placeholders (%s) to use
     to ensure proper value quoting.
+    If <ignore> is True, then rows with repeated primary keys will be
+    ignored.
     """
-    insert_sql = "INSERT INTO {} ({}) VALUES ({})".format(
+    mode = "IGNORE" if ignore else ""
+    
+    insert_sql = "INSERT {} INTO {} ({}) VALUES ({})".format(
+        mode,        
         table,
         ",".join(fields),
         ",".join(["%s"]*len(fields))
@@ -280,11 +285,12 @@ def import_dbf_generic(dbf_path, db, table, fields):
     """
     Imports a dbf file to a database directly, without using temporary files.
     The dbf file is located at <dbf_path>, and the data is imported to
-    <db>.<table>, using fields <fields>.
+    <db>.<table>, using fields <fields>. Repeated rows (same primary key) are
+    ignored by default.
     """
     fields = list(fields)  # to accept generators
     
-    insert_sql = make_insert_statement(table, fields)
+    insert_sql = make_insert_statement(table, fields, ignore=True)
     
     # with autocommit turned off, the insertions should be fast
     conn = get_mysql_connection(database=db, autocommit=False)    
@@ -307,7 +313,7 @@ def get_import_dbf_path(target, form):
     for <form> to be imported to the final database. <target> can be "bank"
     (for dbf with bank names) or "plan" (for dbf with account names).
     """
-    name = None    
+    name = None
     
     if target == "plan":
         name = ACCOUNT_NAMES_DBF[form]
