@@ -15,7 +15,7 @@ import os
 ################################################################
 
 
-############################################################################### 
+###############################################################################
 # mysql.exe wrapppers
 ###############################################################################
 
@@ -23,7 +23,7 @@ def run_sql_string(string, database=None, verbose=False):
     """
     Runs <string> as command for mysql.exe
     Notes:
-       Requires mysql to be in PATH - see ini.bat/ini.py. Also requires host/port/user/password credentials MySQL configureation files. 
+       Requires mysql to be in PATH - see ini.bat/ini.py. Also requires host/port/user/password credentials MySQL configureation files.
        Allows running non-SQL commands in mysql.exe (e.g. source)
        For SQL commands may also use conn.execute_sql()
     """
@@ -33,7 +33,7 @@ def run_sql_string(string, database=None, verbose=False):
         call_string = "mysql --database {0} --execute \"{1}\"".format(
             database, string)
 
-    # todo: -v not showing to screen, check if it so, change 
+    # todo: -v not showing to screen, check if it so, change
     if verbose:
         call_string = call_string + " -v"
 
@@ -42,15 +42,15 @@ def run_sql_string(string, database=None, verbose=False):
 def get_forward_slashed_path(path):
     new_path = path.replace('\\', '/')
     return new_path
-    
+
 def source_sql_file(sql_filename, db_name):
-    path = get_forward_slashed_path(sql_filename) 
+    path = get_forward_slashed_path(sql_filename)
     command = r"source {0}".format(path)
     run_sql_string(command, database=db_name)
 
-############################################################################### 
+###############################################################################
 # mysqlimport wrapppers
-############################################################################### 
+###############################################################################
 
 def import_generic(database, path):
     if os.path.isfile(path):
@@ -65,15 +65,15 @@ def mysqlimport(db_name, csv_path, ignore_lines = 1, add_mode = "ignore"):
     run_mysqlimport_command_line(csv_path, command_line)
 
 def run_mysqlimport_command_line(csv_path, command_line):
-    if os.path.isfile(csv_path):            
+    if os.path.isfile(csv_path):
         terminal(command_line)
     else:
         print("File not found:",  csv_path)
-            
-############################################################################### 
+
+###############################################################################
 # mysqldump wrapppers
-############################################################################### 
-            
+###############################################################################
+
 def dump_table_csv(db, table, directory):
     """
     Saves database table in specified directory as csv file.
@@ -89,12 +89,12 @@ def dump_table_csv(db, table, directory):
 
 def dump_table_sql(db, table, path):
     """
-    Dumps table from database to local directory as a SQL file.    
+    Dumps table from database to local directory as a SQL file.
     """
     string = r'mysqldump {0} {1} --add-drop-table=FALSE --no-create-info --insert-ignore > "{2}"'.format(
         db, table, path)
     terminal(string)
-    
+
 
 def replace_in_file(filepath, replace_what, replace_with):
     """
@@ -105,7 +105,7 @@ def replace_in_file(filepath, replace_what, replace_with):
         lines = f.read().replace(replace_what, replace_with)
 
     with open(filepath, 'w') as f1:
-        f1.write(lines)   
+        f1.write(lines)
 
 
 def read_values_from_file(regn_file, sep=","):
@@ -116,10 +116,10 @@ def read_values_from_file(regn_file, sep=","):
     """
     with open(regn_file) as f:
         data = []
-        
+
         for line in f:
             data.append(line.split(sep))
-        
+
         return data
 
 ################################################################
@@ -148,15 +148,15 @@ def get_db_dumpfile_path(db_name):
     directory = DIRLIST['global']['database']
     sql_filename = db_name + ".sql"
     path = os.path.join(directory, sql_filename).replace("\\","/")
-    # path.replace(\\", '/') 
+    # path.replace(\\", '/')
     return path
 
 
 def load_db_from_dump(db_name):
     """
     Loads a database structure from a dump file.
-    Standard location defined by get_db_dumpfile_path() 
-    # todo: change to new directory structure   
+    Standard location defined by get_db_dumpfile_path()
+    # todo: change to new directory structure
     """
     print("Database:", db_name)
     path = get_db_dumpfile_path(db_name)
@@ -168,8 +168,8 @@ def load_db_from_dump(db_name):
 def save_db_to_dump(db_name):
     """
     Saves the structure of a database to a sql dump file in the standard location.
-    Standard location defined by get_db_dumpfile_path() 
-    # todo: change to new directory structure    
+    Standard location defined by get_db_dumpfile_path()
+    # todo: change to new directory structure
     # Other variety: http://code.activestate.com/recipes/286223-ohmysqldump/
     """
     print("Database:", db_name)
@@ -193,7 +193,7 @@ def clear_table(db, table):
         cur.close()
     finally:
         conn.close()
-        
+
 def make_insert_statement(table, fields, ignore=False):
     """
     Creates an insert SQL statement that insert a row into <table> using
@@ -203,16 +203,16 @@ def make_insert_statement(table, fields, ignore=False):
     ignored.
     """
     mode = "IGNORE" if ignore else ""
-    
+
     insert_sql = "INSERT {} INTO {} ({}) VALUES ({})".format(
-        mode,        
+        mode,
         table,
         ",".join(fields),
         ",".join(["%s"]*len(fields))
     )
-     
-    return insert_sql    
-    
+
+    return insert_sql
+
 def insert_rows_into_table(db, table, fields, values, ignore=False):
     """
     Inserts <values> into <db> <table> <fields>. Should only be used when
@@ -221,45 +221,45 @@ def insert_rows_into_table(db, table, fields, values, ignore=False):
     """
     sql = make_insert_statement(table, fields, ignore)
     conn = get_mysql_connection(database=db)
-    
+
     try:
         cur = conn.cursor()
-        
+
         for row in values:
             cur.execute(sql, row)
-        
+
         conn.commit()
     finally:
         cur.close()
         conn.close()
-    
+
 ################################################################
 #                  2. DBF and TXT file import                  #
 ################################################################
 
 def import_csv(isodate, form):
-    db_name = DB_NAMES['raw']        
+    db_name = DB_NAMES['raw']
     for csv_path in list_csv_filepaths_by_date(isodate, form):
         mysqlimport(db_name, csv_path, ignore_lines=1)
-        
+
     print("\nFinished importing CSV files into raw data database.")
     print("Form:", form, "Date:", isodate)
-    
+
 from global_ini import get_private_data_folder
 
-def import_csv_derived_from_text_files(): 
-    db_name = DB_NAMES['raw']   
-    
+def import_csv_derived_from_text_files():
+    db_name = DB_NAMES['raw']
+
     # risk: hardcoded 101
     directory = get_private_data_folder('101', 'csv')
-    
+
     for filename in os.listdir(directory):
-        csv_path = os.path.join(directory, filename)  
+        csv_path = os.path.join(directory, filename)
         mysqlimport(db_name, csv_path, ignore_lines=0)
-       
+
     print("\nFinished importing CSV files into raw data database.")
     print("Directory:", directory)
-    
+
 
 ################################################################
 #              3. Dataset manipulation                         #
@@ -290,7 +290,7 @@ def save_dataset_as_sql(form):
     """
     database = DB_NAMES['raw']
     table, file = get_sqldump_table_and_filename(form)
-    path = os.path.join(DIRLIST[form]['output'], file)    
+    path = os.path.join(DIRLIST[form]['output'], file)
     dump_table_sql(database, table, path)
 
 
@@ -301,8 +301,8 @@ def import_dataset_from_sql(form):
     database = DB_NAMES['final']
     _, file = get_sqldump_table_and_filename(form)
     read_table_sql(database, form, file)
-    
-    
+
+
 def create_final_dataset_in_raw_database(form, timestamp1, timestamp2=None,
                                          regn_list=None, regn_file=None,
                                          regn_all=True):
@@ -312,42 +312,42 @@ def create_final_dataset_in_raw_database(form, timestamp1, timestamp2=None,
     <timestamp1> and <timestamp2> can be set to limit the dates that goes
     to the final dataset.
 
-    <regn_list> can be set to a string containing the registration numbers, 
+    <regn_list> can be set to a string containing the registration numbers,
     separated by comma, that will be selected to the final database.
 
     <regn_file> (optional) can be the path to a file containing the registration
     numbers, one in each line of the file.
-    
+
     If <regn_all> is True, all possible registration numbers can be selected to
     go to the final database.
-    
+
     Only one regn selection mechanism should be set at the same time. Priority is
     given in this order: <regn_list>, <regn_file>, and <regn_all>. If no regn
     mechanism was selected, <regn_all> is used.
     """
     db = DB_NAMES["raw"]
-    
+
     # date handling
     clear_table(db, "cfg_date_limit")
-    
+
     def to_date(x):
         try:
             return get_date(x)[0]
         except:
             return None
-    
+
     insert_rows_into_table(
         db=db,
         table="cfg_date_limit",
         fields=('dt_start', 'dt_end'),
         values=[(to_date(timestamp1), to_date(timestamp2))]
     )
-    
+
     run_sql_string("call cfg_init_populate_dates();", db)
-    
+
     # regn handling
     clear_table(db, "cfg_regn_in_focus")
-    
+
     if not regn_all:
         # get regn list and insert it to the database
         if regn_list:
@@ -360,15 +360,15 @@ def create_final_dataset_in_raw_database(form, timestamp1, timestamp2=None,
                 try:
                     # try in the global tables dir
                     dir_ = DIRLIST['global']['tables']
-                    path = os.path.join(dir_, regn_file)                
+                    path = os.path.join(dir_, regn_file)
                     print('-> {} was not found in the work dir. Trying in {}'.format(
                         regn_file, path))
-                
+
                     regn = read_values_from_file(path)
                 except FileNotFoundError:
                     print("-> {} not found, aborting".format(regn_file))
                     return
-        
+
         insert_rows_into_table(
             db=db,
             table="cfg_regn_in_focus",
@@ -378,7 +378,7 @@ def create_final_dataset_in_raw_database(form, timestamp1, timestamp2=None,
     else:
         # populate all regn from a stored procedure
         run_sql_string("call cfg_init_regn_fullset();", db)
-    
+
     # make the final dataset in the raw database
     run_sql_string("call f{}_make_dataset();".format(form), db)
 
@@ -386,7 +386,7 @@ def create_final_dataset_in_raw_database(form, timestamp1, timestamp2=None,
 #             4. Working with the final dataset               #
 ################################################################
 
-def import_dbf_generic(dbf_path, db, table, fields):
+def import_dbf_generic(dbf_path, db, table, fields, dbf_fields=None):
     """
     Imports a dbf file to a database directly, without using temporary files.
     The dbf file is located at <dbf_path>, and the data is imported to
@@ -394,20 +394,24 @@ def import_dbf_generic(dbf_path, db, table, fields):
     ignored by default.
     """
     fields = list(fields)  # to accept generators
-    
+
+    # table fields can be different from the dbf fields
+    if dbf_fields is None:
+        dbf_fields = fields
+
     insert_sql = make_insert_statement(table, fields, ignore=True)
-    
+
     # with autocommit turned off, the insertions should be fast
-    conn = get_mysql_connection(database=db, autocommit=False)    
-    
+    conn = get_mysql_connection(database=db, autocommit=False)
+
     try:
-        cur = conn.cursor()    
-    
-        for record in get_records(dbf_path, fields):
+        cur = conn.cursor()
+
+        for record in get_records(dbf_path, dbf_fields):
             ordered_values = [record[key] for key in fields]
             cur.execute(insert_sql, ordered_values)
 
-        conn.commit()    
+        conn.commit()
         cur.close()
     finally:
         conn.close()
@@ -419,7 +423,7 @@ def get_import_dbf_path(target, form):
     (for dbf with bank names) or "plan" (for dbf with account names).
     """
     name = None
-    
+
     if target == "plan":
         name = ACCOUNT_NAMES_DBF[form]
     elif target == "bank":
@@ -428,7 +432,7 @@ def get_import_dbf_path(target, form):
         pass
     else:
         raise ValueError("Invalid target")
-            
+
     return os.path.join(DIRLIST[form]['dbf'], name)
 
 
@@ -437,13 +441,13 @@ def import_plan(form):
     Imports account names of <form> into the final database, removing all
     previous entries.
     """
-    db = DB_NAMES['final']    
+    db = DB_NAMES['final']
     dbf = get_import_dbf_path('plan', form)
-    table, fields = get_account_name_parameters(form)
+    table, fields, dbf_fields = get_account_name_parameters(form)
 
     clear_table(db, table)
-    import_dbf_generic(dbf, db, table, fields)
-    
+    import_dbf_generic(dbf, db, table, fields, dbf_fields)
+
 def import_alloc(filename='alloc_raw.txt'):
     """
     TODO: describe what this function does
@@ -514,7 +518,7 @@ def report_balance_tables_xls():
     """
     report_balance_tables_csv()
     directory = DIRLIST['101']['output']
-    make_xlsx(directory)    
+    make_xlsx(directory)
 
 def report_balance_tables_csv():
     """

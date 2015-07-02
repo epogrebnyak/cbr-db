@@ -272,22 +272,6 @@ CREATE TABLE `plan` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `sprav101` (NAMES.dbf)
---
-
-DROP TABLE IF EXISTS `sprav101`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sprav101` (
-  `plan` varchar(1) NOT NULL,
-  `num_sc` int(11) NOT NULL,
-  `name` varchar(256) NOT NULL,
-  `type` int(3) NOT NULL,
-  PRIMARY KEY (`plan`, `num_sc`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `sprav102`
 --
 

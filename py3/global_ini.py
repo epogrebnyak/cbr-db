@@ -1,6 +1,6 @@
 import os
 
-# variables imported to other modules from here: 
+# variables imported to other modules from here:
 # PATH, DIRLIST, DB_NAMES, FORM_DATA, MYSQL_PATH
 
 # this global_ini.py file is in subfolder of DIR_ROOT, do os.path.dirname() twice
@@ -10,9 +10,9 @@ DIR_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 #############################################################################
 # 0. EXECUTABLES
 #############################################################################
- 
+
 # Executables directories
-PATH = {'unrar': os.path.join(DIR_ROOT, 'bin', 'unrar.exe'), 
+PATH = {'unrar': os.path.join(DIR_ROOT, 'bin', 'unrar.exe'),
            'z7': os.path.join(DIR_ROOT, 'bin', '7za')}
 
 #############################################################################
@@ -49,12 +49,12 @@ GLOB_DIR = {
 }
 
 # Private data directories --------------------------------------------------
-EXTRA_DIR = {'101': 
+EXTRA_DIR = {'101':
                     {'txt': os.path.join(DIR_ROOT, 'data.private', 'veb', 'form'),
                      'csv': os.path.join(DIR_ROOT, 'data.private', 'veb', 'csv' )
                      }
             }
-            
+
 # Final assembly ------------------------------------------------------------
 DIRLIST = {
     '101'    : get_form_dirs('101'),
@@ -80,12 +80,12 @@ def get_private_data_folder(form, subfolder_tag):
     Return absolute path to private data folder.
     """
     return EXTRA_DIR[form][subfolder_tag]
-    
+
 def get_global_folder(folder_tag):
     """
     Return absolute path to global folder with database files.
     """
-    return GLOB_DIR[folder_tag]    
+    return GLOB_DIR[folder_tag]
 
 def create_directories(dir_dict, verbose = False):
     """
@@ -105,7 +105,7 @@ DB_NAME_RAW = 'dbf_db3'
 DB_NAME_FINAL = 'cbr_db3'
 DB_NAMES = {'raw': DB_NAME_RAW, 'final': DB_NAME_FINAL}
 
-############################################################################# 
+#############################################################################
 #                3. FORM DESCRIPTIONS
 #############################################################################
 
@@ -162,17 +162,22 @@ ACCOUNT_NAMES_DBF = {
 }
 
 ACCOUNT_TABLE_NAME = {
-    '101': "sprav101",
+    '101': "plan",
     '102': "sprav102"
 }
 
 ACCOUNT_TABLE_FIELDS = {
+    '101': ("PLAN", "CONTO", "NAME", "LEVEL"),
+    '102': ("NOM", "PRSTR", "CODE", "NAME")
+}
+
+ACCOUNT_DBF_FIELDS = {
     '101': ("PLAN", "NUM_SC", "NAME", "TYPE"),
     '102': ("NOM", "PRSTR", "CODE", "NAME")
 }
 
 def get_account_name_parameters(form):
-    return ACCOUNT_TABLE_NAME[form], ACCOUNT_TABLE_FIELDS[form]
+    return ACCOUNT_TABLE_NAME[form], ACCOUNT_TABLE_FIELDS[form], ACCOUNT_DBF_FIELDS[form]
 
 # Bank names
 
@@ -182,19 +187,25 @@ BANK_TABLE_NAME = {
 }
 
 BANK_TABLE_FIELDS = {
-    '101': ("REGN", "NAME_B", "PRITZ", "PRITZ_P")
+    '101': ("REGN", "NAME_B", "PRITZ", "PRITZ_P"),
+    '102': ("REGN", "NAME_B", "PRITZ", "PRITZ_P")
+}
+
+BANK_DBF_FIELDS = {
+    '101': ("REGN", "NAME_B", "PRITZ", "PRITZ_P"),
+    '102': ("REGN", "NAME_B", "PRITZ", "PRITZ_P")
 }
 
 def get_bank_name_parameters(form):
-    return BANK_TABLE_NAME[form], BANK_TABLE_FIELDS[form]
+    return BANK_TABLE_NAME[form], BANK_TABLE_FIELDS[form], BANK_DBF_FIELDS[form]
 
-############################################################################# 
+#############################################################################
 # 4. Additional paths
 #############################################################################
 
 MYSQL_PATH = [r'C:\Program Files (x86)\MySQL\MySQL Server 5.7\bin', r'C:\MySQL\bin']
 
-############################################################################# 
+#############################################################################
 # 5. General configuration
 #############################################################################
 
