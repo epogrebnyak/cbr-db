@@ -1,5 +1,25 @@
 Создание тестового www-интерфейса программы bankform.py
 2015-06-30 09:56 AM
+
+
+Update:
+----------------------------------------------------------------
+Scope of work:
+
+1. Obtain script from https://github.com/epogrebnyak/cbr-db to run on remote server
+   Comment: this can be done as a shell command and also as a single html page with button that starts such command (no output to screen to make things easier). Such page can be created with Tornado framework. 
+2. Install ipython to run bankform.py form web interface.
+   Comment: this solves the problem of running a python script through the web interface
+3. Open 'output' folder so that a www user can download files from it (by clicking 'Save as' in web browser)
+  Question: ipython uses tornado as web framework. Do I need apache/ngix on top of it or a server can use only Tornado to display html pages? Or such page can be created using Tornado only.
+  
+Also needed:
+4. MySQL configured on remote machine
+
+Links:
+[Project repository](https://github.com/epogrebnyak/cbr-db)
+[Ipython](http://ipython.org/ipython-doc/1/interactive/public_server.html)
+
 -----------------------------
 Project: https://github.com/epogrebnyak/cbr-db
 
