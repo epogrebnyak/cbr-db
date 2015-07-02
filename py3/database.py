@@ -7,6 +7,7 @@ from terminal import terminal
 from conn import execute_sql, get_mysql_connection
 from global_ini import DB_NAMES, DIRLIST, ACCOUNT_NAMES_DBF, get_account_name_parameters
 from make_csv import list_csv_filepaths_by_date, get_records
+from cli_dates import get_date
 import os
 
 ################################################################
@@ -40,7 +41,7 @@ def run_sql_string(string, database=None, verbose=False):
 
 def get_forward_slashed_path(path):
     new_path = path.replace('\\', '/')
-    return new_path   
+    return new_path
     
 def source_sql_file(sql_filename, db_name):
     path = get_forward_slashed_path(sql_filename) 
@@ -106,6 +107,20 @@ def replace_in_file(filepath, replace_what, replace_with):
     with open(filepath, 'w') as f1:
         f1.write(lines)   
 
+
+def read_values_from_file(regn_file, sep=","):
+    """
+    Reads the values contained in <regn_file>, returning a list where each
+    element is a list corresponding to one line of <regn_file> that was
+    split using <sep>.
+    """
+    with open(regn_file) as f:
+        data = []
+        
+        for line in f:
+            data.append(line.split(sep))
+        
+        return data
 
 ################################################################
 #            1. General database operations                    #
@@ -178,6 +193,45 @@ def clear_table(db, table):
         cur.close()
     finally:
         conn.close()
+        
+def make_insert_statement(table, fields, ignore=False):
+    """
+    Creates an insert SQL statement that insert a row into <table> using
+    columns <fields>. The statement is built using placeholders (%s) to use
+    to ensure proper value quoting.
+    If <ignore> is True, then rows with repeated primary keys will be
+    ignored.
+    """
+    mode = "IGNORE" if ignore else ""
+    
+    insert_sql = "INSERT {} INTO {} ({}) VALUES ({})".format(
+        mode,        
+        table,
+        ",".join(fields),
+        ",".join(["%s"]*len(fields))
+    )
+     
+    return insert_sql    
+    
+def insert_rows_into_table(db, table, fields, values, ignore=False):
+    """
+    Inserts <values> into <db> <table> <fields>. Should only be used when
+    <values> are  small enought for all values to fit in memory. If ignore is
+    True, duplicates will be ignored.
+    """
+    sql = make_insert_statement(table, fields, ignore)
+    conn = get_mysql_connection(database=db)
+    
+    try:
+        cur = conn.cursor()
+        
+        for row in values:
+            cur.execute(sql, row)
+        
+        conn.commit()
+    finally:
+        cur.close()
+        conn.close()
     
 ################################################################
 #                  2. DBF and TXT file import                  #
@@ -247,39 +301,90 @@ def import_dataset_from_sql(form):
     database = DB_NAMES['final']
     _, file = get_sqldump_table_and_filename(form)
     read_table_sql(database, form, file)
-
-
-def create_final_dataset_in_raw_database(form):
+    
+    
+def create_final_dataset_in_raw_database(form, timestamp1, timestamp2=None,
+                                         regn_list=None, regn_file=None,
+                                         regn_all=True):
     """
-    Processes the data from the raw database, creating the final dataset.
-    """
-    db_name = DB_NAMES['raw']
-    run_sql_string("call f{}_make_dataset();".format(form), db_name)
+    Processes the data from the raw database, creating the final dataset for
+    <form>.
+    <timestamp1> and <timestamp2> can be set to limit the dates that goes
+    to the final dataset.
 
+    <regn_list> can be set to a string containing the registration numbers, 
+    separated by comma, that will be selected to the final database.
+
+    <regn_file> (optional) can be the path to a file containing the registration
+    numbers, one in each line of the file.
+    
+    If <regn_all> is True, all possible registration numbers can be selected to
+    go to the final database.
+    
+    Only one regn selection mechanism should be set at the same time. Priority is
+    given in this order: <regn_list>, <regn_file>, and <regn_all>. If no regn
+    mechanism was selected, <regn_all> is used.
+    """
+    db = DB_NAMES["raw"]
+    
+    # date handling
+    clear_table(db, "cfg_date_limit")
+    
+    def to_date(x):
+        try:
+            return get_date(x)[0]
+        except:
+            return None
+    
+    insert_rows_into_table(
+        db=db,
+        table="cfg_date_limit",
+        fields=('dt_start', 'dt_end'),
+        values=[(to_date(timestamp1), to_date(timestamp2))]
+    )
+    
+    run_sql_string("call cfg_init_populate_dates();", db)
+    
+    # regn handling
+    clear_table(db, "cfg_regn_in_focus")
+    
+    if not regn_all:
+        # get regn list and insert it to the database
+        if regn_list:
+            regn = regn_list.split(',')
+        elif regn_file:
+            try:
+                # try reading from the current work directory
+                regn = read_values_from_file(regn_file)
+            except FileNotFoundError:
+                try:
+                    # try in the global tables dir
+                    dir_ = DIRLIST['global']['tables']
+                    path = os.path.join(dir_, regn_file)                
+                    print('-> {} was not found in the work dir. Trying in {}'.format(
+                        regn_file, path))
+                
+                    regn = read_values_from_file(path)
+                except FileNotFoundError:
+                    print("-> {} not found, aborting".format(regn_file))
+                    return
+        
+        insert_rows_into_table(
+            db=db,
+            table="cfg_regn_in_focus",
+            fields=('regn', ),
+            values=regn
+        )
+    else:
+        # populate all regn from a stored procedure
+        run_sql_string("call cfg_init_regn_fullset();", db)
+    
+    # make the final dataset in the raw database
+    run_sql_string("call f{}_make_dataset();".format(form), db)
 
 ################################################################
 #             4. Working with the final dataset               #
 ################################################################
-
-
-def make_insert_statement(table, fields, ignore=False):
-    """
-    Creates an insert SQL statement that insert a row into <table> using
-    columns <fields>. The statement is built using placeholders (%s) to use
-    to ensure proper value quoting.
-    If <ignore> is True, then rows with repeated primary keys will be
-    ignored.
-    """
-    mode = "IGNORE" if ignore else ""
-    
-    insert_sql = "INSERT {} INTO {} ({}) VALUES ({})".format(
-        mode,        
-        table,
-        ",".join(fields),
-        ",".join(["%s"]*len(fields))
-    )
-     
-    return insert_sql
 
 def import_dbf_generic(dbf_path, db, table, fields):
     """
@@ -318,7 +423,7 @@ def get_import_dbf_path(target, form):
     if target == "plan":
         name = ACCOUNT_NAMES_DBF[form]
     elif target == "bank":
-        # TODO: iterate in dir_, finding the latest dbf files
+        # TODO iterate in dir_, finding the latest dbf files
         # patterns: mmyyyyN1.DBF and mmyyyy_N.DBF
         pass
     else:

@@ -61,7 +61,8 @@ def try_format(string, fmt):
 
 def get_date(string, formats=DATE_FORMATS, special_formats=SPECIAL_FORMATS):
     """
-    Parses <string> as date using several predefined text <formats> and <special_formats> functions.
+    Parses <string> as date using several predefined text <formats> and <special_formats> functions,
+    returning the date and the its matching format.
     """
 
     # tries the pattern formats one by one up to the first that parses the date

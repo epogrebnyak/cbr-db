@@ -60,7 +60,7 @@ DIRLIST = {
     '101'    : get_form_dirs('101'),
     '102'    : get_form_dirs('102'),
     'global' : GLOB_DIR,
-    'private': EXTRA_DIR
+    'private': EXTRA_DIR,
 }
 # ---------------------------------------------------------------------------
 

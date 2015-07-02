@@ -48,7 +48,7 @@ Usage:
     bankform.py update     <form> (<timestamp1> [<timestamp2>] | --all-dates) [--no-download]
     bankform.py make csv   <form> --private-data [--all-dates]
     bankform.py import csv <form> --private-data [--all-dates]
-    bankform.py make    dataset <form>
+    bankform.py make dataset <form> <timestamp1> [<timestamp2>] [--regn=<regn_list> | --regn-file=<file> | --regn-all]
     bankform.py save    dataset <form>
     bankform.py import  dataset <form>
     bankform.py migrate dataset <form>
@@ -58,7 +58,6 @@ Usage:
     bankform.py test   balance
     bankform.py report balance     [--xlsx]
     bankform.py report form <form> [--xlsx]
-    
 
 Notes:
     (1) Format for timestamps is YYYY-MM-DD (ISO), YYYY-MM, DD.MM.YYYY, MM.YYYY or YYYY
@@ -177,7 +176,13 @@ if __name__ == '__main__':
     # 3. Dataset manipulation in raw and final database
     if arg['dataset']:
         if arg['make']:
-            create_final_dataset_in_raw_database(form)
+            timestamp1 = arg.get('<timestamp1>')
+            timestamp2 = arg.get('<timestamp2>')
+            regn = arg.get('--regn')
+            regn_file = arg.get('--regn-file')
+            regn_all = arg.get('--regn-all')
+            create_final_dataset_in_raw_database(form, timestamp1, timestamp2,
+                                                 regn, regn_file, regn_all)
 
         if arg['save']:
             save_dataset_as_sql(form)
