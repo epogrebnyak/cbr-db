@@ -475,12 +475,7 @@ select distinct regn from bulk_f101b1
 
 UNION ALL
 
-select distinct regn from bulk_f101_b
-
-UNION ALL
-
-select distinct regn from bulk_f101veb;
-
+select distinct regn from bulk_f101_b;
 
 
 END */;;
