@@ -103,7 +103,6 @@ def create_directories(dir_dict, verbose = False):
 
 DB_NAME_RAW = 'dbf_db3'
 DB_NAME_FINAL = 'cbr_db3'
-
 DB_NAMES = {'raw': DB_NAME_RAW, 'final': DB_NAME_FINAL}
 
 ############################################################################# 
@@ -160,18 +159,30 @@ ACCOUNT_NAMES_DBF = {
     '102': 'SPRAV1.DBF'
 }
 
-NAMES_TABLE_INFO = {
-    'plan': {
-        # TODO: fill information about other forms
-        '102': {
-            'table': "sprav102",
-            'fields': ("NOM", "PRSTR", "CODE", "NAME")
-        },
-    },
-    
-    'bank': {
-    }
+ACCOUNT_TABLE_NAME = {
+    '101': "sprav101",
+    '102': "sprav102"
 }
+
+ACCOUNT_TABLE_FIELDS = {
+    '101': ("PLAN", "NUM_SC", "NAME", "TYPE"),
+    '102': ("NOM", "PRSTR", "CODE", "NAME")
+}
+
+BANK_TABLE_NAME = {
+    '101': "bank101",
+    '102': "bank102"
+}
+
+BANK_TABLE_FIELDS = {
+    '101': ("REGN", "NAME_B", "PRITZ", "PRITZ_P")
+}
+
+def get_account_name_parameters(form):
+    return ACCOUNT_TABLE_NAME[form], ACCOUNT_TABLE_FIELDS[form]
+
+def get_bank_name_parameters(form):
+    return BANK_TABLE_NAME[form], BANK_TABLE_FIELDS[form]
 
 ############################################################################# 
 # 4. Additional paths

@@ -5,7 +5,7 @@
 
 from terminal import terminal
 from conn import execute_sql, get_mysql_connection
-from global_ini import DB_NAMES, DIRLIST, NAMES_TABLE_INFO, ACCOUNT_NAMES_DBF
+from global_ini import DB_NAMES, DIRLIST, ACCOUNT_NAMES_DBF, get_account_name_parameters
 from make_csv import list_csv_filepaths_by_date, get_records
 import os
 
@@ -93,7 +93,6 @@ def dump_table_sql(db, table, path):
     string = r'mysqldump {0} {1} --add-drop-table=FALSE --no-create-info --insert-ignore > "{2}"'.format(
         db, table, path)
     terminal(string)
-
     
 
 def replace_in_file(filepath, replace_what, replace_with):
@@ -167,7 +166,19 @@ def save_db_to_dump(db_name):
     print("Dumped database structure to file <{0}.sql>. No data saved to this file.".format(
         db_name))
 
-
+def clear_table(db, table):
+    """
+    Removes all entries from <table> at <db>.
+    """
+    conn = get_mysql_connection(database=db)
+    try:
+        cur = conn.cursor()
+        cur.execute("DELETE FROM `{}`".format(table))
+        conn.commit()
+        cur.close()
+    finally:
+        conn.close()
+    
 ################################################################
 #                  2. DBF and TXT file import                  #
 ################################################################
@@ -234,7 +245,7 @@ def import_dataset_from_sql(form):
     Imports a dataset from the default sql dump file.
     """
     database = DB_NAMES['final']
-    table, file = get_sqldump_table_and_filename(form)
+    _, file = get_sqldump_table_and_filename(form)
     read_table_sql(database, form, file)
 
 
@@ -252,23 +263,18 @@ def create_final_dataset_in_raw_database(form):
 
 
 def make_insert_statement(table, fields):
-     # 
-     # TODO-1: 
-     #    Creating sql statement should be in this separate function.
-     #
-     #    It not transparent how 'fields' populate VALUES, because fields is assumes to be just field names. 
-     #    Better the call should be make_insert_statement(table, fields, values) to produce a fully qualified statement 
-     #
-     #    Creating sql statement should be in this separate function.
-     #    Can use 'replace' or 'ignore' in syntax, e.g. 'ignore' as default.
-
-     insert_sql = "INSERT INTO {} ({}) VALUES ({})".format(
+    """
+    Creates an insert SQL statement that insert a row into <table> using
+    columns <fields>. The statement is built using placeholders (%s) to use
+    to ensure proper value quoting.
+    """
+    insert_sql = "INSERT INTO {} ({}) VALUES ({})".format(
         table,
         ",".join(fields),
         ",".join(["%s"]*len(fields))
-     )
-     return insert_sql
-
+    )
+     
+    return insert_sql
 
 def import_dbf_generic(dbf_path, db, table, fields):
     """
@@ -278,11 +284,7 @@ def import_dbf_generic(dbf_path, db, table, fields):
     """
     fields = list(fields)  # to accept generators
     
-    insert_sql = "INSERT INTO {} ({}) VALUES ({})".format(
-        table,
-        ",".join(fields),
-        ",".join(["%s"]*len(fields))
-    )
+    insert_sql = make_insert_statement(table, fields)
     
     # with autocommit turned off, the insertions should be fast
     conn = get_mysql_connection(database=db, autocommit=False)    
@@ -292,23 +294,12 @@ def import_dbf_generic(dbf_path, db, table, fields):
     
         for record in get_records(dbf_path, fields):
             ordered_values = [record[key] for key in fields]
-            # TODO-2: must use make_insert_statement() here.
             cur.execute(insert_sql, ordered_values)
 
         conn.commit()    
         cur.close()
     finally:
-        conn.close()        
-
-#   TODO-3: get_import_dbf_path, get_import_dbf_information  must be replaced with the following
-#       
-#   from global_ini import get_account_name_parameters, get_bank_name_parameters
-#   dbf_path, table, fields = get_account_name_parameters(form) 
-#   dbf_path, table, fields = get_bank_name_parameters(form) 
-# 
-#   get_account_name_parameters, get_bank_name_parameters must use flat dictionaries to save data
-
-
+        conn.close()
 
 def get_import_dbf_path(target, form):
     """
@@ -321,31 +312,25 @@ def get_import_dbf_path(target, form):
     if target == "plan":
         name = ACCOUNT_NAMES_DBF[form]
     elif target == "bank":
-        # ---TODO---: iterate in dir_, finding the latest dbf files
-        # This is not a todo, there is no iteration. 
+        # TODO: iterate in dir_, finding the latest dbf files
+        # patterns: mmyyyyN1.DBF and mmyyyy_N.DBF
         pass
     else:
         raise ValueError("Invalid target")
             
     return os.path.join(DIRLIST[form]['dbf'], name)
 
-def get_import_dbf_information(target, form):
-    """
-    Returns the db table name and its corresponding fields to where the data
-    imported from the dbf related to the bank (when target="bank") or
-    account (when target="plan") names should go.
-    """
-    info = NAMES_TABLE_INFO[target][form]
-    return info['table'], info['fields']
 
 def import_plan(form):
     """
-    Imports account names of <form> into the final database.
+    Imports account names of <form> into the final database, removing all
+    previous entries.
     """
     db = DB_NAMES['final']    
     dbf = get_import_dbf_path('plan', form)
-    table, fields = get_import_dbf_information('plan', form)
+    table, fields = get_account_name_parameters(form)
 
+    clear_table(db, table)
     import_dbf_generic(dbf, db, table, fields)
     
 def import_alloc(filename='alloc_raw.txt'):
