@@ -465,8 +465,12 @@ def import_plan(form):
     dbf = get_import_dbf_path('plan', form)
     table, fields, dbf_fields = get_account_name_parameters(form)
     
+    print("Importing account names from {}...".format(dbf))    
+    
     clear_table(db, table)
     import_dbf_generic(dbf, db, table, fields, dbf_fields)
+    
+    print("-> Done.")
     
 def import_bank():
     """
@@ -481,7 +485,9 @@ def import_bank():
     clear_table(db, table)
     
     for dbf_name, fields, dbf_fields in zip(dbf_names, fields_list, dbf_fields_list):
+        print("Importing bank names from {}".format(dbf_name))
         import_dbf_generic(dbf_name, db, table, fields, dbf_fields)
+        print("-> Done")
 
 def import_alloc(filename='alloc_raw.txt'):
     """

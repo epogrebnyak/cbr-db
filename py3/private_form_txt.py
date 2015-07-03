@@ -1,56 +1,49 @@
-# -*- coding: utf-8 -*-
-# todo: add this header to other files
 import csv
 import datetime
 import re
 import os
 from global_ini import get_private_data_folder
-from date_engine import shift_month_ahead
+from date_engine import shift_month_ahead, date2iso
 
-# Risk: hardcoded 101
-FORM_DIR = get_private_data_folder('101', 'txt')
-CSV_DIR = get_private_data_folder('101', 'csv')
-SUBDIR = [2011, 2012, 2013, 2014, 2015]
-DB_VEB_TABLE = "bulk_f101veb"
+FORM_DIR = get_private_data_folder('txt')
+CSV_DIR = get_private_data_folder('csv')
+YEARS = [2013]
 
 def convert_txt_directory_to_csv(private_data_folder=FORM_DIR):
-    for year in SUBDIR:
+    """
+    Converts all supported text files from <private_data_folder> to csv files.
+    """
+    for year in YEARS:
         directory = os.path.join(private_data_folder, str(year))
+        
         for filename in os.listdir(directory):
-            if is_vaild_filename(filename):
-                print("Converting <" + filename + "> from <" + directory + ">")
-                txt2csv(filename, year, sourcedir=directory)
-
-def is_vaild_filename(filename):
-    fn, _ = get_target_file_name_and_date(filename, 1)
-    return fn is not None
-
-def get_target_file_name_and_date(sourcefile, year, target_directory=CSV_DIR):
-    regex = r"(?i)^F101_([0-9]{2}).TXT$" 
-    sre = re.match (regex, sourcefile)
-    if sre is not None:
-        month = int(sre.group(1))
-        date  = shift_month_ahead(datetime.date(year,month,1))
-        isodate = date.strftime("%Y-%m-%d")
-        csv_file = os.path.join(target_directory, DB_VEB_TABLE + "." + isodate)
-        return (csv_file, isodate)
-    else:
-        return (None, None)
-
-def txt2csv (sourcefile, year, sourcedir=None):       
-    csv_file, isodate = get_target_file_name_and_date(sourcefile, year)
+            converter = get_converter_for_file(filename)
+            
+            if converter:
+                path = os.path.join(directory, filename)
+                print("Converting <{}> to csv".format(path))
+                converter(path, year)
+            else:
+                print("Skipping <{}>: no suitable converter found".format(filename))
+                
+def f101_txt2csv(filename, year):
+    """
+    Special converter of form 101 text files to csv files.
+    """
+    month = int(os.path.basename(filename)[5:7])
+    isodate = date2iso(shift_month_ahead(datetime.date(year, month, 1)))
+    csv_file = os.path.join(CSV_DIR, "bulk_f101veb.{}".format(isodate))
     
     with open(csv_file, 'w') as targetfile:
-        spamwriter = csv.writer(targetfile, delimiter='\t', lineterminator = '\n')
-        sourcefile = os.path.join(sourcedir,sourcefile)
+        writter = csv.writer(targetfile, delimiter='\t', lineterminator = '\n')
 
-        with open(sourcefile, 'r') as sourcefile:
-            spamreader = csv.reader(sourcefile, delimiter=' ', skipinitialspace = True)
+        with open(filename, 'r') as sourcefile:
+            reader = csv.reader(sourcefile, delimiter=' ', skipinitialspace = True)
             is_in_section_a = False
             is_in_section_b = False
             a_p = 0
             
-            for row in spamreader:
+            for row in reader:
                 if len(row) > 0:
                     if is_in_section_a == False and row[0] == u"А.": is_in_section_a = True
                     if is_in_section_b == False and row[0] == u"Б.": is_in_section_b = True
@@ -67,5 +60,29 @@ def txt2csv (sourcefile, year, sourcedir=None):
                     row[-1] = row[-1][:-1]
                     row.append(isodate)
                     row.append(str(a_p))
-                    #print (', '.join(row))
-                    spamwriter.writerow(row)              
+                    writter.writerow(row)
+                    
+def f102_txt2csv(filename, year):
+    """
+    Special converter of form 102 text files to csv files.
+    """
+    pass
+                
+# relates the filename pattern to a special converter
+PATTERNS = [
+    (r"(?i)^F101_([0-9]{2}).txt$", f101_txt2csv),
+    (r"(?i)^F102_([1-4]{1}).txt$", f102_txt2csv)
+]
+                
+def get_converter_for_file(filename):
+    """
+    Returns a suitable converter (if exists) for the file pointer by <filename>.
+    """
+    for pattern, converter in PATTERNS:
+        sre = re.match(pattern, filename)
+        
+        if sre:
+            return converter
+            
+if __name__ == "__main__":
+    convert_txt_directory_to_csv()

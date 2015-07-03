@@ -49,11 +49,10 @@ GLOB_DIR = {
 }
 
 # Private data directories --------------------------------------------------
-EXTRA_DIR = {'101':
-                    {'txt': os.path.join(DIR_ROOT, 'data.private', 'veb', 'form'),
-                     'csv': os.path.join(DIR_ROOT, 'data.private', 'veb', 'csv' )
-                     }
-            }
+EXTRA_DIR = {
+    'txt': os.path.join(DIR_ROOT, 'data.private', 'veb', 'form'),
+    'csv': os.path.join(DIR_ROOT, 'data.private', 'veb', 'csv' )
+}
 
 # Final assembly ------------------------------------------------------------
 DIRLIST = {
@@ -75,11 +74,11 @@ def get_public_data_folder(form, subfolder_tag):
     """
     return DIRLIST[form][subfolder_tag]
 
-def get_private_data_folder(form, subfolder_tag):
+def get_private_data_folder(subfolder_tag):
     """
     Return absolute path to private data folder.
     """
-    return EXTRA_DIR[form][subfolder_tag]
+    return EXTRA_DIR[subfolder_tag]
 
 def get_global_folder(folder_tag):
     """
@@ -182,8 +181,8 @@ def get_account_name_parameters(form):
 # Bank names
 
 BANK_NAMES_DBF = (
-    "[0-1][0-9][0-9][0-9][0-9][0-9]_N.DBF",
-    "[0-1][0-9][0-9][0-9][0-9][0-9]N1.DBF"
+    "[0-1][0-9]{5}_N.DBF",
+    "[0-1][0-9]{5}N1.DBF"
 )
 BANK_TABLE_NAME = "bank"
 BANK_TABLE_FIELDS = [("regn", "regn_name"), ("regn", "regn_name")]
