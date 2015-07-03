@@ -7,7 +7,7 @@ from date_engine import shift_month_ahead, date2iso, quarter2date
 
 FORM_DIR = get_private_data_folder('txt')
 CSV_DIR = get_private_data_folder('csv')
-YEARS = [2013]
+YEARS = [2012, 2013, 2014, 2015]
 
 def convert_txt_directory_to_csv(private_data_folder=FORM_DIR):
     """
@@ -16,15 +16,18 @@ def convert_txt_directory_to_csv(private_data_folder=FORM_DIR):
     for year in YEARS:
         directory = os.path.join(private_data_folder, str(year))
         
-        for filename in os.listdir(directory):
-            converter = get_converter_for_file(filename)
+        try:
+            for filename in os.listdir(directory):
+                converter = get_converter_for_file(filename)
             
-            if converter:
-                path = os.path.join(directory, filename)
-                print("Converting {} to csv".format(path))
-                converter(path, year)
-            else:
-                print("Skipping {}: no suitable converter found".format(filename))
+                if converter:
+                    path = os.path.join(directory, filename)
+                    print("Converting {} to csv".format(path))
+                    converter(path, year)
+                else:
+                    print("Skipping {}: no suitable converter found".format(filename))
+        except FileNotFoundError:
+            print("Skipping directory {} (not found)".format(year))
                 
 def f101_txt2csv(filename, year):
     """
