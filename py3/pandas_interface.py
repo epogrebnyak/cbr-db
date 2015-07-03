@@ -35,7 +35,7 @@ print("Datasets loaded in %f seconds" % (time.time() - start_time))
 
 def get_balance_total(balancedf, line, la_p):
     '''
-    A utitility function. Returns balance  dataframe for given line and la_p values, grouped by 
+    A utitility function. Returns balance  dataframe for given line and la_p values, grouped by
     'regn' and 'dt
     '''
     btotal = balancedf.reset_index()
@@ -44,7 +44,7 @@ def get_balance_total(balancedf, line, la_p):
                                                        'itogo':np.sum,
                                                        'line':lambda x:  line,
                                                        'la_p':lambda x:  la_p,
-                                                       'lev': lambda x:  1})    
+                                                       'lev': lambda x:  1})
     #add has_iv column
     # Need comment: why adding has_iv is important/difficult and requires 4 lines of code? is iv used anywhere in the code below?
     # comment: has_iv is present in sql table too so to be same as in database it has to be added.
@@ -55,10 +55,10 @@ def get_balance_total(balancedf, line, la_p):
     xx = xx.reset_index().drop_duplicates()
     xx = xx.set_index(['regn', 'dt'])
     btotal_grpdf = pd.tools.merge.concat([btotal_grpdf, xx], axis=1)
-    
+
     return btotal_grpdf
-    
-    
+
+
 def insert_totals(balancedf):
     '''
     Pandas equivalent to balance_make_insert_totals sql procedure.
@@ -68,9 +68,9 @@ def insert_totals(balancedf):
     #  get_balance_toal(balance_line, la_p) must return btotal1_grpdf as in line 57
 
     #create balance total temporary dataframes
-    btotal1_grpdf = get_balance_total(balancedf, line=100000, la_p=1) 
+    btotal1_grpdf = get_balance_total(balancedf, line=100000, la_p=1)
     btotal2_grpdf = get_balance_total(balancedf, line=200000, la_p=2)
-    
+
     #create final balance total dataframe
     # Need comment: what does pd.concat do? a union of the frames?
     # comment: yes, it is like UNION ALL operation with duplicate rows allowed,
@@ -197,9 +197,10 @@ def init_balancedf():
     # Need comment: why apply this to 'alloc', not 'f101'?
     # comment: we are doing a left join on alloc, and this is how it is in sql code.
     # Need further comment: in sql code we have where v.conto Is not null and v is f101. (see line 191 above)
-    allocdf = alloc[~alloc['conto'].isnull()] #exclude rows where account is null
+    # update: yes, you are right, it was a bug, now it is aligned with sql code.
+    f101df = f101[~f101['conto'].isnull()] #exclude rows where account is null
 
-    joineddf = allocdf.merge(f101, on='conto', how='left')
+    joineddf = alloc.merge(f101df, on='conto', how='left')
 
     #ir, iv, itogo multipy with mult
     joineddf['ir'] = joineddf['ir']*joineddf['mult']
@@ -227,8 +228,8 @@ def init_balancedf():
     # Need comment: we are efffectively making two dataframes and joining them together to get 'balancedf'
     #               can there be a different startegy or is this the only way to implement?
     # comment: There is one other strategy, but will have to try it and see if it works, using solely groupby operation.
-    # update: tried other strategy with "apply" function on groupby frame, but apply doesn't function on 
-    # multiple columns, thus will lead to same amount of code. 
+    # update: tried other strategy with "apply" function on groupby frame, but apply doesn't function on
+    # multiple columns, thus will lead to same amount of code.
     balancedf = pd.tools.merge.concat([grpdf, joineddf], axis=1)
 
     return balancedf
