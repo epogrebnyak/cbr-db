@@ -7,9 +7,6 @@
 # 
 
 import pandas as pd
-import numpy as np
-import os
-from pprint import pprint
 from sqlalchemy import create_engine
 from global_ini import DB_NAMES
 import time
@@ -63,7 +60,7 @@ print("Datasets loaded in %f seconds" % (time.time() - start_time))
 for var in [f101, alloc, balance]:
     print()
     print(var.head())
-    pprint(var.columns.tolist())
+    print(var.columns.tolist())
 
 
 
