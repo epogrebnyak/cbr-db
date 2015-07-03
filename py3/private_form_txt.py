@@ -3,7 +3,7 @@ import datetime
 import re
 import os
 from global_ini import get_private_data_folder
-from date_engine import shift_month_ahead, date2iso
+from date_engine import shift_month_ahead, date2iso, quarter2date
 
 FORM_DIR = get_private_data_folder('txt')
 CSV_DIR = get_private_data_folder('csv')
@@ -21,10 +21,10 @@ def convert_txt_directory_to_csv(private_data_folder=FORM_DIR):
             
             if converter:
                 path = os.path.join(directory, filename)
-                print("Converting <{}> to csv".format(path))
+                print("Converting {} to csv".format(path))
                 converter(path, year)
             else:
-                print("Skipping <{}>: no suitable converter found".format(filename))
+                print("Skipping {}: no suitable converter found".format(filename))
                 
 def f101_txt2csv(filename, year):
     """
@@ -35,7 +35,7 @@ def f101_txt2csv(filename, year):
     csv_file = os.path.join(CSV_DIR, "bulk_f101veb.{}".format(isodate))
     
     with open(csv_file, 'w') as targetfile:
-        writter = csv.writer(targetfile, delimiter='\t', lineterminator = '\n')
+        writer = csv.writer(targetfile, delimiter='\t', lineterminator = '\n')
 
         with open(filename, 'r') as sourcefile:
             reader = csv.reader(sourcefile, delimiter=' ', skipinitialspace = True)
@@ -60,13 +60,36 @@ def f101_txt2csv(filename, year):
                     row[-1] = row[-1][:-1]
                     row.append(isodate)
                     row.append(str(a_p))
-                    writter.writerow(row)
+                    writer.writerow(row)
                     
 def f102_txt2csv(filename, year):
     """
     Special converter of form 102 text files to csv files.
+    Note: skips rows with missing ('X') values.
     """
-    pass
+    SKIP_ROWS = 45
+    quarter = int(os.path.basename(filename)[5])
+    isodate = date2iso(quarter2date(year, quarter))
+    csv_file = os.path.join(CSV_DIR, "bulk_f102veb.{}".format(isodate))
+    
+    with open(csv_file, 'w') as targetfile:
+        writer = csv.writer(targetfile, delimiter='\t', lineterminator = '\n')
+
+        with open(filename, 'r') as sourcefile:
+            reader = csv.reader(sourcefile, delimiter='|', skipinitialspace=True)
+
+            for _ in range(SKIP_ROWS):
+                next(reader)
+            
+            for row in reader:
+                if len(row) == 8:
+                    try:
+                        _ = int(row[1]) # just try to parse, should be int
+                        fields = list(map(int, row[3:7]))
+                        fields.insert(0, isodate)
+                        writer.writerow(fields)
+                    except ValueError:
+                        pass                        
                 
 # relates the filename pattern to a special converter
 PATTERNS = [
