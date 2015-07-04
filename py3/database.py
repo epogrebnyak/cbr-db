@@ -249,11 +249,10 @@ def import_csv(isodate, form):
 
 from global_ini import get_private_data_folder
 
-def import_csv_derived_from_text_files():
+def import_csv_derived_from_text_files(form):
     db_name = DB_NAMES['raw']
 
-    # risk: hardcoded 101
-    directory = get_private_data_folder('101', 'csv')
+    directory = get_private_data_folder(form, 'csv')
 
     for filename in os.listdir(directory):
         csv_path = os.path.join(directory, filename)
@@ -349,6 +348,9 @@ def create_final_dataset_in_raw_database(form, timestamp1, timestamp2=None,
 
     # regn handling
     clear_table(db, "cfg_regn_in_focus")
+    
+    if not regn_list and not regn_file:
+        regn_all = True
 
     if not regn_all:
         # get regn list and insert it to the database

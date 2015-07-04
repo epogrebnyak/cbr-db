@@ -107,10 +107,9 @@ if __name__ == '__main__':
     arg = docopt(__doc__)
     form = get_selected_form(arg)
     date_range = get_date_range_from_command_line(arg)
-
-    if form:
-        # todo: need not printing it
-        create_directories(DIRLIST[form])
+    
+    for dirs in DIRLIST.values():
+        create_directories(dirs)
 
     # 1. General database operations
     def general_database_operations(arg, db_name):
@@ -168,11 +167,11 @@ if __name__ == '__main__':
     if arg["--private-data"]:
             # convert text to CSV
             if arg['make'] and arg['csv']:
-                convert_txt_directory_to_csv()
+                convert_txt_directory_to_csv(form)
 
             # import CSV into raw database
             if arg['import'] and arg['csv']:
-                import_csv_derived_from_text_files()
+                import_csv_derived_from_text_files(form)
 
     # 3. Dataset manipulation in raw and final database
     if arg['dataset']:

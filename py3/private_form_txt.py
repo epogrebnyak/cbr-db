@@ -5,37 +5,15 @@ import os
 from global_ini import get_private_data_folder
 from date_engine import shift_month_ahead, date2iso, quarter2date
 
-FORM_DIR = get_private_data_folder('txt')
-CSV_DIR = get_private_data_folder('csv')
-YEARS = [2012, 2013, 2014, 2015]
-
-def convert_txt_directory_to_csv(private_data_folder=FORM_DIR):
-    """
-    Converts all supported text files from <private_data_folder> to csv files.
-    """
-    for year in YEARS:
-        directory = os.path.join(private_data_folder, str(year))
-        
-        try:
-            for filename in os.listdir(directory):
-                converter = get_converter_for_file(filename)
-            
-                if converter:
-                    path = os.path.join(directory, filename)
-                    print("Converting {} to csv".format(path))
-                    converter(path, year)
-                else:
-                    print("Skipping {}: no suitable converter found".format(filename))
-        except FileNotFoundError:
-            print("Skipping directory {} (not found)".format(year))
-                
 def f101_txt2csv(filename, year):
     """
     Special converter of form 101 text files to csv files.
     """
+    csv_dir = get_private_data_folder('101', 'csv')    
+    
     month = int(os.path.basename(filename)[5:7])
     isodate = date2iso(shift_month_ahead(datetime.date(year, month, 1)))
-    csv_file = os.path.join(CSV_DIR, "bulk_f101veb.{}".format(isodate))
+    csv_file = os.path.join(csv_dir, "bulk_f101veb.{}".format(isodate))
     
     with open(csv_file, 'w') as targetfile:
         writer = csv.writer(targetfile, delimiter='\t', lineterminator = '\n')
@@ -70,10 +48,12 @@ def f102_txt2csv(filename, year):
     Special converter of form 102 text files to csv files.
     Note: skips rows with missing ('X') values.
     """
+    csv_dir = get_private_data_folder('102', 'csv')
+    
     SKIP_ROWS = 45
     quarter = int(os.path.basename(filename)[5])
     isodate = date2iso(quarter2date(year, quarter))
-    csv_file = os.path.join(CSV_DIR, "bulk_f102veb.{}".format(isodate))
+    csv_file = os.path.join(csv_dir, "bulk_f102veb.{}".format(isodate))
     
     with open(csv_file, 'w') as targetfile:
         writer = csv.writer(targetfile, delimiter='\t', lineterminator = '\n')
@@ -92,23 +72,28 @@ def f102_txt2csv(filename, year):
                         fields.insert(0, isodate)
                         writer.writerow(fields)
                     except ValueError:
-                        pass                        
-                
-# relates the filename pattern to a special converter
-PATTERNS = [
-    (r"(?i)^F101_([0-9]{2}).txt$", f101_txt2csv),
-    (r"(?i)^F102_([1-4]{1}).txt$", f102_txt2csv)
-]
-                
-def get_converter_for_file(filename):
-    """
-    Returns a suitable converter (if exists) for the file pointer by <filename>.
-    """
-    for pattern, converter in PATTERNS:
-        sre = re.match(pattern, filename)
+                        pass
+
+YEARS = [2012, 2013, 2014, 2015]
+CONVERTERS = {
+    '101': f101_txt2csv,
+    '102': f102_txt2csv
+}
         
-        if sre:
-            return converter
-            
-if __name__ == "__main__":
-    convert_txt_directory_to_csv()
+def convert_txt_directory_to_csv(form, years=YEARS):
+    """
+    Converts all supported text files from <form> to csv files.
+    """
+    form_dir = get_private_data_folder(form, 'txt')
+    converter = CONVERTERS[form]
+    
+    for year in years:
+        directory = os.path.join(form_dir, str(year))
+        
+        try:
+            for filename in os.listdir(directory):
+                path = os.path.join(directory, filename)
+                print("Converting {} to csv".format(path))
+                converter(path, year)
+        except FileNotFoundError:
+            print("Skipping directory {} (not found)".format(year))

@@ -32,7 +32,6 @@ def get_form_dirs(form):
         'dbf': os.path.join(DIR_DATA, form, 'dbf'     ),
         'csv': os.path.join(DIR_DATA, form, 'csv.full'),
         'output': os.path.join(DIR_ROOT, 'output')
-        # 'sql': DIR_SQL_101,
     }
 
 # todo: 'output' may be a global directory in GLOB_DIR, not a form 101  directory
@@ -49,17 +48,20 @@ GLOB_DIR = {
 }
 
 # Private data directories --------------------------------------------------
-EXTRA_DIR = {
-    'txt': os.path.join(DIR_ROOT, 'data.private', 'veb', 'form'),
-    'csv': os.path.join(DIR_ROOT, 'data.private', 'veb', 'csv' )
-}
+
+def get_private_dirs(form):
+    return {
+        'txt': os.path.join(DIR_ROOT, 'data.private', form, 'veb', 'form'),
+        'csv': os.path.join(DIR_ROOT, 'data.private', form, 'veb', 'csv' )
+    }
 
 # Final assembly ------------------------------------------------------------
 DIRLIST = {
     '101'    : get_form_dirs('101'),
     '102'    : get_form_dirs('102'),
     'global' : GLOB_DIR,
-    'private': EXTRA_DIR,
+    'private101': get_private_dirs('101'),
+    'private102': get_private_dirs('102')
 }
 # ---------------------------------------------------------------------------
 
@@ -74,11 +76,11 @@ def get_public_data_folder(form, subfolder_tag):
     """
     return DIRLIST[form][subfolder_tag]
 
-def get_private_data_folder(subfolder_tag):
+def get_private_data_folder(form, subfolder_tag):
     """
     Return absolute path to private data folder.
     """
-    return EXTRA_DIR[subfolder_tag]
+    return DIRLIST['private' + form][subfolder_tag]
 
 def get_global_folder(folder_tag):
     """
@@ -91,9 +93,12 @@ def create_directories(dir_dict, verbose = False):
     Create directories listed in <dir_dict> if such direcories fo not exist.
     To be used before downloading archived files from CBR server.
     """
-    if verbose: print("Directories used:")
+    if verbose:
+        print("Directories used:")
+        
     for key, dir_ in dir_dict.items():
-        if verbose: print(dir_)
+        if verbose:
+            print(dir_)
         os.makedirs(dir_, exist_ok=True)
 
 #############################################################################
