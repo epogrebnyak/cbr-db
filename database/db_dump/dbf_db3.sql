@@ -79,6 +79,23 @@ CREATE TABLE `bulk_f101veb` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `bulk_f102veb`
+--
+
+DROP TABLE IF EXISTS `bulk_f102veb`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `bulk_f102veb` (
+  `dt` date NOT NULL DEFAULT '0000-00-00',
+  `conto` bigint(20) NOT NULL,
+  `col2` bigint(20) DEFAULT NULL,
+  `col3` bigint(20) DEFAULT NULL,
+  `col4` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`conto`, `dt`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `bulk_f102_p`
 --
 
