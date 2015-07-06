@@ -81,7 +81,7 @@ from private_form_txt import convert_txt_directory_to_csv
 from database import save_dataset_as_sql, import_dataset_from_sql, create_final_dataset_in_raw_database
 from database import import_alloc, import_tables, import_plan, import_bank
 from database import make_balance, test_balance, report_balance_tables_csv, report_balance_tables_xls
-
+import sys
 
 EOL = "\n"
 SUPPORTED_FORMS = ['101', '102', '123', '134', '135']
@@ -103,8 +103,12 @@ def get_db_name(arg, db_dict=DB_NAMES):
 
     return list(db_dict.values())
 
-if __name__ == '__main__':
-    arg = docopt(__doc__)
+def main(argv):
+    """
+    Entry point. <argv> should contain the arguments passed to the program
+    command line interface.
+    """
+    arg = docopt(__doc__, argv)
     form = get_selected_form(arg)
     date_range = get_date_range_from_command_line(arg)
     
@@ -216,3 +220,7 @@ if __name__ == '__main__':
         report_balance_tables_csv()
         if arg['--xlsx']:
             report_balance_tables_xls()
+
+
+if __name__ == '__main__':
+    main(sys.argv[1:])
