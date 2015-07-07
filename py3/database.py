@@ -491,6 +491,8 @@ def import_bank():
         import_dbf_generic(dbf_name, db, table, fields, dbf_fields)
         print("-> Done")
 
+    execute_sql("INSERT IGNORE INTO `bank` (`regn`, `regn_name`) VALUE (964, `Внешэкономбанк`)", db)
+
 def import_alloc(filename='alloc_raw.txt'):
     """
     TODO: describe what this function does
