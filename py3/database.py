@@ -490,7 +490,9 @@ def import_bank():
         import_dbf_generic(dbf_name, db, table, fields, dbf_fields)
         print("-> Done")
 
-    execute_sql(u"INSERT IGNORE INTO `bank` (`regn`, `regn_name`) VALUE (964, 'Внешэкономбанк')", db)
+    # todo: this statement does not insert new row, reason unknown.    
+    run_sql_string(u"INSERT IGNORE INTO bank (regn, regn_name) VALUE (964, 'Внешэкономбанк')", db)
+    #execute_sql(u"INSERT IGNORE INTO bank (regn, regn_name) VALUE (964, 'Внешэкономбанк')", db, True)
 
 def import_alloc(filename='alloc_raw.txt'):
     """
