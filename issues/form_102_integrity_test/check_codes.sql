@@ -10,10 +10,6 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 
--- Дамп структуры базы данных dbf_db3
-CREATE DATABASE IF NOT EXISTS `dbf_db3` /*!40100 DEFAULT CHARACTER SET latin1 */;
-USE `dbf_db3`;
-
 
 -- Дамп структуры для таблица dbf_db3.f102_check_codes
 CREATE TABLE IF NOT EXISTS `f102_check_codes` (
