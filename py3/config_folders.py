@@ -101,13 +101,16 @@ def generate_all_folder_names():
     See create_default_directories() for more information.
     """
     for frm in  ('101', '102'):
-        yield _get_public_dirs(frm)
-        yield _get_private_dirs(frm)
+        for dir_ in _get_public_dirs(frm).values():
+            yield dir_
+            
+        for dir_ in _get_private_dirs(frm).values():
+            yield dir_
         
-    yield _get_global_dirs()
+    for dir_ in _get_global_dirs().values():
+            yield dir_
 
-
-def create_default_directories(verbose = False):
+def create_default_directories(verbose=False):
     """
     Creates the default directories required by the application. 
     Some directories can be configured by the user in <settings.cfg> 
@@ -117,9 +120,9 @@ def create_default_directories(verbose = False):
         print("Directories used:")
     
     for dir_ in generate_all_folder_names():
-       os.makedirs(dir_, exist_ok=True) 
+        os.makedirs(dir_, exist_ok=True) 
        
-       if verbose:
+        if verbose:
             print(dir_)
 
 
@@ -141,8 +144,12 @@ else:
 
 # user can override the paths by specifying them in settings.cfg
 PATH = {
-    'unrar': config.get('zip/rar path', 'unrar', fallback=_DEFAULT_PATH['unrar']),
-    'z7': config.get('zip/rar path', 'z7', fallback=_DEFAULT_PATH['z7']),
+    'unrar': get_absolute_path(
+        config.get('zip/rar path', 'unrar', fallback=_DEFAULT_PATH['unrar'])
+    ),
+    'z7': get_absolute_path(
+        config.get('zip/rar path', 'z7', fallback=_DEFAULT_PATH['z7'])
+    )
 }
 
 ############################## Executables directories [mysql]

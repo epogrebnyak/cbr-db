@@ -73,7 +73,8 @@ from cli_dates import get_date_range_from_command_line
 from make_url import download_form
 from unpack import unpack
 from make_csv import dbf2csv
-from global_ini import DB_NAMES, create_default_directories
+from global_ini import DB_NAMES
+from config_folders  import create_default_directories
 from database import delete_and_create_db, save_db_to_dump, load_db_from_dump
 from database import import_csv, import_csv_derived_from_text_files
 from private_form_txt import convert_txt_directory_to_csv
