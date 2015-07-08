@@ -1,7 +1,7 @@
 import os
 import csv
 from datetime import datetime
-from global_ini import DIRLIST, FORM_DATA, CODEPAGE
+from global_ini import FORM_DATA, CODEPAGE, get_public_data_folder
 from dbfread import DBF
 from date_engine import isodate2timestamp, iso2date, date2quarter, date2iso
 
@@ -95,8 +95,8 @@ def dbf2csv(isodate, form):
         write_csv(dbf_filename=make_dbf_filename(isodate, info['postfix'], form),
                   field_name_selection=info['dbf_fields'],
                   db_table_name=info['db_table'],
-                  dbf_dir=DIRLIST[form]['dbf'],
-                  csv_dir=DIRLIST[form]['csv'],
+                  dbf_dir=get_public_data_folder(form, 'dbf'),
+                  csv_dir=get_public_data_folder(form, 'csv'),
                   form=form,
                   dt=iso2date(isodate))
 
@@ -104,20 +104,6 @@ def list_csv_filepaths_by_date(isodate, form):
     for subform, info in FORM_DATA[form].items():
         dbf_filename = make_dbf_filename(isodate, info['postfix'], form)
         csv_filename = make_csv_filename(dbf_filename, info['db_table'])
-        csv_dir = DIRLIST[form]['csv']
+        csv_dir = get_public_data_folder(form, 'csv')
         csv_path = os.path.join(csv_dir, csv_filename)
         yield csv_path
-
-if __name__ == "__main__":
-    form_n = "101"
-    #
-    print(DIRLIST[form_n])
-
-    # Access to FORM_DATA - example 1
-    for sub in ['f101_B', 'f101_B']:
-        z = FORM_DATA[form_n][sub]
-        print(z)
-
-    # Access to FORM_DATA - example 2
-    for key, val in FORM_DATA[form_n].items():
-        print(val['name'])

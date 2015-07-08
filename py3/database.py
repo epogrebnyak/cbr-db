@@ -5,8 +5,9 @@
 
 from terminal import terminal
 from conn import execute_sql, get_mysql_connection
-from global_ini import DB_NAMES, DIRLIST, ACCOUNT_NAMES_DBF, BANK_NAMES_DBF
+from global_ini import DB_NAMES, ACCOUNT_NAMES_DBF, BANK_NAMES_DBF
 from global_ini import get_bank_name_parameters, get_account_name_parameters
+from global_ini import get_public_data_folder, get_private_data_folder, get_global_folder
 from make_csv import list_csv_filepaths_by_date, get_records
 from cli_dates import get_date
 import os
@@ -147,7 +148,7 @@ def get_db_dumpfile_path(db_name):
     Returns the path to sql dump files, configured in DIRLIST in the
     global initialization module.
     """
-    directory = DIRLIST['global']['database']
+    directory = get_global_folder('database')
     sql_filename = db_name + ".sql"
     path = os.path.join(directory, sql_filename).replace("\\","/")
     # path.replace(\\", '/')
@@ -247,8 +248,6 @@ def import_csv(isodate, form):
     print("\nFinished importing CSV files into raw data database.")
     print("Form:", form, "Date:", isodate)
 
-from global_ini import get_private_data_folder
-
 def import_csv_derived_from_text_files(form):
     db_name = DB_NAMES['raw']
 
@@ -271,7 +270,7 @@ def read_table_sql(db, form, file):
     Support function, it is not called directly from the interface.
     todo: refactor?
     """
-    path = os.path.join(DIRLIST[form]['output'], file)
+    path = os.path.join(get_public_data_folder(form, 'output'), file)
     source_sql_file(path, db)
 
 
@@ -291,7 +290,7 @@ def save_dataset_as_sql(form):
     """
     database = DB_NAMES['raw']
     table, file = get_sqldump_table_and_filename(form)
-    path = os.path.join(DIRLIST[form]['output'], file)
+    path = os.path.join(get_public_data_folder(form, 'output'), file)
     dump_table_sql(database, table, path)
 
 
@@ -363,7 +362,7 @@ def create_final_dataset_in_raw_database(form, timestamp1, timestamp2=None,
             except FileNotFoundError:
                 try:
                     # try in the global tables dir
-                    dir_ = DIRLIST['global']['tables']
+                    dir_ = get_global_folder('tables')
                     path = os.path.join(dir_, regn_file)
                     print('-> {} was not found in the work dir. Trying in {}'.format(
                         regn_file, path))
@@ -439,7 +438,7 @@ def get_import_dbf_path(target, form):
             
             for pattern in BANK_NAMES_DBF:
                 expr = re.compile(pattern)
-                dir_ = DIRLIST['101']['dbf']
+                dir_ = get_public_data_folder('101', 'dbf')
                 cand = []            
                 
                 for file in os.listdir(dir_):
@@ -456,7 +455,7 @@ def get_import_dbf_path(target, form):
     else:
         raise ValueError("Invalid target")
 
-    return os.path.join(DIRLIST[form]['dbf'], name)
+    return os.path.join(get_public_data_folder(form, 'dbf'), name)
 
 def import_plan(form):
     """
@@ -498,7 +497,7 @@ def import_alloc(filename='alloc_raw.txt'):
     TODO: describe what this function does
     """
     database = DB_NAMES['final']
-    path = os.path.join(DIRLIST['global']['alloc'], filename)
+    path = os.path.join(get_global_folder('alloc'), filename)
     import_generic(database, path)
 
 
@@ -507,7 +506,7 @@ def import_tables():
     TODO: describe what this function does
     """
     database = DB_NAMES['final']
-    directory = os.path.join(DIRLIST['global']['tables'])
+    directory = get_global_folder('tables')
 
     for file in os.listdir(directory):
         path = os.path.join(directory, file)
@@ -562,7 +561,7 @@ def report_balance_tables_xls():
     TODO: describe what this function does
     """
     report_balance_tables_csv()
-    directory = DIRLIST['101']['output']
+    directory = get_global_folder('101', 'output')
     make_xlsx(directory)
 
 def report_balance_tables_csv():
@@ -574,7 +573,7 @@ def report_balance_tables_csv():
     execute_sql("call balance_report_line_dt_3tables", db_name)
 
     # dump TABLES to CSV
-    directory = DIRLIST['101']['output']
+    directory = get_public_data_folder('101', 'output')
     TABLES = ("tmp_output_itogo", "tmp_output_ir", "tmp_output_iv")
     for table in TABLES:
         dump_table_csv(db_name, table, directory)

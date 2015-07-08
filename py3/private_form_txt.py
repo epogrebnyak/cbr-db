@@ -1,6 +1,5 @@
 import csv
 import datetime
-import re
 import os
 from global_ini import get_private_data_folder
 from date_engine import shift_month_ahead, date2iso, quarter2date

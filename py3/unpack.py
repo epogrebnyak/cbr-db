@@ -1,10 +1,10 @@
 import os
 from terminal import terminal
-from global_ini import PATH, DIRLIST
+from global_ini import PATH, get_public_data_folder
 from make_url import get_ziprar_filename
 
 def get_local_ziprar_filepath(isodate, form):
-    dir_ = DIRLIST[form]['rar']
+    dir_ = get_public_data_folder(form, 'rar')
     filename = get_ziprar_filename(isodate=isodate, form=form)
     print("File:", filename)
     return os.path.join(dir_, filename)
@@ -15,7 +15,7 @@ def unpack(isodate, form):
     unpack_path(filepath, form)
 
 def unpack_path(filepath, form):
-    destination_directory = DIRLIST[form]['dbf']
+    destination_directory = get_public_data_folder(form, 'dbf')
     ext = os.path.splitext(filepath)[1].lower()
 
     if ext == '.rar':

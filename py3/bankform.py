@@ -73,8 +73,7 @@ from cli_dates import get_date_range_from_command_line
 from make_url import download_form
 from unpack import unpack
 from make_csv import dbf2csv
-from global_ini import DIRLIST, DB_NAMES
-from global_ini import create_directories
+from global_ini import DB_NAMES, create_default_directories
 from database import delete_and_create_db, save_db_to_dump, load_db_from_dump
 from database import import_csv, import_csv_derived_from_text_files
 from private_form_txt import convert_txt_directory_to_csv
@@ -112,8 +111,7 @@ def main(argv):
     form = get_selected_form(arg)
     date_range = get_date_range_from_command_line(arg)
     
-    for dirs in DIRLIST.values():
-        create_directories(dirs)
+    create_default_directories()
 
     # 1. General database operations
     def general_database_operations(arg, db_name):

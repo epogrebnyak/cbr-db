@@ -1,7 +1,7 @@
 import datetime
 import sys
 from date_engine import iso2date, zero_padded_month
-from global_ini import DIRLIST
+from global_ini import get_public_data_folder
 from download import download, URLError
 
 def download_form(isodate_input, form_input):
@@ -9,7 +9,7 @@ def download_form(isodate_input, form_input):
     Download archive file for specific date and form type to a local folder
     """
     url = get_url(isodate=isodate_input, form=form_input)
-    dir_ = DIRLIST[form_input]['rar']
+    dir_ = get_public_data_folder(form_input, 'rar')
     
     try:    
         download(url, dir_)
