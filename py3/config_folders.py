@@ -11,6 +11,7 @@ This file configures:
 import configparser
 import os
 from os import path
+from date_engine import get_current_year
 
 # This file is in subfolder of _PROJECT_ROOT_DIR, so do path.dirname() twice
 _PROJECT_ROOT_DIR = path.dirname(path.dirname(path.abspath(__file__)))
@@ -79,6 +80,18 @@ def get_private_data_folder(form, subfolder_tag):
     """
     dir_list = _get_private_dirs(form)
     return dir_list[subfolder_tag]
+    
+def generate_private_data_annual_subfolders(form, subfolder_tag = 'txt'):
+    """
+    """
+    for year in range(2004,get_current_year()+1):        
+        main_folder = get_private_data_folder(form, subfolder_tag)
+        dir_ = os.path.join(main_folder,str(year))
+        print(dir_)
+        if os.path.isdir(dir_):
+            print("Exists:" + dir_)
+            yield dir_    
+            
 
 def get_global_folder(folder_tag):
     """

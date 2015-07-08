@@ -73,26 +73,29 @@ def f102_txt2csv(filename, year):
                     except ValueError:
                         pass
 
-YEARS = [2012, 2013, 2014, 2015]
 CONVERTERS = {
     '101': f101_txt2csv,
     '102': f102_txt2csv
 }
+
+def generate_filepaths(form):
+    """
+    Yeilds paths to all available files of form <form>.
+    """
+    for dir_ in generate_private_data_annual_subfolders(form):
+        for filename in os.listdir(dir_):
+            path = os.path.join(dir_, filename)
+            yield path
+            
         
-def convert_txt_directory_to_csv(form, years=YEARS):
+def convert_txt_directory_to_csv(form):
     """
-    Converts all supported text files from <form> to csv files.
+    Converts all supported <form> text files to csv files.
     """
-    form_dir = get_private_data_folder(form, 'txt')
     converter = CONVERTERS[form]
-    
-    for year in years:
-        directory = os.path.join(form_dir, str(year))
-        
+    for path in generate_filepaths(form):
         try:
-            for filename in os.listdir(directory):
-                path = os.path.join(directory, filename)
-                print("Converting {} to csv".format(path))
-                converter(path, year)
-        except FileNotFoundError:
-            print("Skipping directory {} (not found)".format(year))
+            print("Converting {} to csv".format(path))
+            converter(path, year)
+        except:
+            print("File {} (not found)".format(path))
