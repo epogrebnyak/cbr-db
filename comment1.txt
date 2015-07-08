@@ -1,3 +1,69 @@
+1.  RAW DATA IMPORT
+===================
+
+Expertise: sql, python, linux
+
+Download
+--------
+No complaints
+
+Unpack
+------
+No complaints
+
+
+Make CSV
+--------
+Slow
+Hidden truncation of data
+
+Import CSV
+----------
+Pros: fast import using mysqlimport
+Troubles: import form 102 codes as int  
+
+Import bank | plan
+------------------
+cbr_db.majorbanks
+some import tables not needed (only benchmark tables)
+
+Other
+-----
+tools to update database procedurtes without overwriting data
+full dump of all database 
+setup script (2012 2015)  
+
+2. RAW DATA TRANSFORMATION AND MIGRATION
+========================================
+
+Make dataset
+------------
+Trouble:
++ slow
++ test integrity
++ kick out dates 
++ show what regn are present by date
+
+
+Migrate dataset
+---------------
+No complaints
+
+3. DATA ANALYSIS
+================
+
+Make balance +  test
+
+
+
+Issues by FORM
+==============
+
+***
+
+
+-----------------------------------------------------------------------------------
+
 Blocks of work
 ==============
 
