@@ -136,13 +136,9 @@ def delete_and_create_db(db_name):
     Deletes an existing database and recreates it (empty).
     """
     print("Database:", db_name)
-    command = "DROP DATABASE IF EXISTS {0}; CREATE DATABASE  {0};".format(
-        db_name)
-    # sql-only, using pymysql connection for this
-    execute_sql(command)
-    print(
-        "Deleted existing database and created empty database under same name.")
-
+    execute_sql("DROP DATABASE IF EXISTS {};".format(db_name))
+    execute_sql("CREATE DATABASE  {0};".format(db_name))
+    print("Deleted existing database and created empty database under same name.")
 
 def get_db_dumpfile_path(db_name):
     """
