@@ -38,6 +38,7 @@ def execute_sql(sql_string, database=None, verbose=False):
     conn = get_mysql_connection (DB_INI_DICT, database)
     cur = conn.cursor()
     resp = execute_sql_with_cursor(sql_string, cur, verbose)    
+    conn.commit()
     cur.close()
     conn.close()
     

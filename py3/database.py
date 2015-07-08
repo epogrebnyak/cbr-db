@@ -446,6 +446,11 @@ def get_import_dbf_path(target, form):
                     if r:
                         cand.append(r.string)
                 
+                if len(cand) == 0:
+                    msg = ("\n\nThere are no unpacked dbf files in {} with bank names."
+                           " Did you run the commands download and unpack before?")
+                    raise FileNotFoundError(msg.format(dir_)) 
+                    
                 cand.sort(key=lambda x: (x[2:6], x[0:2]), reverse=True)
                 tops.append(os.path.join(dir_, cand[0]))
                 
