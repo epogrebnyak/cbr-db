@@ -7,8 +7,8 @@ currently supported.
 # DATABASE NAMES
 #############################################################################
 
-DB_NAME_RAW = 'dbf_db3'
-DB_NAME_FINAL = 'cbr_db3'
+DB_NAME_RAW = 'dbf_db'
+DB_NAME_FINAL = 'cbr_db'
 DB_NAMES = {'raw': DB_NAME_RAW, 'final': DB_NAME_FINAL}
 
 #############################################################################
