@@ -235,3 +235,10 @@ MYSQL_PATH = [r'C:\Program Files (x86)\MySQL\MySQL Server 5.7\bin', r'C:\MySQL\b
 
 # encoding of the dbf files
 CODEPAGE = "cp866"
+
+#############################################################################
+# 6. DATABASE CONFIGURATION
+#############################################################################
+
+DB_INI_DICT = {'host': 'localhost', 'port':3306, 'user':'test_user', 'passwd':'test_password'}
+
