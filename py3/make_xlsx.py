@@ -15,29 +15,31 @@ def get_cell_format(workbook):
     """
     Cell format dictionary. 
     """   
-    format = workbook.add_format()
-    format.set_font_name('Arial')
-    format.set_font_size(8)
-    return format
+    format_ = workbook.add_format()
+    format_.set_font_name('Arial')
+    format_.set_font_size(8)
+    return format_
     
 def get_date_format(workbook):
     """
     Number format dictionary. 
     """ 
-    format = get_cell_format(workbook)
-    format.set_num_format('dd.mm.yyyy')
-    return format
+    format_ = get_cell_format(workbook)
+    format_.set_num_format('dd.mm.yyyy')
+    return format_
 
 def simple_write_csv_to_new_xlsx_sheet(workbook, sheet_name, csv_path):
     """
     Basic functionality to write csv to xlsx workbook sheet. 
-    """    
+    """
+    cell_format = get_cell_format(workbook)
+    
     with open(csv_path) as f:
         reader = csv.reader(f, delimiter=delimiter)
         sheet = workbook.add_worksheet(sheet_name)                
         for i, row in enumerate(reader):
             for j, val in enumerate(row):
-                sheet.write(i, j, val, cell_format)  
+                sheet.write(i, j, val, cell_format)
     
 def write_csv_to_new_xlsx_sheet(workbook, sheet_name, csv_path, delim = '\t'):
     """

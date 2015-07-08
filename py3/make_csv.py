@@ -1,7 +1,8 @@
 import os
 import csv
 from datetime import datetime
-from global_ini import FORM_DATA, CODEPAGE, get_public_data_folder
+from global_ini import FORM_DATA, CODEPAGE
+from config_folders import get_public_data_folder
 from dbfread import DBF
 from date_engine import isodate2timestamp, iso2date, date2quarter, date2iso
 

@@ -1,7 +1,7 @@
 import datetime
 import sys
 from date_engine import iso2date, zero_padded_month
-from global_ini import get_public_data_folder
+from config_folders import get_public_data_folder
 from download import download, URLError
 
 def download_form(isodate_input, form_input):

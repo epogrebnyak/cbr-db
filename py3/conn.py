@@ -1,8 +1,6 @@
 import pymysql
 from global_ini import CODEPAGE, DB_INI_DICT 
 
-# DB_INI_DICT = {'host': 'localhost', 'port':3306, 'user':'test_user', 'passwd':'test_password'}
-
 def get_mysql_connection(credential_dict=DB_INI_DICT, database=None, autocommit=False,
                          charset=CODEPAGE):
     # todo: add try-except raise 

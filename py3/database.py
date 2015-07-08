@@ -7,7 +7,8 @@ from terminal import terminal
 from conn import execute_sql, get_mysql_connection
 from global_ini import DB_NAMES, ACCOUNT_NAMES_DBF, BANK_NAMES_DBF
 from global_ini import get_bank_name_parameters, get_account_name_parameters
-from global_ini import get_public_data_folder, get_private_data_folder, get_global_folder
+from config_folders import get_public_data_folder, get_private_data_folder
+from config_folders import get_global_folder, get_output_folder
 from make_csv import list_csv_filepaths_by_date, get_records
 from cli_dates import get_date
 import os
@@ -135,13 +136,9 @@ def delete_and_create_db(db_name):
     Deletes an existing database and recreates it (empty).
     """
     print("Database:", db_name)
-    command = "DROP DATABASE IF EXISTS {0}; CREATE DATABASE  {0};".format(
-        db_name)
-    # sql-only, using pymysql connection for this
-    execute_sql(command)
-    print(
-        "Deleted existing database and created empty database under same name.")
-
+    execute_sql("DROP DATABASE IF EXISTS {};".format(db_name))
+    execute_sql("CREATE DATABASE  {0};".format(db_name))
+    print("Deleted existing database and created empty database under same name.")
 
 def get_db_dumpfile_path(db_name):
     """
@@ -270,7 +267,7 @@ def read_table_sql(db, form, file):
     Support function, it is not called directly from the interface.
     todo: refactor?
     """
-    path = os.path.join(get_public_data_folder(form, 'output'), file)
+    path = os.path.join(get_output_folder(), file)
     source_sql_file(path, db)
 
 
@@ -290,7 +287,7 @@ def save_dataset_as_sql(form):
     """
     database = DB_NAMES['raw']
     table, file = get_sqldump_table_and_filename(form)
-    path = os.path.join(get_public_data_folder(form, 'output'), file)
+    path = os.path.join(get_output_folder(), file)
     dump_table_sql(database, table, path)
 
 
@@ -566,8 +563,7 @@ def report_balance_tables_xls():
     TODO: describe what this function does
     """
     report_balance_tables_csv()
-    directory = get_global_folder('101', 'output')
-    make_xlsx(directory)
+    make_xlsx(get_output_folder())
 
 def report_balance_tables_csv():
     """
@@ -578,7 +574,7 @@ def report_balance_tables_csv():
     execute_sql("call balance_report_line_dt_3tables", db_name)
 
     # dump TABLES to CSV
-    directory = get_public_data_folder('101', 'output')
+    directory = get_output_folder()
     TABLES = ("tmp_output_itogo", "tmp_output_ir", "tmp_output_iv")
     for table in TABLES:
         dump_table_csv(db_name, table, directory)

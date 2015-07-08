@@ -1,6 +1,6 @@
 import os
 from terminal import terminal
-from global_ini import PATH, get_public_data_folder
+from config_folders import get_public_data_folder, PATH
 from make_url import get_ziprar_filename
 
 def get_local_ziprar_filepath(isodate, form):
