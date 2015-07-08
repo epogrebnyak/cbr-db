@@ -19,6 +19,7 @@ def unpack_path(filepath, form):
     ext = os.path.splitext(filepath)[1].lower()
 
     if ext == '.rar':
+        print ("exe path", PATH['unrar'])
         call_string = " ".join([in_quotes(PATH['unrar']), "e", filepath, destination_directory, "-y"])
     else:
         call_string = " ".join([in_quotes(PATH['z7']), "e", filepath, "-o" + destination_directory, "-y"])
