@@ -156,14 +156,26 @@ else:
     }
 
 # user can override the paths by specifying them in settings.cfg
-PATH = {
-    'unrar': get_absolute_path(
-        config.get('zip/rar path', 'unrar', fallback=_DEFAULT_PATH['unrar'])
-    ),
-    'z7': get_absolute_path(
-        config.get('zip/rar path', 'z7', fallback=_DEFAULT_PATH['z7'])
-    )
-}
+
+    for key in ('unrar', 'z7'):
+
+        PATH = {key:_DEFAULT_PATH(key))
+
+        op = config.get('zip/rar path', key, fallback=_DEFAULT_PATH[key]
+        for path_option in (op,get_absolute_path(op))
+            if os.isfile(path_option):
+                PATH = {key:path_option)
+
+        
+
+# PATH = {
+        # 'unrar': get_absolute_path(
+            # config.get('zip/rar path', 'unrar', fallback=_DEFAULT_PATH['unrar'])
+        # ),
+        # 'z7': get_absolute_path(
+            # config.get('zip/rar path', 'z7', fallback=_DEFAULT_PATH['z7'])
+    # )
+# }
 
 ############################## Executables directories [mysql]
 
