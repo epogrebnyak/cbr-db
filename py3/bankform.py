@@ -179,8 +179,9 @@ def main(argv):
     # 3. Dataset manipulation in raw and final database
     if arg['dataset']:
         if arg['make']:
-            timestamp1 = arg.get('<timestamp1>')
-            timestamp2 = arg.get('<timestamp2>')
+            timestamp1 = date_range[0] 
+            # must supply timestamp2 to database even if <timestamp2> not entered in command line:
+            timestamp2 = date_range[-1]
             regn = arg.get('--regn')
             regn_file = arg.get('--regn-file')
             regn_all = arg.get('--regn-all')
