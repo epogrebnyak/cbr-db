@@ -1,0 +1,19 @@
+bankform.py - list of  vulnerabilities
+--------------------------------------
+
+- make csv may habg and not write all data from DBF to CSV, not checked
+
+- tests for data integrity not invoked
+
+- dependecy on mysql* executables
+
+- private data not handled in a uniform way with rest of data
+
+- table checksums not checked 
+
+- no aggregation of form 102
+
+- inital DBF files not clean - may have 'lost' datasets (older data for a non-reporting bank in a newer file).
+May import date of the fiel into database  
+
+- final use of data not specified
