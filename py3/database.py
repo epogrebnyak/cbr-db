@@ -64,8 +64,11 @@ def import_generic(database, path):
         print("File not found:",  path)
 
 def mysqlimport(db_name, csv_path, ignore_lines = 1, add_mode = "ignore"):
-    command_line = r'mysqlimport --ignore_lines={0} --{1} {2} "{3}" --lines-terminated-by="\r\n"'.format(
+    # Trying to use mysqlimport without --lines-terminated-by="\r\n" (this works on Debian linux on remote server)
+    command_line = r'mysqlimport --ignore_lines={0} --{1} {2} "{3}" '.format(
                     ignore_lines, add_mode, db_name, csv_path)
+    # command_line = r'mysqlimport --ignore_lines={0} --{1} {2} "{3}" --lines-terminated-by="\r\n"'.format(
+    #                ignore_lines, add_mode, db_name, csv_path)
     run_mysqlimport_command_line(csv_path, command_line)
 
 def run_mysqlimport_command_line(csv_path, command_line):
