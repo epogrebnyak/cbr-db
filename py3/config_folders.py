@@ -156,15 +156,15 @@ else:
     }
 
 # user can override the paths by specifying them in settings.cfg
+PATH = _DEFAULT_PATH
+
 for key in ('unrar', 'z7'):
-
-    PATH = {key:_DEFAULT_PATH[key]}
-
     op = config.get('zip/rar path', key, fallback=_DEFAULT_PATH[key])
     for path_option in [op, get_absolute_path(op)]:
         if os.path.isfile(path_option):
-            PATH = {key:path_option}
+            PATH.update({key:path_option})
         
+print(PATH)
 
 # PATH = {
         # 'unrar': get_absolute_path(
