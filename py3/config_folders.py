@@ -163,8 +163,6 @@ for key in ('unrar', 'z7'):
     for path_option in [op, get_absolute_path(op)]:
         if os.path.isfile(path_option):
             PATH.update({key:path_option})
-        
-print(PATH)
 
 # PATH = {
         # 'unrar': get_absolute_path(
