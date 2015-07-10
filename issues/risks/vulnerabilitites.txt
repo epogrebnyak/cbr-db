@@ -43,6 +43,8 @@ mysqlimport: Error: 1366, Incorrect integer value: '\xD0\x9A\xD0\xBE\xD0\xB4\x0D
 
 - listed as minor issue: 'allows future dates in form 102 and crashes on a future date in 101.'
 
+- do not like parts of the code style (naming, datastructures, similar things doen differently) - must inspect by file.
+
 database.py
 -----------
 
