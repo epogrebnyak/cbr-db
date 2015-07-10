@@ -27,7 +27,7 @@ May import date of the file into database
 
 - (general) insert ignore may be hiding bugs in the code (ex.: issue #25)
 
-- make dataset seems to be too slow for what it is doing
+- make dataset seems to be too slow for what it is doing - missing indexes?
 
 - import csv results in warnings on windows after commit 817c31a7bd82bfd96cd79b7717179ce7b6afb878,
   buth without those changes the import does not works on linux.
