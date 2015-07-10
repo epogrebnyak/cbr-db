@@ -1,0 +1,18 @@
+Александр, добрый день, сасибо за интерес к проекту:
+
+1. First of all I would propose to virtualize your execution environment to have testing environment as close as possible to real one.
+Сейчас есть проблема переноса на web сервер – он под Debian, я пишу код на windows, другие на линуксах и в результате что-то не работает. Пример: 
+https://github.com/epogrebnyak/flask_cbr/issues/1
+Не уверен что вопрос кроссплатформенности мы можем решить через виртуализацию. 
+
+2. Next it may be useful to have your full data processing cycle as one workflow working in idempotent style: every stage will be executed just once will be safely restarted in case of fault and it can be safely automated. This can be done by something like Spotify Luigi framework. 
+Полезное для изучения и понимания, спасибо http://luigi.readthedocs.org/en/latest/example_top_artists.html
+Данные не являются высокочастотными, обновляются раз в месяц. Теоретически интересно запускать несколько ниток обработки данных (что скачали – преобазовываем, что преобразовали – импортируем), но сейчас пока работаем только с в несинхронном режиме, чтобы быть уверенными что он отлажен. 
+
+3. I suggest you to use sqlalchemy to make sql queries. It shoud make your code much more neat and maintainable and safe to execute.
+Думали над этим, но не первоочереное. Больше рисков вижу в использовании mysqlimport для чтения данных (используем потому что работает очень быстро, но по-разному ведет себя в Win/linux) и GROUP_CONCAT() для обмена данными (нужно перейти на другой способ формирования таблиц о столбцами по датам)
+
+4. Some standard issue tacker may be used.
+Использую issues github сейчас - https://github.com/epogrebnyak/cbr-db/issues/
+
+
