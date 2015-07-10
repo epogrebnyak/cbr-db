@@ -55,6 +55,11 @@ database.py
 
 private_form_txt.py
 -------------------
+```
+    bankform.py make csv   <form> --private-data [--all-dates]
+    bankform.py import csv <form> --private-data [--all-dates]
+```
+
 
 - form102 private data importer skips rows with missing or invalid values
 
@@ -69,5 +74,40 @@ make_url.py
 
 make_csv.py
 -----------
+```
+    bankform.py make csv   <form> (<timestamp1> [<timestamp2>] | --all-dates)
+```
 
 - write_csv_by_path hardcoded for form101 and f102
+
+
+================================================
+TODO: 
+list issues above (in lines 48-81) in order of bankform.py """Usage: """ commands
+cut command line calls as done for private_form_txt.py and make_csv.py
+see what issues from lines 4-46 can go to a spcific file section 
+rename this to .md file
+
+
+    bankform.py reset   database [raw | final]
+    bankform.py download   <form> (<timestamp1> [<timestamp2>] | --all-dates)
+    bankform.py make csv   <form> (<timestamp1> [<timestamp2>] | --all-dates)
+    bankform.py unpack     <form> (<timestamp1> [<timestamp2>] | --all-dates)
+
+    bankform.py import csv <form> (<timestamp1> [<timestamp2>] | --all-dates)
+    bankform.py import plan <form>
+    bankform.py import bank
+    bankform.py update     <form> (<timestamp1> [<timestamp2>] | --all-dates) [--no-download]
+
+    bankform.py make dataset <form> <timestamp1> [<timestamp2>] [--regn=<regn_list> | --regn-file=<file> | --regn-all]
+    bankform.py save    dataset <form>
+    bankform.py import  dataset <form>
+    bankform.py migrate dataset <form>
+    bankform.py import alloc
+    bankform.py import tables
+    bankform.py make   balance
+    bankform.py test   balance
+    bankform.py report balance     [--xlsx]
+    bankform.py report form <form> [--xlsx]
+    
+TODO: automatic generation of documentation for the project? 
