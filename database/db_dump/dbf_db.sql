@@ -662,10 +662,10 @@ drop table if exists f101;
 create table f101 as 
 select dt, regn, conto, a_p,  ir,  iv, itogo, has_iv, conto_3 from f101_part_f101b1;
 
-insert f101
+insert ignore f101
 select dt, regn, conto, a_p,  ir,  iv, itogo, has_iv, conto_3 from f101_part_f101_b;
 
-insert f101
+insert ignore f101
 select dt, regn, conto, a_p,  ir,  iv, itogo, has_iv, conto_3 from f101_part_f101_private;
 
 
@@ -698,9 +698,8 @@ drop table if exists f102;
 create table f102 as 
 select regn, quart, year, code, ir,  iv, itogo, has_iv from f102_part_p1;
 
-insert f102
+insert ignore f102
 select regn, quart, year, code, ir,  iv, itogo, has_iv from f102_part_p;
-
 
 
 ALTER TABLE f102 ADD PRIMARY KEY (`regn`, `quart`, `year`, `code`, `itogo`);
