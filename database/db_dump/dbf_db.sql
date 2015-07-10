@@ -658,8 +658,13 @@ BEGIN
 
 drop table if exists f101;
 
+create table f101
+select dt, regn, conto, a_p,  ir,  iv, itogo, has_iv, conto_3 from f101_part_f101b1 limit 1;
+truncate table f101;
 
-create table f101 as 
+ALTER TABLE	f101 ADD PRIMARY KEY (`dt`, `regn`, `conto`, `itogo`);
+
+insert ignore f101
 select dt, regn, conto, a_p,  ir,  iv, itogo, has_iv, conto_3 from f101_part_f101b1;
 
 insert ignore f101
@@ -669,8 +674,6 @@ insert ignore f101
 select dt, regn, conto, a_p,  ir,  iv, itogo, has_iv, conto_3 from f101_part_f101_private;
 
 
-
-ALTER TABLE	f101 ADD PRIMARY KEY (`dt`, `regn`, `conto`, `itogo`);
 ALTER TABLE	f101 ADD INDEX `i_conto` (`conto`);
 ALTER TABLE	f101 ADD INDEX `i_regn` (`regn`);
 
