@@ -1,39 +1,4 @@
 """
-Import bank sector statistics stored as archived DBF files at www.cbr.ru/credit/forms.asp to a local MySQL database, aggregate data into reports and save reports in csv or xlsx format. The script can also import statistics stored locally in text form files ("private data").
-
-1. General database operations:
-    'save' creates database dump in <db_name>.sql file without data, unless --with-data flag is specified
-    'load' imports this dump into database
-    'delete' erases database
-    'reset' calls 'delete' and 'load'
-   Database keywords:
-    'raw' refers to initial data database with information form DBF files (size in gigabytes)
-    'final' refers to a reduced dataset used for final reports (size in 10Mb's)
-
-2. DBF/TXT file import
-2.1. Public data (DBF files as source)
-    'download' saves zip/rar files form Bank of Russia web site to local folder
-    'unpack' unzips/unrars DBF files
-    'make csv' creates a CSV dump of DBF files
-    'import csv' reads csv files into raw database
-2.2. Private data (TXT files as source)
-    'make csv' converts text files to csv
-    'import csv' reads csv files into raw database
-    Note: no timestamps for private data are used, all files are processed.
-
-3. Dataset manipulation in raw and final database:
-    'make dataset' creates a final table in raw database
-    'save dataset' ... # todo: as in docstrings
-    'import dataset' ... # todo: as in docstrings
-    'migrate dataset' dumps final table from raw database and imports it to final database
-
-4. Working with final database:
-    'import plan' reads account names into final database
-    'import alloc' and 'import tables' read supplementary tables to final database (allocation algorithm)
-    'make balance' creates table 'balance' based on 'f101', 'alloc' and supplementary tables (for form 101)
-    'report balance' dumps final reporting tables to csv or xls files
-    'test balance' performs sample queries on the final reporting tables for verification purposes
-
 Usage:
     bankform.py save    database [raw | final]
     bankform.py delete  database [raw | final]
@@ -44,9 +9,9 @@ Usage:
     bankform.py unpack     <form> (<timestamp1> [<timestamp2>] | --all-dates)
     bankform.py make csv   <form> (<timestamp1> [<timestamp2>] | --all-dates)
     bankform.py import csv <form> (<timestamp1> [<timestamp2>] | --all-dates)
+    bankform.py update     <form> (<timestamp1> [<timestamp2>] | --all-dates) [--no-download]
     bankform.py import plan <form>
     bankform.py import bank
-    bankform.py update     <form> (<timestamp1> [<timestamp2>] | --all-dates) [--no-download]
     bankform.py make csv   <form> --private-data [--all-dates]
     bankform.py import csv <form> --private-data [--all-dates]
     bankform.py make dataset <form> <timestamp1> [<timestamp2>] [--regn=<regn_list> | --regn-file=<file> | --regn-all]
@@ -59,14 +24,17 @@ Usage:
     bankform.py test   balance
     bankform.py report balance     [--xlsx]
     bankform.py report form <form> [--xlsx]
-
-Notes:
-    (1) Format for timestamps is YYYY-MM-DD (ISO), YYYY-MM, DD.MM.YYYY, MM.YYYY or YYYY
-    MySQL configuration requirements:
-        MySQL server daemon must be up and running when bankform.py is started.
-        Config file 'my.ini' or 'my.cfg' must contain host, user, password to allow mysql.exe calls.
-        mysql*.exe must be in PATH. If not in PATH run utils\ini.bat or utils\ini.py with correct path to mysql.
 """
+
+# todo:
+
+# must change: 
+    # bankform.py make csv   <form> --private-data [--all-dates]
+    # bankform.py import csv <form> --private-data [--all-dates]
+    
+# to: 
+    # bankform.py make csv   <form> (<timestamp1> [<timestamp2>] | --all-dates) [--private-data]
+    # bankform.py import csv <form> (<timestamp1> [<timestamp2>] | --all-dates) [--private-data]
 
 from docopt import docopt
 from cli_dates import get_date_range_from_command_line
@@ -125,7 +93,7 @@ def main(argv):
         if arg['reset']:
             delete_and_create_db(db_name)
             load_db_from_dump(db_name)
-            if arg['final']:
+            if not arg['raw']:
                 import_alloc()
                 import_tables()
 
@@ -180,20 +148,17 @@ def main(argv):
     if arg['dataset']:
         if arg['make']:
             timestamp1 = date_range[0] 
-            # must supply timestamp2 to database even if <timestamp2> not entered in command line:
             timestamp2 = date_range[-1]
-            regn = arg.get('--regn')
-            regn_file = arg.get('--regn-file')
-            regn_all = arg.get('--regn-all')
+            regn = arg['--regn']
+            regn_file = arg['--regn-file']
+            regn_all = arg['--regn-all']
             create_final_dataset_in_raw_database(form, timestamp1, timestamp2,
                                                  regn, regn_file, regn_all)
-
         if arg['save']:
             save_dataset_as_sql(form)
         if arg['import']:
             import_dataset_from_sql(form)
         if arg['migrate']:
-            #create_final_dataset_in_raw_database(form) # was called again!
             save_dataset_as_sql(form)
             import_dataset_from_sql(form)
 
@@ -216,11 +181,11 @@ def main(argv):
     if arg['test'] and arg['balance']:
         test_balance()
 
-    if arg['report'] and (arg['balance'] or arg['form']):
-        report_balance_tables_csv()
+    if arg['report'] and (arg['balance'] or arg['form']):        
         if arg['--xlsx']:
             report_balance_tables_xls()
-
+        else:
+            report_balance_tables_csv()
 
 if __name__ == '__main__':
     main(sys.argv[1:])
