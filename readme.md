@@ -56,7 +56,9 @@ baf make balance
 baf report balance --xlsx
 ```
 
-Check the output by ```dir ..\output``` or ```ls dir ..\output```. See [Testing milestones][tm] for more comments about these sample scipts.
+Check output by ```dir ..\output``` (Win) or ```ls dir ..\output``` (Linux).
+
+See [Testing milestones][tm] for more comments about these sample scipts.
 
 [tm]: https://github.com/epogrebnyak/cbr-db/wiki/Testing-milestones
 
