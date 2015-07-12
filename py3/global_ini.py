@@ -60,6 +60,24 @@ FORM_DATA = {
     '102': f102
 }
 
+# private data:
+
+def get_private_data_param(form, tag):
+    table_name_dict = {'101':
+                        {'db_table':'bulk_f101_private'
+                         }, 
+                       '102':
+                        {
+                        'db_table':'bulk_f102_private'}
+                      }
+    return table_name_dict[form][tag]
+
+def get_private_data_db_table(form):
+    return get_private_data_param(form, 'db_table')
+    
+
+    
+
 # Account names
 
 ACCOUNT_NAMES_DBF = {
@@ -99,7 +117,7 @@ def get_bank_name_parameters():
     return BANK_TABLE_NAME, BANK_TABLE_FIELDS, BANK_DBF_FIELDS
 
 #############################################################################
-# General configuration
+# OTHER OPTIONS
 #############################################################################
 
 # encoding of the dbf files
@@ -109,4 +127,5 @@ CODEPAGE = "cp866"
 # DATABASE CONFIGURATION
 #############################################################################
 
+# TODO: DB_INI_DICT must be initialised from settings.cfg, values below used as default
 DB_INI_DICT = {'host': 'localhost', 'port':3306, 'user':'test_user', 'passwd':'test_password'}

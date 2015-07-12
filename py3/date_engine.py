@@ -144,7 +144,7 @@ def quarter2date(year, quarter):
     dt = datetime.date(year=year, month=quarter * 3, day=1)
     return shift_month_ahead(dt)
    
-if if __name__ == "__main__":
+if __name__ == "__main__":
     # TODO: very awkward behaviour of  date2quarter(date) + poor docstring. Where is date2quarter() used?
     #       see if conv_date2quarter() suits calls better.
     #       conv_date2quarter() used in  private_form_txt.py   

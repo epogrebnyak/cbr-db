@@ -3,6 +3,7 @@ import datetime
 import os
 from config_folders import get_private_data_folder, generate_private_data_annual_subfolders
 from date_engine import shift_month_ahead, date2iso, quarter2date, conv_date2quarter
+from global_ini import get_private_data_db_table
 
 def convert_txt2csv(txt_path, form):
     """
@@ -50,16 +51,11 @@ def get_target_csv_path(txt_path, form):
     """
     Returns csv file path (target file) corresponding to <txt_path> (source file).
     """
-    csv_dir = get_private_data_folder(form, 'csv')    
     isodate = decompose_private_txt_filename(txt_path, form)
+    csv_dir = get_private_data_folder(form, 'csv')    
+    filename = get_private_data_db_table(form) +  "." + isodate 
+    return os.path.join(csv_dir, filename)
     
-    # not-todo: table_name_dict must be imported from global_ini.py
-    table_name_dict = {'101':"bulk_f101_private", '102':"bulk_f102_private"} 
-    filename = table_name_dict[form] +  "." + isodate 
-    csv_path = os.path.join(csv_dir, filename)
-    
-    return csv_path 
-
     
 def convert_f101_txt2csv(txt_file, csv_file, isodate):
 
