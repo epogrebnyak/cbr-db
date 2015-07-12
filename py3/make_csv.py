@@ -69,6 +69,7 @@ def write_csv_by_path(dbf_path, csv_path, field_name_selection, form, dt):
     # ----------------------
     msg = "Time elapsed: {0}".format(datetime.now() - startTime)
 
+    # not todo: may also write skipped rows to separate file
     if n_skipped > 0:
         msg = msg + "\nSkipped writing {0} records to file.".format(n_skipped)
 
