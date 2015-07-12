@@ -4,21 +4,30 @@ bankform.py - list of vulnerabilities
 general
 --------
 
-- no milestones
+- do not like parts of the code style (naming, datastructures, similar things doen differently) - must inspect by file.
+
+- not todo: on import table checksums not checked by design 
 
 - some linux distributions have 'python' pointing to 'Python 2', while others
   have it pointing to 'Python 3'. Better default to using 'python3' on Linux, and
-  'python' on Windows.
+  'python' on Windows.  
+  EP: Can be solved in baf.sh/baf.bat
 
-- minor issue: 'allows future dates in form 102 and crashes on a future date in 101.'
+- weak final use case of data, not provided 
 
-- do not like parts of the code style (naming, datastructures, similar things doen differently) - must inspect by file.
+- too slow: sql make_balance(), 
 
-- private data not handled in a uniform way with rest of data
+- no aggregation of form 102 yet
 
-- enable yearly subdirectories in both public and private data directories
+- tests for data integrity not invoked
 
-- table checksums not checked 
+
+milestones
+----------
+
+- simple scripts on Testig milestones run well (need reference output in new folder +  OK check with file compare)
+- referfence dataset for database created locally
+- same stored on a remote 
 
 make_url.py
 --------------
@@ -48,14 +57,23 @@ May import date of the file into database
   
   database.py
 -----------
+Init:
 ```
     bankform.py reset   database [raw | final]
     bankform.py import plan <form>
     bankform.py import bank
+```
+
+Raw database:   
+``` 
     bankform.py make dataset <form> <timestamp1> [<timestamp2>] [--regn=<regn_list> | --regn-file=<file> | --regn-all]
     bankform.py save    dataset <form>
     bankform.py import  dataset <form>
     bankform.py migrate dataset <form>
+```
+
+Final database:
+```
     bankform.py import alloc
     bankform.py import tables
     bankform.py make   balance
@@ -71,13 +89,7 @@ May import date of the file into database
 
 - 'insert ignore' may be hiding bugs in the code (ex.: issue #25)
 
-- tests for data integrity not invoked
-
 - dependecy on mysql* executables
-
-- no aggregation of form 102 yet
-
-- final use of data not specified
 
 - make dataset seems to be too slow for what it is doing - missing indexes?
   
@@ -86,8 +98,13 @@ ERROR 1406 (22001) at line 11 in file: 'tables\plan.sql': Data too long for colu
 and
 mysqlimport: Error: 1366, Incorrect integer value: '\xD0\x9A\xD0\xBE\xD0\xB4\x0D' for column 'line' at row 1, when using table: balance_line_name
 
-- depends on GROUP_CONCAT for dumping CSV files with columns
-L: Is this still used? Found not references for GROUP_CONCAT outside the abandoned folder
+- depends on GROUP_CONCAT for dumping CSV files with columns  
+L: Is this still used? Found not references for GROUP_CONCAT outside the abandoned folder.
+EP: it is part of stored SQL procedures
+
+- bankform.py import alloc and bankform.py import tables are a weakness
+
+- saparate into general database access functions and script-specific functions? 
 
 private_form_txt.py
 ---------------------
@@ -101,3 +118,20 @@ private_form_txt.py
 - The private textual data can't be found anymore as the old directory structure separated them by years.
   This is a known issue and must be fixed before --private-data flag works again.
   Related to the now missing yearly subdirectories.
+
+- private data not handled in a uniform way with rest of data
+ 
+global_ini.py
+-------------
+
+- enable yearly subdirectories in both public and private data directories
+
+cli_dates.py
+------------
+
+- minor issue: 'allows future dates in form 102 and crashes on a future date in 101.'
+
+
+pandas interface
+----------------
+- code not optimised
