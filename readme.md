@@ -18,8 +18,8 @@ These steps are shown diagram below:
 ![default](https://cloud.githubusercontent.com/assets/9265326/8636269/1028b132-2861-11e5-8b5f-2f432d3d455d.png)
 
 For more information see:
-- [Basic idea explained](https://github.com/epogrebnyak/cbr-db/wiki/Basic-idea-explained)
-- [Dataflow charts](https://github.com/epogrebnyak/cbr-db/wiki/Dataflow-charts)  
+- [Basic idea explained](https://github.com/epogrebnyak/cbr-db/wiki/1-Basic-idea-explained)
+- [Dataflow charts](https://github.com/epogrebnyak/cbr-db/wiki/1-Dataflow-charts)  
 
 
 ## Interface
