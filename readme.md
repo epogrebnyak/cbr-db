@@ -13,6 +13,7 @@ Principal steps taken in **bankform.py** are the following:
 - Truncate dataset and migrate it to "final use" database (smaller in size, just a few banks)
 - Create output reports and write reports to CSV or XLSX files
 
+
 ![default](https://cloud.githubusercontent.com/assets/9265326/8636269/1028b132-2861-11e5-8b5f-2f432d3d455d.png)
 
 For more information see:
