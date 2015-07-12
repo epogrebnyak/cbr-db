@@ -23,17 +23,17 @@ def convert_txt2csv(txt_path, form):
 def get_parent_dirname(path):
     """
     Returns parent folder stand-alone name.
-    E.g. returns 2013 for path = r"D:\git\cbr-data\data.private\101\txt\2013\f101_12.txt"
+    E.g. returns '2013' for path = r"D:\git\cbr-data\data.private\101\txt\2013\f101_12.txt"
     """
     parent = os.path.dirname(path)    
-    return int(os.path.split(parent)[1])
+    return os.path.split(parent)[1]
  
 def decompose_private_txt_filename (path, form):
     """
     Returns reporting date of file in <path> in ISO format. 
     """
     basename = os.path.basename(path)    
-    year = get_parent_dirname(path)
+    year = int(get_parent_dirname(path))
     if form == '101':
         # not-todo: this may be handled using regex 
         # reads from f101_01.txt, f101_12.txt         
@@ -53,7 +53,7 @@ def get_target_csv_path(txt_path, form):
     csv_dir = get_private_data_folder(form, 'csv')    
     isodate = decompose_private_txt_filename(txt_path, form)
     
-    # todo: table_name_dict must be imported from global_ini.py
+    # not-todo: table_name_dict must be imported from global_ini.py
     table_name_dict = {'101':"bulk_f101_private", '102':"bulk_f102_private"} 
     filename = table_name_dict[form] +  "." + isodate 
     csv_path = os.path.join(csv_dir, filename)
@@ -110,7 +110,6 @@ def convert_f102_txt2csv(txt_file, csv_file, isodate):
     SKIP_ROWS = 45
     regn = get_regn(txt_file)
     
-    # TODO: based on isodate get year and quarter
     year, quarter = conv_date2quarter(isodate)
     
     with open(csv_file, 'w') as targetfile:

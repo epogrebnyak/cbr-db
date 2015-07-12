@@ -122,19 +122,9 @@ def date2quarter(date):
     date = shift_month_behind(date)
     return date.year, date.month // 3
     
-# TODO: very awkward behaviour of  date2quarter(date) + poor docstring. Where is date2quarter() used?
-   
-for dt in  ("2015-01-01", "2014-12-01", "2014-11-01", "2014-10-01", "2014-09-01"):   
-   print(dt, date2quarter(iso2date(dt)))
-
-# 2015-01-01 (2014, 4) <- correct
-# 2014-12-01 (2014, 3) <- incorrect
-# 2014-11-01 (2014, 3) <- incorrect
-# 2014-10-01 (2014, 3) <- correct
-# 2014-09-01 (2014, 2) <- incorrect     
-
 def conv_date2quarter(isodate):
     """
+    Returns year and quarter which correspond to reporting <isodate>
     """
     date = iso2date(isodate)    
     date = shift_month_behind(date)
@@ -153,4 +143,17 @@ def quarter2date(year, quarter):
     """
     dt = datetime.date(year=year, month=quarter * 3, day=1)
     return shift_month_ahead(dt)
-    
+   
+if if __name__ == "__main__":
+    # TODO: very awkward behaviour of  date2quarter(date) + poor docstring. Where is date2quarter() used?
+    #       see if conv_date2quarter() suits calls better.
+    #       conv_date2quarter() used in  private_form_txt.py   
+       
+    for dt in  ("2015-01-01", "2014-12-01", "2014-11-01", "2014-10-01", "2014-09-01"):   
+       print(dt, date2quarter(iso2date(dt)))
+
+    # 2015-01-01 (2014, 4) <- correct
+    # 2014-12-01 (2014, 3) <- incorrect
+    # 2014-11-01 (2014, 3) <- incorrect
+    # 2014-10-01 (2014, 3) <- correct
+    # 2014-09-01 (2014, 2) <- incorrect     
