@@ -16,7 +16,6 @@ Principal steps taken in **bankform.py** are the following:
 For more information see:
 - [Basic idea explained](https://github.com/epogrebnyak/cbr-db/wiki/Basic-idea-explained)
 - [Dataflow charts](https://github.com/epogrebnyak/cbr-db/wiki/Dataflow-charts)  
-- [Data structures](https://github.com/epogrebnyak/cbr-db/wiki/Data-structures)
 
 
 ## Interface
