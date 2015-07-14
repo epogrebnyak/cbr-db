@@ -91,12 +91,23 @@ def convert_f101_txt2csv(txt_file, csv_file, isodate):
                     writer.writerow(row)
                     
 def get_regn(txt_file):
-    '''
-    TODO:
-    must parse beginning of text file and return 'regn' 
-    '''
-    return 964
-
+    """
+    Parses the regn code from <txt_file>, returning it.
+    """
+    with open(txt_file) as input_file:
+        for line in input_file:
+            # look for a line that contains a series of number
+            fields = line.split('|')[1:-1]  # ignore first and last
+            
+            if len(fields) == 5:
+                try:
+                    numbers = list(map(int, fields))
+                    return numbers[3] # regn column
+                except ValueError:
+                    # not the line we are after, skip                
+                    pass
+    
+    raise ValueError("{} deviates from the expected format".format(txt_file))
 
 def convert_f102_txt2csv(txt_file, csv_file, isodate):
     """
@@ -147,12 +158,9 @@ def convert_txt_directory_to_csv(form):
     Converts all available private text files of form <form> to csv files.
     """
     for path in generate_filepaths(form):
+        try:
             print("Converting {} to csv...".format(path))
             convert_txt2csv(path, form)
             print("Done.")
-        
-        #try:
-            # ...  
-        # IMPORTANT: statement below was catching not file not found, but different error and giving a wrong warning.  
-        #except:
-        #    print("File {} (not found)".format(path))
+        except FileNotFoundError:
+            print("File {} (not found)".format(path))
