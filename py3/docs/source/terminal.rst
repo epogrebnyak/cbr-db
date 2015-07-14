@@ -1,0 +1,5 @@
+terminal
+--------
+
+.. automodule:: terminal
+    :members:
