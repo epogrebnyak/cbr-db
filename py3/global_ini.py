@@ -3,6 +3,15 @@ This file includes the database names and description of the forms that are
 currently supported.
 """
 
+import configparser
+
+#############################################################################
+# CONFIGURATION FILE
+#############################################################################
+
+config = configparser.ConfigParser()
+config.read('../settings.cfg')
+
 #############################################################################
 # DATABASE NAMES
 #############################################################################
@@ -127,5 +136,18 @@ CODEPAGE = "cp866"
 # DATABASE CONFIGURATION
 #############################################################################
 
-# TODO: DB_INI_DICT must be initialised from settings.cfg, values below used as default
-DB_INI_DICT = {'host': 'localhost', 'port':3306, 'user':'test_user', 'passwd':'test_password'}
+# default values
+_DEFAULT_DB_INI_DICT = {
+    'host': 'localhost',
+    'port': 3306,
+    'user': 'test_user',
+    'passwd': 'test_password'
+}
+
+# read the database parameters from the configuration file
+DB_INI_DICT = {}
+for key in _DEFAULT_DB_INI_DICT.keys():
+    DB_INI_DICT[key] = config.get('mysql', key, fallback=_DEFAULT_DB_INI_DICT[key])
+
+# port must be integer
+DB_INI_DICT['port'] = int(DB_INI_DICT['port'])
