@@ -3,6 +3,15 @@ Database names + credentials and form descriptions.
 
 Todo: separate configparser.ConfigParser() and form decriptions in different files.
 
+Contents of this file 
+   settings.py (new)         - reads with configparser.ConfigParser()  + database names + codepage
+   form_definitions.py (new) - hardcoded form parameters + access functions
+
+Must separate global_ini.py into two fils + change import dependencies in other project files.
+Check with https://github.com/epogrebnyak/cbr-db/blob/master/py3/script/test-one-date-101.bat
+
+Not changed:
+   config_folders.py
 """
 
 import configparser
