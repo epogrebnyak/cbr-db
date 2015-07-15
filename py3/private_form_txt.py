@@ -1,3 +1,23 @@
+"""
+   Converts text form files into csv (form 101, 102).
+   
+   Main converter functions:
+       convert_f101_txt2csv(txt_file, csv_file, isodate)
+       convert_f102_txt2csv(txt_file, csv_file, isodate)
+       wrapper:
+       convert_txt2csv(txt_path, form)
+    
+    Entry point:
+       convert_txt_directory_to_csv(form)
+       
+    Role of other functions:
+        make target csv filename
+          get_target_csv_path(txt_path, form)
+        
+        walk througn all txt files for  a given form
+          generate_filepaths(form)
+"""
+
 import csv
 import datetime
 import os
@@ -55,7 +75,32 @@ def get_target_csv_path(txt_path, form):
     csv_dir = get_private_data_folder(form, 'csv')    
     filename = get_private_data_db_table(form) +  "." + isodate 
     return os.path.join(csv_dir, filename)
+
+def get_regn(txt_file):
+    """
+    Parses the regn code from <txt_file>, returning it.
+    """
+    MAX_LINES_TO_READ = 20
+    lines_read = 0
     
+    with open(txt_file) as input_file:
+        for line in input_file:
+            # limits the parsing to the header section
+            if lines_read > MAX_LINES_TO_READ:
+                break
+            
+            # look for a line that contains a series of number
+            fields = line.split('|')[1:-1]  # ignore first and last
+            
+            if len(fields) == 5:
+                try:
+                    numbers = list(map(int, fields))
+                    return numbers[3] # regn column
+                except ValueError:
+                    # not the line we are after, skip                
+                    lines_read += 1
+    
+    raise ValueError("{} deviates from the expected format".format(txt_file))    
     
 def convert_f101_txt2csv(txt_file, csv_file, isodate):
 
@@ -90,32 +135,6 @@ def convert_f101_txt2csv(txt_file, csv_file, isodate):
                     row.append(regn)
                     writer.writerow(row)
                     
-def get_regn(txt_file):
-    """
-    Parses the regn code from <txt_file>, returning it.
-    """
-    MAX_LINES_TO_READ = 20
-    lines_read = 0
-    
-    with open(txt_file) as input_file:
-        for line in input_file:
-            # limits the parsing to the header section
-            if lines_read > MAX_LINES_TO_READ:
-                break
-            
-            # look for a line that contains a series of number
-            fields = line.split('|')[1:-1]  # ignore first and last
-            
-            if len(fields) == 5:
-                try:
-                    numbers = list(map(int, fields))
-                    return numbers[3] # regn column
-                except ValueError:
-                    # not the line we are after, skip                
-                    lines_read += 1
-    
-    raise ValueError("{} deviates from the expected format".format(txt_file))
-
 def convert_f102_txt2csv(txt_file, csv_file, isodate):
     """
     Special converter of form 102 text files to csv files.
