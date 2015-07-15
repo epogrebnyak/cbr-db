@@ -1,26 +1,28 @@
 bankform.py - list of vulnerabilities
 --------------------------------------
 
+Workflow on this file:
+
+* list something that troubles your mind in appropriate section of this file
+* formulate a plan for solution (e.g. split to several tasks, write a support documentation file)
+* list an 'issue' on github
+* when solved/droped move to bottom of list
+* upon version change delete or comment out solved issues from this file
+* may use timestamps
+
 general
 --------
 
 - do not like parts of the code style (naming, datastructures, similar things doen differently) - must inspect by file.
-
-- not todo: on import table checksums not checked by design 
-
-- some linux distributions have 'python' pointing to 'Python 2', while others
-  have it pointing to 'Python 3'. Better default to using 'python3' on Linux, and
-  'python' on Windows.  
-  EP: Can be solved in baf.sh/baf.bat
-
-- weak final use case of data, not provided 
-
-- too slow: sql make_balance(), 
-
-- no aggregation of form 102 yet
-
+- weak final use case of data, not provided
+- too slow: make dataset command, sql make_balance()
+- form 102: no aggregation (final table, e.g. 'p_and_l')
 - tests for data integrity not invoked
-
+- no deployment notes
+- need remove 'www' naming
+- not todo: no license specified
+- solved: some linux distributions have 'python' pointing to 'Python 2', while others have it pointing to 'Python 3'. Better default to using 'python3' on Linux, and 'python' on Windows. Solved in baf.sh/baf.bat
+- not todo: on import table checksums not checked by design
 
 milestones
 ----------
@@ -57,6 +59,9 @@ May import date of the file into database
   
   database.py
 -----------
+
+- database.py may has too many responsibilities, as the most command line invocations are handled by it
+
 Init:
 ```
     bankform.py reset   database [raw | final]
@@ -130,6 +135,13 @@ cli_dates.py
 ------------
 
 - minor issue: 'allows future dates in form 102 and crashes on a future date in 101.'
+- bankform.py make dataset
+   if start date not supplied, doe not set it to bottom date
+
+date_engine.py
+--------------
+
+- https://github.com/epogrebnyak/cbr-db/issues/31 date2quarter()
 
 
 pandas interface
