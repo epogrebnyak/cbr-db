@@ -164,10 +164,17 @@ def convert_txt_directory_to_csv(form):
     """
     Converts all available private text files of form <form> to csv files.
     """
+
+    print('Converting available private text files to csv...')    
+    num_converted = 0
+    
     for path in generate_filepaths(form):
         try:
             print("Converting {} to csv...".format(path))
             convert_txt2csv(path, form)
+            num_converted += 1
             print("Done.")
         except FileNotFoundError:
             print("File {} (not found)".format(path))
+    
+    print("-> Converted a total of {} files".format(num_converted))

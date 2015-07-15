@@ -81,7 +81,7 @@ def get_private_data_folder(form, subfolder_tag):
     dir_list = _get_private_dirs(form)
     return dir_list[subfolder_tag]
     
-def generate_private_data_annual_subfolders(form, subfolder_tag = 'txt'):
+def generate_private_data_annual_subfolders(form, subfolder_tag='txt'):
     """
     Will return paths 2015
         D:\git\cbr-data\data.private\101\txt\2004
@@ -89,7 +89,7 @@ def generate_private_data_annual_subfolders(form, subfolder_tag = 'txt'):
         D:\git\cbr-data\data.private\101\txt\2015
     
     """
-    for year in range(2004,get_current_year()+1):        
+    for year in range(2004, get_current_year()+1):        
         main_folder = get_private_data_folder(form, subfolder_tag)
         dir_ = os.path.normpath(
                                 os.path.join(main_folder,str(year))
