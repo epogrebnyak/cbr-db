@@ -3,6 +3,12 @@ Deployment notes (draft)
 
 bankform.py requires following system and script configuration.
 
+requirements.txt
+---------
+
+'requirements.txt' lists python modules required by bankform.py. Use ```pip install -r requirements.txt``` to proceed.
+
+
 MySQL
 -----
 
