@@ -1,6 +1,8 @@
 """
-This file includes the database names and description of the forms that are
-currently supported.
+Database names + credentials and form descriptions. 
+
+Todo: separate configparser.ConfigParser() and form decriptions in different files.
+
 """
 
 import configparser
