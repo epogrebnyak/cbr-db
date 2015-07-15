@@ -116,11 +116,15 @@ def zero_padded_month(month):
         
 def date2quarter(date):
     """
-    Returns a (year, quarter) tuple from a <date> object.
-    Note: the first quarter corresponds to month 4, not 1.
+    Returns the last completed quarter (year, quarter) tuple from a <date> object (a reverse quarter2date).
+    The function expects a valid end-of-quarter month (months 1, 4, 7, 10) .
     """
-    date = shift_month_behind(date)
-    return date.year, date.month // 3
+    if date.month == 1:
+        return (date.year - 1, 4)
+    elif date.month in (4, 7, 10):
+        return (date.year, (date.month - 1) // 3)
+    else:
+        raise ValueError("Month {} does is not a end-of-quarter month (months 1, 4, 7, and 10)")
     
 def conv_date2quarter(isodate):
     """
