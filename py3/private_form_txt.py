@@ -94,8 +94,15 @@ def get_regn(txt_file):
     """
     Parses the regn code from <txt_file>, returning it.
     """
+    MAX_LINES_TO_READ = 20
+    lines_read = 0
+    
     with open(txt_file) as input_file:
         for line in input_file:
+            # limits the parsing to the header section
+            if lines_read > MAX_LINES_TO_READ:
+                break
+            
             # look for a line that contains a series of number
             fields = line.split('|')[1:-1]  # ignore first and last
             
@@ -105,7 +112,7 @@ def get_regn(txt_file):
                     return numbers[3] # regn column
                 except ValueError:
                     # not the line we are after, skip                
-                    pass
+                    lines_read += 1
     
     raise ValueError("{} deviates from the expected format".format(txt_file))
 
