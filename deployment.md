@@ -30,6 +30,10 @@ bankform.py was tested an works with the following MySQL versions:
 
 bankform.py does not works out of the box with MariaDB (some Linux distributions are shiping MariaDB instead of MySQL).
 
+##### MySQL permissions
+
+MySQL must have read access to the data files (see *directory structure - where data is?* below). In some Linux distributions, AppArmor must be configured - see [this](http://stackoverflow.com/questions/2783313/how-can-i-get-around-mysql-errcode-13-with-select-into-outfile) discussion.
+
 Paths to 7z and unrar
 ---------------------
 bankform.py uses ```7z``` and ```unrar``` executables to unpack .zip and .rar files. Binaries for Windows systems are in \bin\ subfolder of project directory. On Linux must install these binaries with: 
