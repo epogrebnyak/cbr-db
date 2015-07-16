@@ -23,6 +23,13 @@ b) mysql\*.exe must be in PATH on Windows. If not in PATH run utils\ini.bat with
 
 *Development note: conn.py and database.py use MySQL*
 
+##### MySQL compatibility
+
+bankform.py was tested an works with the following MySQL versions:
+* 5.7.7 (win32), on Windows 8
+
+bankform.py does not works out of the box with MariaDB (some Linux distributions are shiping MariaDB instead of MySQL).
+
 Paths to 7z and unrar
 ---------------------
 bankform.py uses ```7z``` and ```unrar``` executables to unpack .zip and .rar files. Binaries for Windows systems are in \bin\ subfolder of project directory. On Linux must install these binaries with: 
