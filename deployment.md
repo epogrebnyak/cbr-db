@@ -28,7 +28,7 @@ b) mysql\*.exe must be in PATH on Windows. If not in PATH run utils\ini.bat with
 bankform.py was tested an works with the following MySQL versions:
 * 5.7.7 (win32), on Windows 8
 
-bankform.py does not works out of the box with MariaDB (some Linux distributions are shiping MariaDB instead of MySQL).
+bankform.py does not works out of the box with MariaDB (some Linux distributions are shipping with MariaDB instead of MySQL).
 
 ##### MySQL permissions
 
