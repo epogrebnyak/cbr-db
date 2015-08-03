@@ -1,8 +1,8 @@
-﻿-- MySQL dump 10.13  Distrib 5.6.16, for Win32 (x86)
+-- MySQL dump 10.13  Distrib 5.5.9, for Win32 (x86)
 --
 -- Host: localhost    Database: cbr_db
 -- ------------------------------------------------------
--- Server version	5.6.16
+-- Server version	5.5.9-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -56,11 +56,11 @@ DROP TABLE IF EXISTS `balance`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `balance` (
-  `dt` date DEFAULT NULL,
+  `dt` date,
   `line` int(11) DEFAULT NULL,
   `lev` int(1) NOT NULL DEFAULT '0',
   `la_p` double DEFAULT NULL,
-  `regn` smallint(6) DEFAULT NULL,
+  `regn` smallint(6),
   `has_iv` tinyint(4) DEFAULT NULL,
   `ir` decimal(65,0) DEFAULT NULL,
   `iv` decimal(65,0) DEFAULT NULL,
@@ -107,13 +107,13 @@ DROP TABLE IF EXISTS `balance_uniform`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 /*!50001 CREATE TABLE `balance_uniform` (
-  `line` tinyint NOT NULL,
-  `lev` tinyint NOT NULL,
-  `regn` tinyint NOT NULL,
-  `dt` tinyint NOT NULL,
-  `itogo` tinyint NOT NULL,
-  `ir` tinyint NOT NULL,
-  `iv` tinyint NOT NULL
+  `line` int(11),
+  `lev` int(1),
+  `regn` smallint(6),
+  `dt` date,
+  `itogo` decimal(65,0),
+  `ir` decimal(65,0),
+  `iv` decimal(65,0)
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
 
@@ -157,20 +157,21 @@ CREATE TABLE `f101` (
 --
 -- Table structure for table `f102`
 --
+
 DROP TABLE IF EXISTS `f102`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `f102` (
-  `dt` date,
-  `regn` int(11),
-  `quart` int(1),
-  `year` int(11),
-  `code` varchar(10),
-  `ir` bigint(20),
-  `iv` bigint(20),
-  `itogo` bigint(20),
+  `dt` date DEFAULT NULL,
+  `regn` int(11) NOT NULL DEFAULT '0',
+  `quart` int(1) NOT NULL DEFAULT '0',
+  `year` int(11) NOT NULL DEFAULT '0',
+  `code` varchar(10) NOT NULL DEFAULT '',
+  `ir` bigint(20) DEFAULT NULL,
+  `iv` bigint(20) DEFAULT NULL,
+  `itogo` bigint(20) NOT NULL DEFAULT '0',
   `has_iv` tinyint(4) DEFAULT NULL,
-  PRIMARY KEY (`regn`, `quart`, `year`, `code`, `itogo`)
+  PRIMARY KEY (`regn`,`quart`,`year`,`code`,`itogo`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -183,7 +184,7 @@ DROP TABLE IF EXISTS `list_alloc_line_all`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 /*!50001 CREATE TABLE `list_alloc_line_all` (
-  `line` tinyint NOT NULL
+  `line` int(11)
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
 
@@ -196,8 +197,8 @@ DROP TABLE IF EXISTS `list_bank_names`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 /*!50001 CREATE TABLE `list_bank_names` (
-  `regn` tinyint NOT NULL,
-  `regn_name` tinyint NOT NULL
+  `regn` smallint(6),
+  `regn_name` varchar(445)
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
 
@@ -210,8 +211,8 @@ DROP TABLE IF EXISTS `list_conto_all`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 /*!50001 CREATE TABLE `list_conto_all` (
-  `conto` tinyint NOT NULL,
-  `a_p` tinyint NOT NULL
+  `conto` mediumint(9),
+  `a_p` tinyint(4)
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
 
@@ -224,7 +225,7 @@ DROP TABLE IF EXISTS `list_date_all`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 /*!50001 CREATE TABLE `list_date_all` (
-  `dt` tinyint NOT NULL
+  `dt` date
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
 
@@ -237,7 +238,7 @@ DROP TABLE IF EXISTS `list_regn_all`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 /*!50001 CREATE TABLE `list_regn_all` (
-  `regn` tinyint NOT NULL
+  `regn` smallint(6)
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
 
@@ -250,8 +251,8 @@ DROP TABLE IF EXISTS `major_bank`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 /*!50001 CREATE TABLE `major_bank` (
-  `regn` tinyint NOT NULL,
-  `regn_name` tinyint NOT NULL
+  `regn` smallint(6),
+  `regn_name` varchar(445)
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
 
@@ -296,10 +297,10 @@ DROP TABLE IF EXISTS `temp_alloc_line`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 /*!50001 CREATE TABLE `temp_alloc_line` (
-  `line` tinyint NOT NULL,
-  `dot_id` tinyint NOT NULL,
-  `txt` tinyint NOT NULL,
-  `lev` tinyint NOT NULL
+  `line` int(11),
+  `dot_id` varchar(10),
+  `txt` varchar(256),
+  `lev` int(1)
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
 
@@ -312,9 +313,9 @@ DROP TABLE IF EXISTS `temp_alloc_not_listed`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 /*!50001 CREATE TABLE `temp_alloc_not_listed` (
-  `ac` tinyint NOT NULL,
-  `conto` tinyint NOT NULL,
-  `a_p` tinyint NOT NULL
+  `ac` int(11),
+  `conto` mediumint(9),
+  `a_p` tinyint(4)
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
 
@@ -327,14 +328,14 @@ DROP TABLE IF EXISTS `temp_tail`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 /*!50001 CREATE TABLE `temp_tail` (
-  `dt` tinyint NOT NULL,
-  `line` tinyint NOT NULL,
-  `lev` tinyint NOT NULL,
-  `la_p` tinyint NOT NULL,
-  `regn` tinyint NOT NULL,
-  `ir` tinyint NOT NULL,
-  `iv` tinyint NOT NULL,
-  `itogo` tinyint NOT NULL
+  `dt` date,
+  `line` int(11),
+  `lev` int(1),
+  `la_p` double,
+  `regn` smallint(6),
+  `ir` decimal(65,0),
+  `iv` decimal(65,0),
+  `itogo` decimal(65,0)
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
 
@@ -347,13 +348,13 @@ DROP TABLE IF EXISTS `temp_vtb`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 /*!50001 CREATE TABLE `temp_vtb` (
-  `line` tinyint NOT NULL,
-  `txt` tinyint NOT NULL,
-  `regn` tinyint NOT NULL,
-  `dt` tinyint NOT NULL,
-  `ir` tinyint NOT NULL,
-  `iv` tinyint NOT NULL,
-  `itogo` tinyint NOT NULL
+  `line` int(11),
+  `txt` varchar(256),
+  `regn` smallint(6),
+  `dt` date,
+  `ir` decimal(65,0),
+  `iv` decimal(65,0),
+  `itogo` decimal(65,0)
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
 
@@ -366,12 +367,12 @@ DROP TABLE IF EXISTS `test_alloc_not_in_f101`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 /*!50001 CREATE TABLE `test_alloc_not_in_f101` (
-  `ac` tinyint NOT NULL,
-  `conto` tinyint NOT NULL,
-  `a_p` tinyint NOT NULL,
-  `line` tinyint NOT NULL,
-  `mult` tinyint NOT NULL,
-  `d` tinyint NOT NULL
+  `ac` int(11),
+  `conto` mediumint(9),
+  `a_p` tinyint(4),
+  `line` int(6),
+  `mult` int(1),
+  `d` varchar(256)
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
 
@@ -384,9 +385,9 @@ DROP TABLE IF EXISTS `test_alloc_not_listed`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 /*!50001 CREATE TABLE `test_alloc_not_listed` (
-  `ac` tinyint NOT NULL,
-  `conto` tinyint NOT NULL,
-  `a_p` tinyint NOT NULL
+  `ac` int(11),
+  `conto` mediumint(9),
+  `a_p` tinyint(4)
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
 
@@ -399,12 +400,12 @@ DROP TABLE IF EXISTS `test_balance_residual`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 /*!50001 CREATE TABLE `test_balance_residual` (
-  `dt` tinyint NOT NULL,
-  `regn` tinyint NOT NULL,
-  `ap1` tinyint NOT NULL,
-  `ap2` tinyint NOT NULL,
-  `diff` tinyint NOT NULL,
-  `diff_p` tinyint NOT NULL
+  `dt` date,
+  `regn` smallint(6),
+  `ap1` decimal(65,0),
+  `ap2` decimal(65,0),
+  `diff` decimal(65,0),
+  `diff_p` decimal(64,2)
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
 
@@ -417,10 +418,10 @@ DROP TABLE IF EXISTS `test_f101_duplicates`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 /*!50001 CREATE TABLE `test_f101_duplicates` (
-  `regn` tinyint NOT NULL,
-  `dt` tinyint NOT NULL,
-  `conto` tinyint NOT NULL,
-  `c` tinyint NOT NULL
+  `regn` smallint(6),
+  `dt` date,
+  `conto` mediumint(9),
+  `c` bigint(21)
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
 
@@ -433,12 +434,12 @@ DROP TABLE IF EXISTS `test_f101_residual`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 /*!50001 CREATE TABLE `test_f101_residual` (
-  `dt` tinyint NOT NULL,
-  `regn` tinyint NOT NULL,
-  `ap1` tinyint NOT NULL,
-  `ap2` tinyint NOT NULL,
-  `diff` tinyint NOT NULL,
-  `diff_p` tinyint NOT NULL
+  `dt` date,
+  `regn` smallint(6),
+  `ap1` decimal(41,0),
+  `ap2` decimal(41,0),
+  `diff` decimal(42,0),
+  `diff_p` double(19,2)
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
 
@@ -451,14 +452,14 @@ DROP TABLE IF EXISTS `test_negative_199`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 /*!50001 CREATE TABLE `test_negative_199` (
-  `dt` tinyint NOT NULL,
-  `line` tinyint NOT NULL,
-  `lev` tinyint NOT NULL,
-  `la_p` tinyint NOT NULL,
-  `regn` tinyint NOT NULL,
-  `ir` tinyint NOT NULL,
-  `iv` tinyint NOT NULL,
-  `itogo` tinyint NOT NULL
+  `dt` date,
+  `line` int(11),
+  `lev` int(1),
+  `la_p` double,
+  `regn` smallint(6),
+  `ir` decimal(65,0),
+  `iv` decimal(65,0),
+  `itogo` decimal(65,0)
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
 
@@ -471,11 +472,11 @@ DROP TABLE IF EXISTS `test_ref_items`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 /*!50001 CREATE TABLE `test_ref_items` (
-  `dt` tinyint NOT NULL,
-  `regn` tinyint NOT NULL,
-  `ref_div_fact` tinyint NOT NULL,
-  `ref` tinyint NOT NULL,
-  `fact` tinyint NOT NULL
+  `dt` date,
+  `regn` smallint(6),
+  `ref_div_fact` decimal(65,4),
+  `ref` decimal(65,0),
+  `fact` decimal(65,0)
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
 
@@ -489,8 +490,8 @@ DROP TABLE IF EXISTS `tmp_balance_view`;
 CREATE TABLE `tmp_balance_view` (
   `line` int(11) DEFAULT NULL,
   `lev` int(1) DEFAULT NULL,
-  `regn` int(11) DEFAULT NULL,
-  `dt` date DEFAULT NULL,
+  `regn` smallint(6),
+  `dt` date,
   `itogo` decimal(65,0) NOT NULL DEFAULT '0',
   `ir` decimal(65,0) NOT NULL DEFAULT '0',
   `iv` decimal(65,0) NOT NULL DEFAULT '0'
@@ -521,7 +522,7 @@ DROP TABLE IF EXISTS `tmp_output_ir`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `tmp_output_ir` (
   `cpart` varchar(5) CHARACTER SET utf8 NOT NULL DEFAULT '',
-  `regn` varchar(11) CHARACTER SET utf8 DEFAULT NULL,
+  `regn` varchar(6) CHARACTER SET utf8 DEFAULT NULL,
   `line` varchar(11) CHARACTER SET utf8 DEFAULT NULL,
   `dt_group_1` longtext CHARACTER SET utf8
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -536,7 +537,7 @@ DROP TABLE IF EXISTS `tmp_output_itogo`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `tmp_output_itogo` (
   `cpart` varchar(5) CHARACTER SET utf8 NOT NULL DEFAULT '',
-  `regn` varchar(11) CHARACTER SET utf8 DEFAULT NULL,
+  `regn` varchar(6) CHARACTER SET utf8 DEFAULT NULL,
   `line` varchar(11) CHARACTER SET utf8 DEFAULT NULL,
   `dt_group_1` longtext CHARACTER SET utf8
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -551,14 +552,14 @@ DROP TABLE IF EXISTS `tmp_output_iv`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `tmp_output_iv` (
   `cpart` varchar(5) CHARACTER SET utf8 NOT NULL DEFAULT '',
-  `regn` varchar(11) CHARACTER SET utf8 DEFAULT NULL,
+  `regn` varchar(6) CHARACTER SET utf8 DEFAULT NULL,
   `line` varchar(11) CHARACTER SET utf8 DEFAULT NULL,
   `dt_group_1` longtext CHARACTER SET utf8
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping routines for database 'cbr_db3'
+-- Dumping routines for database 'cbr_db'
 --
 /*!50003 DROP PROCEDURE IF EXISTS `alloc_make` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -570,7 +571,7 @@ CREATE TABLE `tmp_output_iv` (
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `alloc_make`()
+/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `alloc_make`()
 BEGIN
 
 
@@ -629,7 +630,7 @@ create Table alloc as Select * from prealloc;
 
 DROP TABLE prealloc;
 
-END ;;
+END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -645,7 +646,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `alloc_make_insert_not_listed`()
+/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `alloc_make_insert_not_listed`()
 BEGIN
 
 drop table if exists account_not_listed;
@@ -660,7 +661,7 @@ insert prealloc
 select line, conto, mult, left(line,1) * 1 as la_p, 0 lev, 2 step, 1 is_extra 
 from account_not_listed;
 
-END ;;
+END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -676,7 +677,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `balance_make`()
+/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `balance_make`()
 BEGIN
 
 
@@ -688,7 +689,7 @@ call balance_make_insert_totals();
 
 
 
-END ;;
+END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -704,7 +705,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `balance_make_group`()
+/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `balance_make_group`()
 BEGIN
 
 
@@ -759,7 +760,7 @@ group by dt, line, balance.regn;
 insert into balance 
 select * from balance_group;
 
-END ;;
+END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -775,7 +776,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `balance_make_insert_totals`()
+/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `balance_make_insert_totals`()
 BEGIN
 
 drop table if exists tmp_balance_total;
@@ -808,7 +809,7 @@ select * from   balance_net;
 drop table tmp_balance_total;
 drop table balance_net;
 
-END ;;
+END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -824,7 +825,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`test_user`@`localhost` PROCEDURE `balance_make_saldo_198_298`()
+/*!50003 CREATE*/ /*!50020 DEFINER=`test_user`@`localhost`*/ /*!50003 PROCEDURE `balance_make_saldo_198_298`()
 BEGIN
 
 
@@ -1029,7 +1030,7 @@ select * from saldo_198_298;
 
 
 
-END ;;
+END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -1045,7 +1046,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `balance_make_step_1`()
+/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `balance_make_step_1`()
 BEGIN
 
 drop table if exists balance;
@@ -1066,7 +1067,7 @@ group by dt, line, regn;
 
 create index bal_index_1 on balance (line, regn, dt);
 
-END ;;
+END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -1082,12 +1083,12 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `balance_report_1`()
+/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `balance_report_1`()
 BEGIN
 
 call balance_report_line_dt_3tables;
 
-END ;;
+END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -1103,7 +1104,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `balance_report_line_dt_3tables`()
+/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `balance_report_line_dt_3tables`()
 BEGIN
 
 
@@ -1255,7 +1256,7 @@ SELECT * FROM (
 
 
 
-END ;;
+END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -1271,7 +1272,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `balance_report_run`()
+/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `balance_report_run`()
 BEGIN
 
 
@@ -1322,7 +1323,7 @@ CALL temp_balance_report_line_dt(1470);
 
 
 
-END ;;
+END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -1338,7 +1339,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `make_file`(IN `sql_line` VARCHAR(50), IN `file_prefix` VARCHAR(50))
+/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `make_file`(IN `sql_line` VARCHAR(50), IN `file_prefix` VARCHAR(50))
 BEGIN
 
 
@@ -1379,7 +1380,7 @@ DROP PREPARE s1;
 
 
 
-END ;;
+END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -1395,12 +1396,12 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `make_view`(IN `view_name` CHAR(50))
+/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `make_view`(IN `view_name` CHAR(50))
 BEGIN
 
 call make_file(CONCAT("select * from ", view_name), view_name);
 
-END ;;
+END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -1416,7 +1417,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `temp_abandoned_balance_make_saldo_198_298`()
+/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `temp_abandoned_balance_make_saldo_198_298`()
 BEGIN
 
 
@@ -1565,7 +1566,7 @@ select * from saldo_198_298;
 
 
 
-END ;;
+END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -1581,7 +1582,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `temp_balance_report_line_dt`(IN `p_regn` INT)
+/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `temp_balance_report_line_dt`(IN `p_regn` INT)
 BEGIN
 
 
@@ -1648,7 +1649,7 @@ call make_file('SELECT * FROM tmp_output_view', CONCAT('balance_', p_regn));
 
 SELECT * FROM tmp_output_view;
 
-END ;;
+END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -1664,14 +1665,14 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `temp_empty_all_tables`()
+/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `temp_empty_all_tables`()
 BEGIN
 delete from bank;
 delete from f101;
 delete from f102;
 delete from plan;
 delete from sprav102;
-END ;;
+END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -1687,7 +1688,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `temp_wipe_non_major`()
+/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `temp_wipe_non_major`()
 delete from f101 
 where regn not in (
   1481	
@@ -1704,7 +1705,7 @@ where regn not in (
 , 1942	
 , 2790	
 , 3340	
-) ;;
+) */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -1720,7 +1721,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `temp_work_calls`()
+/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `temp_work_calls`()
 BEGIN
 
 
@@ -1733,7 +1734,7 @@ update alloc_raw
 set line = 199000, mult = mult  * -1
 where line = 299000;
 
-END ;;
+END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -1749,7 +1750,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `test_balance_make`()
+/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `test_balance_make`()
 BEGIN
 
 select "Test must return 4 empty sets below" as msg;
@@ -1770,7 +1771,7 @@ select * from balance where line = 500 and itogo !=0;
 
 
 
-END ;;
+END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -1786,7 +1787,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `test_count_line_numbers`()
+/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `test_count_line_numbers`()
 BEGIN
 select dt, regn, count(*) from balance_uniform
 group by dt, regn;
@@ -1794,7 +1795,7 @@ group by dt, regn;
 select dt, regn, count(*) from balance
 group by dt, regn; 
 
-END ;;
+END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -1810,7 +1811,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `test_netting`()
+/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `test_netting`()
 BEGIN
 
 select "Netting example - must have at least one zero per line" as msg;
@@ -1822,7 +1823,7 @@ dt in ("2013-12-01", "2013-01-01") order by dt;
 select * from saldo_198_298 where line in (198000, 298000) and regn = 1326 and
 dt in ("2013-12-01", "2013-01-01") order by dt;
 
-END ;;
+END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -1957,7 +1958,7 @@ DELIMITER ;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `major_bank` AS select `bank`.`regn` AS `regn`,`bank`.`regn_name` AS `regn_name` from `bank` where (`bank`.`regn` in (1481,354,964,1000,1623,2748,3349,1326,1470,1942,2790,3340)) */;
+/*!50001 VIEW `major_bank` AS select distinct `f`.`regn` AS `regn`,`b`.`regn_name` AS `regn_name` from (`bank` `b` join `f101` `f` on((`b`.`regn` = `f`.`regn`))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -2180,4 +2181,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-06-24  3:48:13
+-- Dump completed on 2015-08-03 13:08:53
