@@ -1,8 +1,9 @@
 """Access DBF files as stream and write to CSV."""
 
-from common import change_extension, get_basename, dump_iter_to_csv, yield_csv_rows
+from common import change_extension, dump_iter_to_csv, yield_csv_rows
 from dbfread import DBF
 from collections import OrderedDict
+from datetime import datetime
 
 #______________________________________________________________________________
 #
@@ -38,7 +39,7 @@ def write_to_csv(f, filter_func = kill_itgap_row):
 
 #______________________________________________________________________________
 #
-#  Modify DBF data streams
+#  Modify DBF data streams - OrderedDict and subsetting
 #______________________________________________________________________________
 
 def yield_csv_as_ordered_dict(f):
@@ -49,7 +50,7 @@ def yield_csv_as_ordered_dict(f):
     
 NULL_CSV_MARKER = '0'
     
-def mask_row(incoming_dict, field_names):     
+def select_fields_from_row(incoming_dict, field_names):     
     """Return OD with *field_names* as keys and *incoming_dict* as values, where matched."""
     row_dict = OrderedDict.fromkeys(field_names, NULL_CSV_MARKER)
     for k,v in incoming_dict.items():
@@ -60,9 +61,12 @@ def mask_row(incoming_dict, field_names):
 def yield_csv_subset(f, field_names):
     gen = yield_csv_as_ordered_dict(f)
     for row in gen:
-         yield mask_row(row, field_names)
+         yield select_fields_from_row(row, field_names)
 
-
+#______________________________________________________________________________
+#
+#  Modify DBF data streams - Yeild flat stream from DBF file from 
+#______________________________________________________________________________
 
 
 def get_csv_stream(f, field_names):
@@ -74,33 +78,50 @@ def yield_by_ts(ts, postfix= None, field_names = None):
         f = ts + postfix + ".dbf"
         return get_csv_stream(f, field_names)  
         
+
+FIELDS_BY_FILETYPE = [
+    # short table specification
+      { 'postfix' : "_B", 
+    'field_names' : ['REGN', 'PLAN', 'NUM_SC', 'A_P', 'IR', 'IV', 'ITOGO', 'DT']}
+   
+    # long table specification
+    ,  {'postfix' : "B1",
+    'field_names' : ['REGN', 'PLAN', 'NUM_SC', 'A_P', 'IR', 'IV',  'IITG', 'DT']}
+        ]
+
 def yield_flat_stream(ts):
-    # fi = "122012_B.DBF"    
-    # fii = "122012B1.DBF"
-  
-        
-    gen_i = yield_by_ts(ts, "_B", 
-            ['REGN', 'PLAN', 'NUM_SC', 'A_P', 'IR', 'IV', 'ITOGO', 'DT'])
-    gen_ii = yield_by_ts(ts, "B1",
-            ['REGN', 'PLAN', 'NUM_SC', 'A_P', 'IR', 'IV',  'IITG', 'DT'])
-    for row in gen_i:
-        yield row 
-    for row in gen_ii:
-        yield row
-        
+    for definition in FIELDS_BY_FILETYPE:
+        gen = yield_by_ts(ts, **definition)
+        for row in gen:
+            yield row 
+            
+#______________________________________________________________________________
+#
+#  Modify DBF data streams - Return dictionaries
+#______________________________________________________________________________        
+
+
+def get_date(isodate):
+    return datetime.strptime(isodate, "%Y-%m-%d").date() 
+
+def to_int(x):
+    return int(float(x))     
+
+def yield_dicts(ts):
+    gen = yield_flat_stream(ts)
+    for row in gen:
+        row = [x for x in row.values()]
+        yield {'regn': to_int(row[0]),
+               'plan': row[1],
+              'conto': to_int(row[2]),
+                'a_p': to_int(row[3]),           
+                 'ir': to_int(row[4]),
+                 'iv': to_int(row[5]),
+              'itogo': to_int(row[6]),
+                 'dt': get_date(row[7])
+               }        
+
 if __name__ == "__main__":
     
-   frm = [ # short table
-          {'postfix' : "_B", 
-        'field_names': ['REGN', 'PLAN', 'NUM_SC', 'A_P', 'IR', 'IV', 'ITOGO', 'DT']}
-          # long table
-        , {'postfix' : "B1",
-        'field_names': ['REGN', 'PLAN', 'NUM_SC', 'A_P', 'IR', 'IV',  'IITG', 'DT']}
-        ]
-        
-   #for x in yield_by_ts("122012", **frm[1]):
-   #             print(x)
-                
-                
-   for i, x in enumerate(yield_flat_stream('122012')):
+   for i, x in enumerate(yield_dicts('122012')):
         print (x)
