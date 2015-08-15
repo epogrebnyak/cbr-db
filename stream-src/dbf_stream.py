@@ -1,6 +1,6 @@
 """Access DBF files as stream and write to CSV."""
 
-from common import change_extension, dump_iter_to_csv, yield_csv_rows
+from common import change_extension, get_basename, dump_iter_to_csv, yield_csv_rows
 from dbfread import DBF
 from collections import OrderedDict
 
@@ -62,5 +62,45 @@ def yield_csv_subset(f, field_names):
     for row in gen:
          yield mask_row(row, field_names)
 
+
+
+
+def get_csv_stream(f, field_names):
+    сsv = write_to_csv(f)        
+    return yield_csv_subset(сsv, field_names)
+    
+
+def yield_by_ts(ts, postfix= None, field_names = None):
+        f = ts + postfix + ".dbf"
+        return get_csv_stream(f, field_names)  
+        
+def yield_flat_stream(ts):
+    # fi = "122012_B.DBF"    
+    # fii = "122012B1.DBF"
+  
+        
+    gen_i = yield_by_ts(ts, "_B", 
+            ['REGN', 'PLAN', 'NUM_SC', 'A_P', 'IR', 'IV', 'ITOGO', 'DT'])
+    gen_ii = yield_by_ts(ts, "B1",
+            ['REGN', 'PLAN', 'NUM_SC', 'A_P', 'IR', 'IV',  'IITG', 'DT'])
+    for row in gen_i:
+        yield row 
+    for row in gen_ii:
+        yield row
+        
 if __name__ == "__main__":
-    pass    
+    
+   frm = [ # short table
+          {'postfix' : "_B", 
+        'field_names': ['REGN', 'PLAN', 'NUM_SC', 'A_P', 'IR', 'IV', 'ITOGO', 'DT']}
+          # long table
+        , {'postfix' : "B1",
+        'field_names': ['REGN', 'PLAN', 'NUM_SC', 'A_P', 'IR', 'IV',  'IITG', 'DT']}
+        ]
+        
+   #for x in yield_by_ts("122012", **frm[1]):
+   #             print(x)
+                
+                
+   for i, x in enumerate(yield_flat_stream('122012')):
+        print (x)
