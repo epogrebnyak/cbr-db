@@ -571,7 +571,7 @@ CREATE TABLE `tmp_output_iv` (
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `alloc_make`()
+/*!50003 CREATE*/ /*!50020 DEFINER=`test_user`@`%`*/ /*!50003 PROCEDURE `alloc_make`()
 BEGIN
 
 
@@ -646,7 +646,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `alloc_make_insert_not_listed`()
+/*!50003 CREATE*/ /*!50020 DEFINER=`test_user`@`%`*/ /*!50003 PROCEDURE `alloc_make_insert_not_listed`()
 BEGIN
 
 drop table if exists account_not_listed;
@@ -677,7 +677,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `balance_make`()
+/*!50003 CREATE*/ /*!50020 DEFINER=`test_user`@`%`*/ /*!50003 PROCEDURE `balance_make`()
 BEGIN
 
 
@@ -705,7 +705,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `balance_make_group`()
+/*!50003 CREATE*/ /*!50020 DEFINER=`test_user`@`%`*/ /*!50003 PROCEDURE `balance_make_group`()
 BEGIN
 
 
@@ -776,7 +776,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `balance_make_insert_totals`()
+/*!50003 CREATE*/ /*!50020 DEFINER=`test_user`@`%`*/ /*!50003 PROCEDURE `balance_make_insert_totals`()
 BEGIN
 
 drop table if exists tmp_balance_total;
@@ -825,7 +825,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50020 DEFINER=`test_user`@`localhost`*/ /*!50003 PROCEDURE `balance_make_saldo_198_298`()
+/*!50003 CREATE*/ /*!50020 DEFINER=`test_user`@`%`*/ /*!50003 PROCEDURE `balance_make_saldo_198_298`()
 BEGIN
 
 
@@ -1046,7 +1046,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `balance_make_step_1`()
+/*!50003 CREATE*/ /*!50020 DEFINER=`test_user`@`%`*/ /*!50003 PROCEDURE `balance_make_step_1`()
 BEGIN
 
 drop table if exists balance;
@@ -1083,7 +1083,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `balance_report_1`()
+/*!50003 CREATE*/ /*!50020 DEFINER=`test_user`@`%`*/ /*!50003 PROCEDURE `balance_report_1`()
 BEGIN
 
 call balance_report_line_dt_3tables;
@@ -1104,7 +1104,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `balance_report_line_dt_3tables`()
+/*!50003 CREATE*/ /*!50020 DEFINER=`test_user`@`%`*/ /*!50003 PROCEDURE `balance_report_line_dt_3tables`()
 BEGIN
 
 
@@ -1272,7 +1272,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `balance_report_run`()
+/*!50003 CREATE*/ /*!50020 DEFINER=`test_user`@`%`*/ /*!50003 PROCEDURE `balance_report_run`()
 BEGIN
 
 
@@ -1339,7 +1339,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `make_file`(IN `sql_line` VARCHAR(50), IN `file_prefix` VARCHAR(50))
+/*!50003 CREATE*/ /*!50020 DEFINER=`test_user`@`%`*/ /*!50003 PROCEDURE `make_file`(IN `sql_line` VARCHAR(50), IN `file_prefix` VARCHAR(50))
 BEGIN
 
 
@@ -1396,7 +1396,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `make_view`(IN `view_name` CHAR(50))
+/*!50003 CREATE*/ /*!50020 DEFINER=`test_user`@`%`*/ /*!50003 PROCEDURE `make_view`(IN `view_name` CHAR(50))
 BEGIN
 
 call make_file(CONCAT("select * from ", view_name), view_name);
@@ -1417,7 +1417,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `temp_abandoned_balance_make_saldo_198_298`()
+/*!50003 CREATE*/ /*!50020 DEFINER=`test_user`@`%`*/ /*!50003 PROCEDURE `temp_abandoned_balance_make_saldo_198_298`()
 BEGIN
 
 
@@ -1582,7 +1582,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `temp_balance_report_line_dt`(IN `p_regn` INT)
+/*!50003 CREATE*/ /*!50020 DEFINER=`test_user`@`%`*/ /*!50003 PROCEDURE `temp_balance_report_line_dt`(IN `p_regn` INT)
 BEGIN
 
 
@@ -1665,7 +1665,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `temp_empty_all_tables`()
+/*!50003 CREATE*/ /*!50020 DEFINER=`test_user`@`%`*/ /*!50003 PROCEDURE `temp_empty_all_tables`()
 BEGIN
 delete from bank;
 delete from f101;
@@ -1688,7 +1688,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `temp_wipe_non_major`()
+/*!50003 CREATE*/ /*!50020 DEFINER=`test_user`@`%`*/ /*!50003 PROCEDURE `temp_wipe_non_major`()
 delete from f101 
 where regn not in (
   1481	
@@ -1721,7 +1721,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `temp_work_calls`()
+/*!50003 CREATE*/ /*!50020 DEFINER=`test_user`@`%`*/ /*!50003 PROCEDURE `temp_work_calls`()
 BEGIN
 
 
@@ -1750,7 +1750,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `test_balance_make`()
+/*!50003 CREATE*/ /*!50020 DEFINER=`test_user`@`%`*/ /*!50003 PROCEDURE `test_balance_make`()
 BEGIN
 
 select "Test must return 4 empty sets below" as msg;
@@ -1787,7 +1787,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `test_count_line_numbers`()
+/*!50003 CREATE*/ /*!50020 DEFINER=`test_user`@`%`*/ /*!50003 PROCEDURE `test_count_line_numbers`()
 BEGIN
 select dt, regn, count(*) from balance_uniform
 group by dt, regn;
@@ -1811,7 +1811,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50020 DEFINER=`root`@`localhost`*/ /*!50003 PROCEDURE `test_netting`()
+/*!50003 CREATE*/ /*!50020 DEFINER=`test_user`@`%`*/ /*!50003 PROCEDURE `test_netting`()
 BEGIN
 
 select "Netting example - must have at least one zero per line" as msg;
@@ -1843,7 +1843,7 @@ DELIMITER ;
 /*!50001 SET character_set_results     = utf8 */;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`test_user`@`%` SQL SECURITY DEFINER */
 /*!50001 VIEW `balance_uniform` AS select `a`.`line` AS `line`,`b`.`lev` AS `lev`,`m`.`regn` AS `regn`,`d`.`dt` AS `dt`,ifnull(`b`.`itogo`,0) AS `itogo`,ifnull(`b`.`ir`,0) AS `ir`,ifnull(`b`.`iv`,0) AS `iv` from (((`list_alloc_line_all` `a` left join `major_bank` `m` on(1)) left join `list_date_all` `d` on(1)) left join `balance` `b` on(((`a`.`line` = `b`.`line`) and (`m`.`regn` = `b`.`regn`) and (`d`.`dt` = `b`.`dt`)))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -1862,7 +1862,7 @@ DELIMITER ;
 /*!50001 SET character_set_results     = utf8 */;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`test_user`@`%` SQL SECURITY DEFINER */
 /*!50001 VIEW `list_alloc_line_all` AS select distinct `balance`.`line` AS `line` from `balance` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -1881,7 +1881,7 @@ DELIMITER ;
 /*!50001 SET character_set_results     = utf8 */;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`test_user`@`%` SQL SECURITY DEFINER */
 /*!50001 VIEW `list_bank_names` AS select `l`.`regn` AS `regn`,`b`.`regn_name` AS `regn_name` from (`list_regn_all` `l` left join `bank` `b` on((`l`.`regn` = `b`.`regn`))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -1900,7 +1900,7 @@ DELIMITER ;
 /*!50001 SET character_set_results     = utf8 */;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`test_user`@`%` SQL SECURITY DEFINER */
 /*!50001 VIEW `list_conto_all` AS select distinct `f101`.`conto` AS `conto`,`f101`.`a_p` AS `a_p` from `f101` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -1919,7 +1919,7 @@ DELIMITER ;
 /*!50001 SET character_set_results     = utf8 */;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`test_user`@`%` SQL SECURITY DEFINER */
 /*!50001 VIEW `list_date_all` AS select distinct `f101`.`dt` AS `dt` from `f101` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -1938,7 +1938,7 @@ DELIMITER ;
 /*!50001 SET character_set_results     = utf8 */;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`test_user`@`%` SQL SECURITY DEFINER */
 /*!50001 VIEW `list_regn_all` AS select distinct `f101`.`regn` AS `regn` from `f101` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -1957,7 +1957,7 @@ DELIMITER ;
 /*!50001 SET character_set_results     = utf8 */;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`test_user`@`%` SQL SECURITY DEFINER */
 /*!50001 VIEW `major_bank` AS select distinct `f`.`regn` AS `regn`,`b`.`regn_name` AS `regn_name` from (`bank` `b` join `f101` `f` on((`b`.`regn` = `f`.`regn`))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -1976,7 +1976,7 @@ DELIMITER ;
 /*!50001 SET character_set_results     = utf8 */;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`test_user`@`%` SQL SECURITY DEFINER */
 /*!50001 VIEW `temp_alloc_line` AS select `a`.`line` AS `line`,ifnull(`b`.`dot_id`,'') AS `dot_id`,ifnull(`b`.`txt`,'') AS `txt`,`a`.`lev` AS `lev` from (`alloc` `a` left join `balance_line_name` `b` on((`a`.`line` = `b`.`line`))) group by `a`.`line`,`b`.`dot_id`,`b`.`txt` order by `a`.`line` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -1995,7 +1995,7 @@ DELIMITER ;
 /*!50001 SET character_set_results     = utf8 */;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`test_user`@`%` SQL SECURITY DEFINER */
 /*!50001 VIEW `temp_alloc_not_listed` AS select `a`.`conto` AS `ac`,`f`.`conto` AS `conto`,`f`.`a_p` AS `a_p` from (`list_conto_all` `f` left join `alloc` `a` on((`a`.`conto` = `f`.`conto`))) where ((`f`.`conto` <> 0) and (`a`.`conto` < 80000)) having isnull(`ac`) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -2014,7 +2014,7 @@ DELIMITER ;
 /*!50001 SET character_set_results     = utf8 */;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`test_user`@`%` SQL SECURITY DEFINER */
 /*!50001 VIEW `temp_tail` AS select `balance`.`dt` AS `dt`,`balance`.`line` AS `line`,`balance`.`lev` AS `lev`,`balance`.`la_p` AS `la_p`,`balance`.`regn` AS `regn`,`balance`.`ir` AS `ir`,`balance`.`iv` AS `iv`,`balance`.`itogo` AS `itogo` from `balance` where ((`balance`.`line` in (198000,298000)) and (`balance`.`regn` = 3349) and (`balance`.`dt` in ('2013-12-01','2013-01-01'))) order by `balance`.`dt` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -2033,7 +2033,7 @@ DELIMITER ;
 /*!50001 SET character_set_results     = utf8 */;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`test_user`@`%` SQL SECURITY DEFINER */
 /*!50001 VIEW `temp_vtb` AS select `b`.`line` AS `line`,`n`.`txt` AS `txt`,`b`.`regn` AS `regn`,`b`.`dt` AS `dt`,`b`.`ir` AS `ir`,`b`.`iv` AS `iv`,`b`.`itogo` AS `itogo` from (`balance_uniform` `b` left join `balance_line_name` `n` on((`b`.`line` = `n`.`line`))) where ((`b`.`regn` = 1000) and ((`b`.`lev` = 10) or (`b`.`lev` = 0)) and (`b`.`dt` = '2014-11-01')) order by `b`.`line` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -2052,7 +2052,7 @@ DELIMITER ;
 /*!50001 SET character_set_results     = utf8 */;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`test_user`@`%` SQL SECURITY DEFINER */
 /*!50001 VIEW `test_alloc_not_in_f101` AS select `a`.`conto` AS `ac`,`f`.`conto` AS `conto`,`f`.`a_p` AS `a_p`,(case when (`f`.`a_p` = 1) then 199000 else 299000 end) AS `line`,1 AS `mult`,`p`.`name` AS `d` from ((`list_conto_all` `f` left join `alloc` `a` on((`a`.`conto` = `f`.`conto`))) left join `plan` `p` on((`p`.`conto` = `f`.`conto`))) where ((`f`.`conto` <> 0) and (`f`.`conto` < 80000)) having isnull(`ac`) order by 3,2 */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -2071,7 +2071,7 @@ DELIMITER ;
 /*!50001 SET character_set_results     = utf8 */;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`test_user`@`%` SQL SECURITY DEFINER */
 /*!50001 VIEW `test_alloc_not_listed` AS select `a`.`conto` AS `ac`,`f`.`conto` AS `conto`,`f`.`a_p` AS `a_p` from (`list_conto_all` `f` left join `alloc` `a` on((`a`.`conto` = `f`.`conto`))) where ((`f`.`conto` <> 0) and (`a`.`conto` < 80000)) having isnull(`ac`) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -2090,7 +2090,7 @@ DELIMITER ;
 /*!50001 SET character_set_results     = utf8 */;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`test_user`@`%` SQL SECURITY DEFINER */
 /*!50001 VIEW `test_balance_residual` AS select `f`.`dt` AS `dt`,`f`.`regn` AS `regn`,sum((case when (`f`.`la_p` = 1) then `f`.`itogo` else 0 end)) AS `ap1`,sum((case when (`f`.`la_p` = 2) then `f`.`itogo` else 0 end)) AS `ap2`,(sum((case when (`f`.`la_p` = 1) then `f`.`itogo` else 0 end)) - sum((case when (`f`.`la_p` = 2) then `f`.`itogo` else 0 end))) AS `diff`,round((((sum((case when (`f`.`la_p` = 1) then `f`.`itogo` else 0 end)) / sum((case when (`f`.`la_p` = 2) then `f`.`itogo` else 0 end))) - 1) * 100),2) AS `diff_p` from (`major_bank` `m` left join `balance` `f` on((`m`.`regn` = `f`.`regn`))) where (`f`.`lev` = 10) group by `f`.`dt`,`f`.`regn` having (`diff` <> 0) order by 1,2 */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -2109,7 +2109,7 @@ DELIMITER ;
 /*!50001 SET character_set_results     = utf8 */;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`test_user`@`%` SQL SECURITY DEFINER */
 /*!50001 VIEW `test_f101_duplicates` AS select `f101`.`regn` AS `regn`,`f101`.`dt` AS `dt`,`f101`.`conto` AS `conto`,count(0) AS `c` from `f101` group by `f101`.`regn`,`f101`.`dt`,`f101`.`conto` having (`c` <> 1) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -2128,7 +2128,7 @@ DELIMITER ;
 /*!50001 SET character_set_results     = utf8 */;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`test_user`@`%` SQL SECURITY DEFINER */
 /*!50001 VIEW `test_f101_residual` AS select `f`.`dt` AS `dt`,`f`.`regn` AS `regn`,sum((case when (`f`.`a_p` = 1) then `f`.`itogo` else 0 end)) AS `ap1`,sum((case when (`f`.`a_p` = 2) then `f`.`itogo` else 0 end)) AS `ap2`,(sum((case when (`f`.`a_p` = 1) then `f`.`itogo` else 0 end)) - sum((case when (`f`.`a_p` = 2) then `f`.`itogo` else 0 end))) AS `diff`,round((abs(((sum((case when (`f`.`a_p` = 1) then `f`.`itogo` else 0 end)) / sum((case when (`f`.`a_p` = 2) then `f`.`itogo` else 0 end))) - 1)) * pow(10,9)),2) AS `diff_p` from `f101` `f` where (`f`.`conto` < 80000) group by `f`.`dt`,`f`.`regn` having (`diff` <> 0) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -2147,7 +2147,7 @@ DELIMITER ;
 /*!50001 SET character_set_results     = utf8 */;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`test_user`@`%` SQL SECURITY DEFINER */
 /*!50001 VIEW `test_negative_199` AS select `balance`.`dt` AS `dt`,`balance`.`line` AS `line`,`balance`.`lev` AS `lev`,`balance`.`la_p` AS `la_p`,`balance`.`regn` AS `regn`,`balance`.`ir` AS `ir`,`balance`.`iv` AS `iv`,`balance`.`itogo` AS `itogo` from `balance` where ((`balance`.`line` = 199000) and ((`balance`.`itogo` < 0) or (`balance`.`ir` < 0) or (`balance`.`iv` < 0))) order by `balance`.`regn` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -2166,7 +2166,7 @@ DELIMITER ;
 /*!50001 SET character_set_results     = utf8 */;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`test_user`@`localhost` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`test_user`@`%` SQL SECURITY DEFINER */
 /*!50001 VIEW `test_ref_items` AS select `ba`.`dt` AS `dt`,`ba`.`regn` AS `regn`,((`ba`.`itogo` / `bb`.`itogo`) - 1) AS `ref_div_fact`,`ba`.`itogo` AS `ref`,`bb`.`itogo` AS `fact` from (`balance_test_items` `ba` left join `balance` `bb` on(((`ba`.`dt` = `bb`.`dt`) and (`ba`.`regn` = `bb`.`regn`) and (`ba`.`line` = `bb`.`line`)))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
