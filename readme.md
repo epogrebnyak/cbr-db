@@ -60,6 +60,14 @@ baf make balance
 baf report balance --xlsx
 ```
 
+Same result using wrapper script:
+
+```
+python wrapper.py simple 101 2015-01-01
+```
+
+See `python wrapper.py --help` for additional options.
+
 Check output by ```dir ..\output``` (Win) or ```ls dir ..\output``` (Linux).
 
 See [Testing milestones][tm] for more comments about these sample scipts.
