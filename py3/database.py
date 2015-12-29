@@ -13,6 +13,7 @@ from make_csv import list_csv_filepaths_by_date, get_records
 from cli_dates import get_date
 import os
 import re
+import tempfile
 
 ################################################################
 #             0. Generic functions used in other calls         #
@@ -163,6 +164,25 @@ def get_db_dumpfile_path(db_name):
     return path
 
 
+def _patch_sql_file(path):
+    """
+    Applies necessary patches to SQL file (such as username/password).
+    Returns path to patched file (in a temp folder).
+    """
+    with open(path, encoding='utf-8') as file:
+        text = file.read()
+    text = re.sub(r"([`'])\w+[`']@[`']\w+[`']",
+                  r"\1{}\1@\1%\1".format(DB_INI_DICT['user']),
+                  text)
+    tempdir = os.path.join(tempfile.gettempdir(), 'cbr-db')
+    if not os.path.isdir(tempdir):
+        os.makedirs(tempdir)
+    temp_file_path = os.path.join(tempdir, os.path.split(path)[1])
+    with open(temp_file_path, 'w', encoding='utf-8') as file:
+        file.write(text)
+    return temp_file_path
+
+
 def load_db_from_dump(db_name):
     """
     Loads a database structure from a dump file.
@@ -171,7 +191,7 @@ def load_db_from_dump(db_name):
     """
     print("Database:", db_name)
     path = get_db_dumpfile_path(db_name)
-    source_sql_file(path, db_name)
+    source_sql_file(_patch_sql_file(path), db_name)
     print("Loaded database structure from file <{0}.sql>. No data was imported.".format(
         db_name))
 
