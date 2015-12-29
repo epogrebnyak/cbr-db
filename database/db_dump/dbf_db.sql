@@ -337,7 +337,7 @@ SET character_set_client = @saved_cs_client;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`test_user`@`%` PROCEDURE `cfg_init`()
+CREATE DEFINER=`test_user`@`localhost` PROCEDURE `cfg_init`()
 BEGIN
 
 
@@ -402,7 +402,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`test_user`@`%` PROCEDURE `cfg_init_populate_dates`()
+CREATE DEFINER=`test_user`@`localhost` PROCEDURE `cfg_init_populate_dates`()
 BEGIN
 
 
@@ -441,7 +441,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`test_user`@`%` PROCEDURE `cfg_init_regn_fullset`()
+CREATE DEFINER=`test_user`@`localhost` PROCEDURE `cfg_init_regn_fullset`()
 BEGIN
 
 
@@ -473,7 +473,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`test_user`@`%` PROCEDURE `cfg_init_regn_predefined_subset`()
+CREATE DEFINER=`test_user`@`localhost` PROCEDURE `cfg_init_regn_predefined_subset`()
 BEGIN
 
 
@@ -524,7 +524,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`test_user`@`%` PROCEDURE `cfg_init_reset_date_limit`()
+CREATE DEFINER=`test_user`@`localhost` PROCEDURE `cfg_init_reset_date_limit`()
 BEGIN
 
 
@@ -553,7 +553,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-CREATE DEFINER=`test_user`@`%` PROCEDURE `check_duplicates`(IN `table_name` CHAR(50))
+CREATE DEFINER=`root`@`localhost` PROCEDURE `check_duplicates`(IN `table_name` CHAR(50))
 BEGIN
 
 SET @prefix  = "SELECT dt, regn, conto, itogo, COUNT(*) cnt FROM ";
@@ -580,7 +580,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-CREATE DEFINER=`test_user`@`%` PROCEDURE `check_residuals`(IN `table_name` CHAR(50))
+CREATE DEFINER=`root`@`localhost` PROCEDURE `check_residuals`(IN `table_name` CHAR(50))
 BEGIN
 
 SET @prefix = "SELECT f.dt AS dt, f.regn AS regn, " 
@@ -614,7 +614,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`test_user`@`%` PROCEDURE `f101_make_dataset`()
+CREATE DEFINER=`test_user`@`localhost` PROCEDURE `f101_make_dataset`()
 BEGIN
 
 
@@ -655,7 +655,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`test_user`@`%` PROCEDURE `f102_make_dataset`()
+CREATE DEFINER=`test_user`@`localhost` PROCEDURE `f102_make_dataset`()
 BEGIN
 
 drop table if exists f102;
@@ -687,7 +687,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`test_user`@`%` PROCEDURE `insert_f101`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_f101`()
 BEGIN
 
 call reset_table_f101;
@@ -758,7 +758,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-CREATE DEFINER=`test_user`@`%` PROCEDURE `reset_db`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `reset_db`()
 BEGIN
 
 call reset_table_f101;
@@ -782,7 +782,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-CREATE DEFINER=`test_user`@`%` PROCEDURE `reset_table_f101`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `reset_table_f101`()
 BEGIN
 
 drop table f101;
@@ -819,7 +819,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-CREATE DEFINER=`test_user`@`%` PROCEDURE `reset_table_f101b1`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `reset_table_f101b1`()
 BEGIN
 
 DROP TABLE bulk_f101b1;
@@ -855,7 +855,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-CREATE DEFINER=`test_user`@`%` PROCEDURE `reset_table_f101veb`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `reset_table_f101veb`()
 BEGIN
 delete from bulk_f101veb;
 END ;;
@@ -874,7 +874,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-CREATE DEFINER=`test_user`@`%` PROCEDURE `reset_table_f101_b`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `reset_table_f101_b`()
 BEGIN
 
 drop table  bulk_f101_b;
@@ -906,7 +906,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`test_user`@`%` PROCEDURE `temp_init_truncation_limits`()
+CREATE DEFINER=`test_user`@`localhost` PROCEDURE `temp_init_truncation_limits`()
 BEGIN
 
 
@@ -941,7 +941,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`test_user`@`%` PROCEDURE `test_f101_residual`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `test_f101_residual`()
 BEGIN
 
 SELECT f.dt AS dt,f.regn AS regn, SUM((CASE WHEN (f.a_p = 1) THEN f.itogo ELSE 0 END)) AS ap1, 
@@ -978,7 +978,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-CREATE DEFINER=`test_user`@`%` PROCEDURE `test_import`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `test_import`()
 BEGIN
 
 
@@ -1013,7 +1013,7 @@ DELIMITER ;
 /*!50001 SET character_set_results     = utf8 */;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`test_user`@`%` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`test_user`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `f101_part_f101_b` AS select `d`.`dt` AS `dt`,`r`.`regn` AS `regn`,`sa`.`num_sc` AS `conto`,`sa`.`a_p` AS `a_p`,0 AS `ir`,0 AS `iv`,`sa`.`itogo` AS `itogo`,0 AS `has_iv`,round((`sa`.`num_sc` / 100),0) AS `conto_3` from ((`cfg_date_in_focus` `d` join `cfg_regn_in_focus` `r` on(1)) left join `bulk_f101_b` `sa` on(((`sa`.`dt` = `d`.`dt`) and (`r`.`regn` = `sa`.`regn`)))) where (`sa`.`num_sc` <> 0) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -1032,7 +1032,7 @@ DELIMITER ;
 /*!50001 SET character_set_results     = utf8 */;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`test_user`@`%` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`test_user`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `f101_part_f101_private` AS select `d`.`dt` AS `dt`,964 AS `regn`,`sa`.`conto` AS `conto`,`sa`.`a_p` AS `a_p`,`sa`.`ir` AS `ir`,`sa`.`iv` AS `iv`,`sa`.`itogo` AS `itogo`,1 AS `has_iv`,round((`sa`.`conto` / 100),0) AS `conto_3` from (`cfg_date_in_focus` `d` left join `bulk_f101_private` `sa` on((`sa`.`dt` = `d`.`dt`))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -1051,7 +1051,7 @@ DELIMITER ;
 /*!50001 SET character_set_results     = utf8 */;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`test_user`@`%` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`test_user`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `f101_part_f101b1` AS select `d`.`dt` AS `dt`,`r`.`regn` AS `regn`,`sa`.`num_sc` AS `conto`,`sa`.`a_p` AS `a_p`,`sa`.`ir` AS `ir`,`sa`.`iv` AS `iv`,`sa`.`itogo` AS `itogo`,1 AS `has_iv`,round((`sa`.`num_sc` / 100),0) AS `conto_3` from ((`cfg_date_in_focus` `d` join `cfg_regn_in_focus` `r` on(1)) left join `bulk_f101b1` `sa` on(((`sa`.`dt` = `d`.`dt`) and (`r`.`regn` = `sa`.`regn`)))) where (`sa`.`num_sc` <> 0) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -1070,7 +1070,7 @@ DELIMITER ;
 /*!50001 SET character_set_results     = utf8 */;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`test_user`@`%` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `f102_part_p` AS select `sa`.`regn` AS `regn`,`sa`.`quart` AS `quart`,`sa`.`year` AS `year`,`sa`.`code` AS `code`,0 AS `ir`,0 AS `iv`,`sa`.`itogo` AS `itogo`,0 AS `has_iv`,NULL AS `conto_3` from ((`cfg_date_in_focus` `d` join `cfg_regn_in_focus` `r` on(1)) left join `bulk_f102_p` `sa` on(((`sa`.`dt` = `d`.`dt`) and (`r`.`regn` = `sa`.`regn`)))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -1089,7 +1089,7 @@ DELIMITER ;
 /*!50001 SET character_set_results     = utf8 */;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`test_user`@`%` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `f102_part_p1` AS select `sa`.`regn` AS `regn`,`sa`.`quart` AS `quart`,`sa`.`year` AS `year`,`sa`.`code` AS `code`,`sa`.`ir` AS `ir`,`sa`.`iv` AS `iv`,`sa`.`itogo` AS `itogo`,1 AS `has_iv`,NULL AS `conto_3` from ((`cfg_date_in_focus` `d` join `cfg_regn_in_focus` `r` on(1)) left join `bulk_f102_p1` `sa` on(((`sa`.`dt` = `d`.`dt`) and (`r`.`regn` = `sa`.`regn`)))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
