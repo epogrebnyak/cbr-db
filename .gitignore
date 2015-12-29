@@ -1,0 +1,7 @@
+# Temporary files
+__pycache__
+*.py[cod]
+*.log
+
+# IDE
+.idea/
