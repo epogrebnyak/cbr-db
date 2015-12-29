@@ -5,7 +5,7 @@
 
 from terminal import terminal
 from conn import execute_sql, get_mysql_connection
-from global_ini import DB_NAMES, ACCOUNT_NAMES_DBF, BANK_NAMES_DBF
+from global_ini import DB_NAMES, ACCOUNT_NAMES_DBF, BANK_NAMES_DBF, DB_INI_DICT
 from global_ini import get_bank_name_parameters, get_account_name_parameters
 from config_folders import get_public_data_folder, get_private_data_folder
 from config_folders import get_global_folder, get_output_folder
@@ -32,9 +32,12 @@ def run_sql_string(string, database=None, verbose=False):
        For SQL commands may also use conn.execute_sql()
     """
     if database is None:
-        call_string = "mysql -e \"{0}\"".format(string)
+        call_string = "mysql -u{0} -p{1} -e \"{2}\"".format(
+            DB_INI_DICT['user'], DB_INI_DICT['passwd'],
+            string)
     else:
-        call_string = "mysql --database {0} --execute \"{1}\"".format(
+        call_string = "mysql -u{0} -p{1} --database {2} --execute \"{3}\"".format(
+            DB_INI_DICT['user'], DB_INI_DICT['passwd'],
             database, string)
 
     # todo: -v not showing to screen, check if it so, change
@@ -58,14 +61,17 @@ def source_sql_file(sql_filename, db_name):
 
 def import_generic(database, path):
     if os.path.isfile(path):
-        call_string = "mysqlimport {0} {1} --delete".format(database, path)
+        call_string = "mysqlimport -u{0} -p{1} {2} {3} --delete".format(
+            DB_INI_DICT['user'], DB_INI_DICT['passwd'],
+            database, path)
         terminal(call_string)
     else:
         print("File not found:",  path)
 
 def mysqlimport(db_name, csv_path, ignore_lines = 1, add_mode = "ignore"):
     # Trying to use mysqlimport without --lines-terminated-by="\r\n" (this works on Debian linux on remote server)
-    command_line = r'mysqlimport --ignore_lines={0} --{1} {2} "{3}" '.format(
+    command_line = r'mysqlimport -u{0} -p{1} --ignore_lines={2} --{3} {4} "{5}" '.format(
+                    DB_INI_DICT['user'], DB_INI_DICT['passwd'],
                     ignore_lines, add_mode, db_name, csv_path)
     # command_line = r'mysqlimport --ignore_lines={0} --{1} {2} "{3}" --lines-terminated-by="\r\n"'.format(
     #                ignore_lines, add_mode, db_name, csv_path)
@@ -85,7 +91,8 @@ def dump_table_csv(db, table, directory):
     """
     Saves database table in specified directory as csv file.
     """
-    call_string = r'mysqldump --fields-terminated-by="\t" --lines-terminated-by="\r\n" --tab="{0}" {1} {2}'.format(
+    call_string = r'mysqldump -u{0} -p{1} --fields-terminated-by="\t" --lines-terminated-by="\r\n" --tab="{2}" {3} {4}'.format(
+        DB_INI_DICT['user'], DB_INI_DICT['passwd'],
         directory, db, table)
     terminal(call_string)
     # Note: below is a fix to kill unnecessary slashes in txt file.
@@ -98,7 +105,8 @@ def dump_table_sql(db, table, path):
     """
     Dumps table from database to local directory as a SQL file.
     """
-    string = r'mysqldump {0} {1} --add-drop-table=FALSE --no-create-info --insert-ignore > "{2}"'.format(
+    string = r'mysqldump -u{0} -p{1} {2} {3} --add-drop-table=FALSE --no-create-info --insert-ignore > "{4}"'.format(
+        DB_INI_DICT['user'], DB_INI_DICT['passwd'],
         db, table, path)
     terminal(string)
 
@@ -179,7 +187,9 @@ def save_db_to_dump(db_name):
     # uses mysqldump and terminal()
     path = get_db_dumpfile_path(db_name)
     #               mysqldump %1  --no-data --routines > %1.sql
-    line_command = "mysqldump {0} --no-data --routines > {1}".format(db_name, path)
+    line_command = "mysqldump -u{0} -p{1} {2} --no-data --routines > {3}".format(
+        DB_INI_DICT['user'], DB_INI_DICT['passwd'],
+        db_name, path)
     terminal(line_command)
     print("Dumped database structure to file <{0}.sql>. No data saved to this file.".format(
         db_name))
