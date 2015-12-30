@@ -109,10 +109,17 @@ def get_global_folder(folder_tag):
 
 def get_output_folder():
     """
-    Returns 'output' folder used to write final files
+    Returns 'output' folder used to write final files.
+    This function guarantees that folder exists and is writable.
     """   
-    return get_global_folder("output")
-
+    path = get_global_folder("output")
+    if not os.path.isdir(path):
+        os.makedirs(path)
+    mode = os.stat(path).st_mode & 0o777
+    new_mode = mode | 0o222  # must be writable by all
+    if new_mode != mode:
+        os.chmod(path, new_mode)
+    return path
 
 def generate_all_folder_names():
     """
