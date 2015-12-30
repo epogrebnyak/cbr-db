@@ -3,5 +3,9 @@ __pycache__
 *.py[cod]
 *.log
 
+# Output files are excluded from source control.
+# If you want to store a report in git, move it to `reports` folder.
+data/
+
 # IDE
 .idea/
