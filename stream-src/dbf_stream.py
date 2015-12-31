@@ -39,7 +39,7 @@ def write_to_csv(f, filter_func = kill_itgap_row):
 
 #______________________________________________________________________________
 #
-#  Modify DBF data streams - OrderedDict and subsetting
+#  Modify DBF data streams - OrderedDict and truncating
 #______________________________________________________________________________
 
 def yield_csv_as_ordered_dict(f):
@@ -50,13 +50,13 @@ def yield_csv_as_ordered_dict(f):
     
 NULL_CSV_MARKER = '0'
     
-def select_fields_from_row(incoming_dict, field_names):     
+def select_fields_from_row(incoming_row_dict, field_names):     
     """Return OD with *field_names* as keys and *incoming_dict* as values, where matched."""
-    row_dict = OrderedDict.fromkeys(field_names, NULL_CSV_MARKER)
-    for k,v in incoming_dict.items():
+    result_row_dict = OrderedDict.fromkeys(field_names, NULL_CSV_MARKER)
+    for k,v in incoming_row_dict.items():
         if k in field_names:
-            row_dict[k] = v
-    return row_dict
+            result_row_dict[k] = v
+    return result_row_dict
 
 def yield_csv_subset(f, field_names):
     gen = yield_csv_as_ordered_dict(f)
