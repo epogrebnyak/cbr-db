@@ -1,0 +1,66 @@
+1. Разовая выгрузка
+=================== 
+
+Что нужно для разовой выгрузки, какой результат:
+1.1. должны быть заполнены все месяцы с 2013 по 2015 гг. 
+1.2. круг банков должен быть ограничен по набору из номеров regn
+
+baf update 101 2013 2015
+baf make dataset 101 2013 2015  --regn=1481,354,1000,1623,2748,3349,1326,1470,1942,2790,3340,964
+baf migrate dataset 101       
+baf make balance
+baf report balance --xlsx
+
+если не срабатывает 
+   baf make dataset 101 2013 2015  --regn=1481,354,1000,1623,2748,3349,1326,1470,1942,2790,3340,964
+то выполнить руками в базе данных dbf_db:
+   cfg_init()
+   f101_make_dataset()
+
+в результате должен быть файл с xlsx c большим количеством столбцов по месяцам и меньшим количеством строк
+
+2. Ошибки программы 
+====================
+- записать в отдельный файл в корне с "CREATE USER..." 
+- дать комментарий по поводу создания или подготовки базы данных в  README.md
+- все что можно пофиксить из notes.md - отдельными коммитами починить в репозитарии
+- за документировать ```chmod a+w cbr-data/output``` в readme.md
+- по идее после этого у вас будет безошибочно выполнятся "разовая выгрузка"
+
+3. Code and Usability issues
+=========================
+1. User is forced to enter many commands according to README, in a strict sequence. Number of commands should be reduced to a minimum.
+-- вопрос отладки, сам интерфейс без пока без изменений
+-- сценарий из разовой выгрузки записать в отдельный .bat файл
+
+2. Script outputs a lot of text, and it's not immediately clear if it completed successfully or not. There is no "fail-fast" policy.
+-- it is kind of debugging...
+
+3. python bankform.py make csv 101 2015-01-01 takes ~30 seconds (can it be optimized?)
+-- agreed, you are lucky you have a fast machine, it may take up to 1.5 min on a slow one
+
+4. Setting of access rights on cbr-data/output must be automated. 
+--- agreed
+
+3. More issues
+==============
+Need comment:
+- need more documentation about MySQL deployment in readme.md
+- location of output and data directory must be documented and fixed (no alternatives in settings.cfg)
+- use some abstration layer for sql queries to avoid issues with password and get cleaner code (SQLAlchemy?)
+  BUT cannot run mysqlimport and mysqldump then... and they are incredibly fast on import and export 
+- segment code by folders
+  baf\fetch (download and unpack)
+  baf\dbf2csv (make_csv) 
+  baf\txt2csv (make_csv --private_data) 
+  baf\cli (date recognition )
+  baf\database (database operations)
+  baf\configs
+  baf\... 
+- scrap abandoned code
+- optimise sqls   
+- more?
+
+
+
+
