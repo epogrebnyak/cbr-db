@@ -3,7 +3,8 @@ sys.path.append('..')
 
 import unittest
 import collections
-import conn
+from cbr_db import conn
+
 
 class ConnectionTest(unittest.TestCase):
     def test_select(self):

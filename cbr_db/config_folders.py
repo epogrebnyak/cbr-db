@@ -11,7 +11,9 @@ This file configures:
 import configparser
 import os
 from os import path
-from date_engine import get_current_year
+
+from .date_engine import get_current_year
+
 
 # This file is in subfolder of _PROJECT_ROOT_DIR, so do path.dirname() twice
 _PROJECT_ROOT_DIR = path.dirname(path.dirname(path.abspath(__file__)))

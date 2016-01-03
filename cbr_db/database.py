@@ -3,17 +3,20 @@
 # mysql* must have valid ini or cfg file with credentials
 #
 
-from terminal import terminal
-from conn import execute_sql, get_mysql_connection
-from global_ini import DB_NAMES, ACCOUNT_NAMES_DBF, BANK_NAMES_DBF, DB_INI_DICT
-from global_ini import get_bank_name_parameters, get_account_name_parameters
-from config_folders import get_public_data_folder, get_private_data_folder
-from config_folders import get_global_folder, get_output_folder
-from make_csv import list_csv_filepaths_by_date, get_records
-from cli_dates import get_date
 import os
 import re
 import tempfile
+
+from .cli_dates import get_date
+from .terminal import terminal
+from .conn import execute_sql, get_mysql_connection
+from .global_ini import DB_NAMES, ACCOUNT_NAMES_DBF, BANK_NAMES_DBF, DB_INI_DICT
+from .global_ini import get_bank_name_parameters, get_account_name_parameters
+from .config_folders import get_public_data_folder, get_private_data_folder
+from .config_folders import get_global_folder, get_output_folder
+from .make_csv import list_csv_filepaths_by_date, get_records
+from .make_xlsx import make_xlsx
+
 
 ################################################################
 #             0. Generic functions used in other calls         #
@@ -589,7 +592,6 @@ def test_balance():
     do_output(
         'select dt, regn, itogo from balance where line = 500 and itogo != 0 order by dt')
 
-from make_xlsx import make_xlsx
 
 def report_balance_tables_xls():
     """

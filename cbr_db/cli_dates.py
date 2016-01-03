@@ -8,8 +8,9 @@ Usage:
 """
 
 from datetime import datetime, date
-from docopt import docopt
-from date_engine import get_date_range, shift_month_ahead
+
+from .docopt import docopt
+from .date_engine import get_date_range, shift_month_ahead
 
 def get_date_from_quarter_string(timestamp):
     """

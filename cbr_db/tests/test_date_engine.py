@@ -3,7 +3,7 @@ sys.path.append('..')
 
 import unittest
 from datetime import date
-import date_engine
+from cbr_db import date_engine
 
 class DateEngineTest(unittest.TestCase):
 

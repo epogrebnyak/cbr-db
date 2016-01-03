@@ -3,7 +3,8 @@ sys.path.append('..')
 sys.path.append('.')
 
 import os
-from  global_ini import MYSQL_PATH
+from cbr_db.global_ini import MYSQL_PATH
+
 
 def check_mysql_path():
     """

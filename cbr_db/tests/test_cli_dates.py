@@ -1,9 +1,11 @@
+from datetime import date
 import sys
 sys.path.append('..')
 
 import unittest
-import cli_dates
-from datetime import date
+from cbr_db import cli_dates
+
+
 
 class CliDatesTest(unittest.TestCase):
 

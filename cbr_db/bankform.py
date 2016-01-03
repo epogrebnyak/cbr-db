@@ -36,20 +36,22 @@ Usage:
     # bankform.py make csv   <form> (<timestamp1> [<timestamp2>] | --all-dates) [--private-data]
     # bankform.py import csv <form> (<timestamp1> [<timestamp2>] | --all-dates) [--private-data]
 
-from docopt import docopt
-from cli_dates import get_date_range_from_command_line
-from make_url import download_form
-from unpack import unpack
-from make_csv import dbf2csv
-from global_ini import DB_NAMES
-from config_folders  import create_default_directories
-from database import delete_and_create_db, save_db_to_dump, load_db_from_dump
-from database import import_csv, import_csv_derived_from_text_files
-from private_form_txt import convert_txt_directory_to_csv
-from database import save_dataset_as_sql, import_dataset_from_sql, create_final_dataset_in_raw_database
-from database import import_alloc, import_tables, import_plan, import_bank
-from database import make_balance, test_balance, report_balance_tables_csv, report_balance_tables_xls
 import sys
+
+from .docopt import docopt
+from .cli_dates import get_date_range_from_command_line
+from .make_url import download_form
+from .unpack import unpack
+from .make_csv import dbf2csv
+from .global_ini import DB_NAMES
+from .config_folders  import create_default_directories
+from .database import delete_and_create_db, save_db_to_dump, load_db_from_dump
+from .database import import_csv, import_csv_derived_from_text_files
+from .private_form_txt import convert_txt_directory_to_csv
+from .database import save_dataset_as_sql, import_dataset_from_sql, create_final_dataset_in_raw_database
+from .database import import_alloc, import_tables, import_plan, import_bank
+from .database import make_balance, test_balance, report_balance_tables_csv, report_balance_tables_xls
+
 
 EOL = "\n"
 SUPPORTED_FORMS = ['101', '102', '123', '134', '135']

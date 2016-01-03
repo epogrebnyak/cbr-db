@@ -6,10 +6,13 @@
 # https://pandas-docs.github.io/pandas-docs-travis/generated/pandas.read_sql_table.html#pandas.read_sql_table
 # 
 
+import time
+
 import pandas as pd
 from sqlalchemy import create_engine
-from global_ini import DB_NAMES
-import time
+
+from .global_ini import DB_NAMES
+
 
 def get_sqla_connection():
     db_name = DB_NAMES['final']

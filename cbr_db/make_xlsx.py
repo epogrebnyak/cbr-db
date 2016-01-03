@@ -6,10 +6,13 @@ Usage:
   
 """
 import csv
-import xlsxwriter
 from datetime import datetime
-from docopt import docopt
 import os
+
+import xlsxwriter
+
+from .docopt import docopt
+
 
 def get_cell_format(workbook):
     """

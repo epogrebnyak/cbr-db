@@ -2,7 +2,7 @@ import sys
 sys.path.append('..')
 
 import unittest
-import database
+from cbr_db import database
 
 class DatabaseTest(unittest.TestCase):
     def test_sqldump_table_and_filename(self):

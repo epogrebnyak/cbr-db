@@ -1,12 +1,14 @@
 from collections import defaultdict
-from functools import reduce
-import os
 import csv
 from datetime import datetime
-from global_ini import FORM_DATA, CODEPAGE
-from config_folders import get_public_data_folder
+from functools import reduce
+import os
+
 from dbfread import DBF
-from date_engine import isodate2timestamp, iso2date, date2quarter, date2iso
+
+from .global_ini import FORM_DATA, CODEPAGE
+from .config_folders import get_public_data_folder
+from .date_engine import isodate2timestamp, iso2date, date2quarter, date2iso
 
 
 class CustomDBF(DBF):

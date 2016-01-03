@@ -1,7 +1,9 @@
 import os
-from terminal import terminal
-from config_folders import get_public_data_folder, PATH
-from make_url import get_ziprar_filename
+
+from .terminal import terminal
+from .config_folders import get_public_data_folder, PATH
+from .make_url import get_ziprar_filename
+
 
 def get_local_ziprar_filepath(isodate, form):
     dir_ = get_public_data_folder(form, 'rar')

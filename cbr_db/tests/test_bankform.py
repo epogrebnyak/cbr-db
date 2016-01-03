@@ -1,8 +1,7 @@
 import sys
 sys.path.append('..')
-
 import unittest
-import bankform
+from cbr_db import bankform
 import collections
 
 class BankformTest(unittest.TestCase):
