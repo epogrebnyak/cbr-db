@@ -1,5 +1,3 @@
-import sys
-sys.path.append('..')
 import unittest
 from cbr_db import bankform
 import collections

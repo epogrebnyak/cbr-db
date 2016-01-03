@@ -1,6 +1,3 @@
-import sys
-sys.path.append('..')
-
 import unittest
 from datetime import date
 from cbr_db import date_engine

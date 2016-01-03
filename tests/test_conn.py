@@ -1,6 +1,3 @@
-import sys
-sys.path.append('..')
-
 import unittest
 import collections
 from cbr_db import conn

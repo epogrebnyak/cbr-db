@@ -5,6 +5,7 @@ import unittest
 from cbr_db import bankform
 from cbr_db import conn
 
+
 def get_regns():
     return sorted([
         t[0] for t in 
