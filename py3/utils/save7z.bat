@@ -9,4 +9,4 @@ cd..
 cd..
 
 del %filename%
-bin\7za a %filename% * -xr!data.downloadable -xr!output -xr!data.private -x!%filename% -xr!py3\__pycache__\
+bin\7za a %filename% * -xr!data.downloadable -xr!output -xr!data.private -x!%filename% -xr!cbr_db\__pycache__\

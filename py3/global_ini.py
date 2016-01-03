@@ -8,7 +8,7 @@ Contents of this file
    form_definitions.py (new) - hardcoded form parameters + access functions
 
 Must separate global_ini.py into two fils + change import dependencies in other project files.
-Check with https://github.com/epogrebnyak/cbr-db/blob/master/py3/script/test-one-date-101.bat
+Check with https://github.com/epogrebnyak/cbr-db/blob/master/cbr_db/script/test-one-date-101.bat
 
 Not changed:
    config_folders.py
