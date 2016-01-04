@@ -39,6 +39,8 @@ def _insert_arguments(command_template, args):
             result.append(sys.executable)
         elif template == '{script}':
             result.append('bankform.py')
+        elif template == '{module}':
+            result.append('cbr_db.bankform')
         elif template == '{form}':
             result.append(args.form)
         elif template == '{dates}':
@@ -61,25 +63,25 @@ _BATCHES = {
         ['{python}', '-c', 'print("It works!")'],
     ],
     'simple': [
-        ['{python}', '{script}', 'reset', 'database', 'raw'],
-        ['{python}', '{script}', 'reset', 'database', 'final'],
-        ['{python}', '{script}', 'download', '{form}', '{dates}'],
-        ['{python}', '{script}', 'unpack', '{form}', '{dates}'],
-        ['{python}', '{script}', 'make', 'csv', '{form}', '{dates}'],
-        ['{python}', '{script}', 'import', 'csv', '{form}', '{dates}'],
-        ['{python}', '{script}', 'make', 'dataset', '{form}', '{dates}'],
-        ['{python}', '{script}', 'migrate', 'dataset', '{form}'],
-        ['{python}', '{script}', 'make', 'balance'],
-        ['{python}', '{script}', 'report', 'balance', '{report_format}'],
+        ['{python}', '-m', '{module}', 'reset', 'database', 'raw'],
+        ['{python}', '-m', '{module}', 'reset', 'database', 'final'],
+        ['{python}', '-m', '{module}', 'download', '{form}', '{dates}'],
+        ['{python}', '-m', '{module}', 'unpack', '{form}', '{dates}'],
+        ['{python}', '-m', '{module}', 'make', 'csv', '{form}', '{dates}'],
+        ['{python}', '-m', '{module}', 'import', 'csv', '{form}', '{dates}'],
+        ['{python}', '-m', '{module}', 'make', 'dataset', '{form}', '{dates}'],
+        ['{python}', '-m', '{module}', 'migrate', 'dataset', '{form}'],
+        ['{python}', '-m', '{module}', 'make', 'balance'],
+        ['{python}', '-m', '{module}', 'report', 'balance', '{report_format}'],
     ],
     'full': [
-        ['{python}', '{script}', 'reset', 'database', 'raw'],
-        ['{python}', '{script}', 'reset', 'database', 'final'],
-        ['{python}', '{script}', 'update', '{form}', '{dates}'],
-        ['{python}', '{script}', 'make', 'dataset', '{form}', '{dates}', '{regn}'],
-        ['{python}', '{script}', 'migrate', 'dataset', '{form}'],
-        ['{python}', '{script}', 'make', 'balance'],
-        ['{python}', '{script}', 'report', 'balance', '{report_format}'],
+        ['{python}', '-m', '{module}', 'reset', 'database', 'raw'],
+        ['{python}', '-m', '{module}', 'reset', 'database', 'final'],
+        ['{python}', '-m', '{module}', 'update', '{form}', '{dates}'],
+        ['{python}', '-m', '{module}', 'make', 'dataset', '{form}', '{dates}', '{regn}'],
+        ['{python}', '-m', '{module}', 'migrate', 'dataset', '{form}'],
+        ['{python}', '-m', '{module}', 'make', 'balance'],
+        ['{python}', '-m', '{module}', 'report', 'balance', '{report_format}'],
     ],
 }
 
@@ -96,7 +98,7 @@ def main(argv):
         # Insert template values, such as {form}
         batch = [_insert_arguments(x, args) for x in batch]
         # Execute batch
-        cwd = os.path.dirname(os.path.abspath(__file__))
+        cwd = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
         for command in batch:
             logger.info('Calling {!r}'.format(command))
             process = subprocess.Popen(command, cwd=cwd)
