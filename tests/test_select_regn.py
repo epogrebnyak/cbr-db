@@ -2,8 +2,9 @@ import sys
 sys.path.append('..')
 
 import unittest
-import bankform
-import conn
+from cbr_db import bankform
+from cbr_db import conn
+
 
 def get_regns():
     return sorted([

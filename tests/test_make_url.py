@@ -1,8 +1,5 @@
-import sys
-sys.path.append('..')
-
 import unittest
-import make_url
+from cbr_db import make_url
 from datetime import date
 
 class MakeURLTest(unittest.TestCase):

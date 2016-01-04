@@ -204,7 +204,7 @@ delete 'csv_to_excel' folder in root in repository as it was moved to issues
 
 2015-06-22
 update readme.md
-create folder py3/utils and move following files there (intent - keep command files to run scripts and script files separately)
+create folder cbr_db/utils and move following files there (intent - keep command files to run scripts and script files separately)
 17.06.2015  00:44               175 ini.bat
 17.06.2015  00:44               740 ini.py
 17.06.2015  10:55                33 start_unit_tests.bat

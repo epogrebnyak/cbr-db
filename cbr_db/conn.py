@@ -1,5 +1,7 @@
 import pymysql
-from global_ini import CODEPAGE, DB_INI_DICT 
+
+from .global_ini import CODEPAGE, DB_INI_DICT
+
 
 def get_mysql_connection(credential_dict=DB_INI_DICT, database=None, autocommit=False,
                          charset=CODEPAGE):

@@ -6,10 +6,13 @@
 # https://pandas-docs.github.io/pandas-docs-travis/generated/pandas.read_sql_table.html#pandas.read_sql_table
 # 
 
+import time
+
 import pandas as pd
 from sqlalchemy import create_engine
-from global_ini import DB_NAMES
-import time
+
+from .global_ini import DB_NAMES
+
 
 def get_sqla_connection():
     db_name = DB_NAMES['final']
@@ -53,8 +56,8 @@ print("Datasets loaded in %f seconds" % (time.time() - start_time))
 # 
 # Data:
 # =====
-# Use 'py3/test-one-date.bat' to obtain for small trial dataset (one datapoint).
-# Use 'py3/utils/make-reference-dataset.bat' for actual task (monthly datapoints for 2012-2015). 
+# Use 'cbr_db/test-one-date.bat' to obtain for small trial dataset (one datapoint).
+# Use 'cbr_db/utils/make-reference-dataset.bat' for actual task (monthly datapoints for 2012-2015).
 #
 
 for var in [f101, alloc, balance]:

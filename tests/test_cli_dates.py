@@ -1,9 +1,8 @@
-import sys
-sys.path.append('..')
-
-import unittest
-import cli_dates
 from datetime import date
+import unittest
+from cbr_db import cli_dates
+
+
 
 class CliDatesTest(unittest.TestCase):
 
@@ -43,25 +42,25 @@ class CliDatesTest(unittest.TestCase):
             (date(2001, 1, 1), "quarter")
         )
 
-    def test_get_last_quarter_month(self):
+    def test_shift_month_to_quarter_start(self):
         for month in range(1, 4):        
             self.assertEqual(
-                cli_dates.get_last_quarter_month(month), 1
+                cli_dates.shift_month_to_quarter_start(month), 1
             )
         
         for month in range(4, 7):        
             self.assertEqual(
-                cli_dates.get_last_quarter_month(month), 4
+                cli_dates.shift_month_to_quarter_start(month), 4
             )
             
         for month in range(7, 10):        
             self.assertEqual(
-                cli_dates.get_last_quarter_month(month), 7
+                cli_dates.shift_month_to_quarter_start(month), 7
             )
             
         for month in range(10, 13):        
             self.assertEqual(
-                cli_dates.get_last_quarter_month(month), 10
+                cli_dates.shift_month_to_quarter_start(month), 10
             )
     
     def test_get_next_quarter_end_date(self):

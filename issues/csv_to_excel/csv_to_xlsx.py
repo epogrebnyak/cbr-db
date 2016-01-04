@@ -10,7 +10,7 @@ Options:
 """
 import csv
 import xlsxwriter
-from docopt import docopt
+from cbr_db.docopt import docopt
 
 if __name__ == '__main__':
     args = docopt(__doc__, version='csv_to_xlsx 1.0')
