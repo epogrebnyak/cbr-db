@@ -1,8 +1,11 @@
 from datetime import date
 
+import pytest
+
 from cbr_db.cli_dates import get_date, get_date_from_quarter_string,\
     shift_month_to_quarter_start, get_next_quarter_end_date,\
-    get_date_range_from_command_line
+    get_date_range_from_command_line, get_last_date_in_year,\
+    get_date_endpoints
 
 
 def test_get_date_fmt():
@@ -90,6 +93,15 @@ def test_get_date_range_from_command_line_101():
     assert (list(get_date_range_from_command_line(args2)) ==
             ['2004-10-01', '2004-11-01', '2004-12-01', '2005-01-01', '2005-02-01'])
 
+    args3 = {
+        '<form>': '101',
+        '<timestamp1>': None,
+        '<timestamp2>': None,
+        '--all-dates': False
+    }
+
+    assert get_date_range_from_command_line(args3) is None
+
 
 def test_get_date_range_from_command_line_102():
     args1 = {
@@ -137,3 +149,43 @@ def test_get_date_range_from_command_line_102():
     assert (list(get_date_range_from_command_line(args4)) ==
             ['2013-04-01', '2013-07-01', '2013-10-01', '2014-01-01',
              '2014-04-01', '2014-07-01', '2014-10-01', '2015-01-01'])
+
+
+@pytest.mark.parametrize('form,today,dt,expected', [
+    # Form 101
+    ('101', date(2015, 5, 15), date(2014, 1, 1), date(2014, 12, 1)),
+    ('101', date(2015, 5, 15), date(2015, 1, 1), date(2015, 5, 1)),
+    ('101', date(2015, 5, 15), date(2016, 1, 1), date(2015, 5, 1)),
+    # Form 102 - per quarter
+    ('102', date(2015, 5, 15), date(2014, 1, 1), date(2015, 1, 1)),
+    ('102', date(2015, 5, 15), date(2015, 1, 1), date(2015, 4, 1)),
+    ('102', date(2015, 5, 15), date(2016, 1, 1), date(2015, 4, 1)),
+
+])
+def test_get_last_date_in_year(mocker, form, today, dt, expected):
+    mock = mocker.patch('cbr_db.cli_dates.date')
+    mock.side_effect = lambda *args, **kw: date(*args, **kw)
+    mock.today = lambda *x: today
+    assert get_last_date_in_year(dt, form) == expected
+
+
+@pytest.mark.parametrize('today,args,start_date,end_date', [
+    (date(2015, 5, 15), {
+        '<form>': '101',
+        '--all-dates': True,
+        '<timestamp1>': None,
+        '<timestamp2>': None,
+    }, date(2004, 2, 1), date(2015, 5, 1)),
+    (date(2015, 5, 15), {
+        '<form>': '101',
+        '--all-dates': True,
+        '<timestamp1>': '2015-03-15',
+        '<timestamp2>': '2015-04-15',
+    }, date(2015, 3, 1), date(2015, 4, 1)),
+])
+def test_get_date_endpoints(mocker, today, args, start_date, end_date):
+    mock = mocker.patch('cbr_db.cli_dates.date')
+    mock.side_effect = lambda *args, **kw: date(*args, **kw)
+    mock.today = lambda *x: today
+    assert get_date_endpoints(args) == (start_date, end_date)
+
