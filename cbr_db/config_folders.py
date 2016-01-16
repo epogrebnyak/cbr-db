@@ -23,10 +23,7 @@ def get_absolute_path(user_path, root_path = _PROJECT_ROOT_DIR ):
     Adjusts <user_path> to project root directory <_PROJECT_ROOT_DIR> if <path> is relative.
     If <user_path> is absolute, returns itself.
     """
-    if path.isabs(user_path):
-        return user_path
-    else:
-        return path.join(root_path, user_path)
+    return path.join(root_path, user_path)
 
 # Load user settings
 config = configparser.ConfigParser()
