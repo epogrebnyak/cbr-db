@@ -69,5 +69,24 @@ def test_quarter2date():
 def test_date2quarter():
     assert date_engine.date2quarter(date(2000, 4, 1)) == (2000, 1)
     assert date_engine.date2quarter(date(2000, 7, 1)) == (2000, 2)
+    with pytest.raises(ValueError):
+        date_engine.date2quarter(date(2000, 9, 1))
     assert date_engine.date2quarter(date(2000, 10, 1)) == (2000, 3)
+    with pytest.raises(ValueError):
+        date_engine.date2quarter(date(2000, 11, 1))
+    with pytest.raises(ValueError):
+        date_engine.date2quarter(date(2000, 12, 1))
     assert date_engine.date2quarter(date(2001, 1, 1)) == (2000, 4)
+
+
+def test_conv_date2quarter():
+    assert date_engine.conv_date2quarter('2015-01-01') == (2014, 4)
+    assert date_engine.conv_date2quarter('2015-03-01') == (2015, 1)
+    assert date_engine.conv_date2quarter('2015-04-01') == (2015, 1)
+    assert date_engine.conv_date2quarter('2015-06-01') == (2015, 2)
+    assert date_engine.conv_date2quarter('2015-09-01') == (2015, 3)
+    assert date_engine.conv_date2quarter('2015-12-01') == (2015, 4)
+
+
+def test_current_year():
+    assert date_engine.get_current_year() == date.today().year
