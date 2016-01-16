@@ -120,9 +120,9 @@ def get_last_date_in_year(dt, form):
     Example: In June 2015 will return 2015-06 for dt = 2015-12.
     In forms with quarter notation, returns the last valid quarter.
     """
-    current_date_day_1 = datetime.today().replace(day=1).date()
+    current_month_day_1 = date.today().replace(day=1)
     current_year_dec1_date = dt.replace(month=12)
-    dt = min(current_date_day_1, current_year_dec1_date)
+    dt = min(current_month_day_1, current_year_dec1_date)
 
     if form == '102':  # use quarter notation
         if current_year_dec1_date == dt:
@@ -146,55 +146,51 @@ def get_date_range_from_command_line(args):
 
     if s and e:
         return [d.isoformat() for d in get_date_range(s, e, step)]
+    else:
+        return None
 
 def get_date_endpoints(args):
     """
     Returns start and end of date range specified in command line.
     """
-    s = None  # start date
-    e = None  # end date
+    start_date = None
+    end_date = None
     form = args['<form>']
 
     if args['--all-dates']:
         # Risk: hard-coded constant
-        s = date(2004, 2, 1)
-        e = date.today().replace(day=1)
+        start_date = date(2004, 2, 1)
+        end_date = date.today().replace(day=1)
 
     # process first timestamp
     if args['<timestamp1>'] is not None:
         ts1, f1 = get_date(args['<timestamp1>'])
-        s = ts1
+        start_date = ts1
+        # Calculate end_date in case there is no timestamp2
         if f1 == "%Y":
-            e = get_last_date_in_year(ts1, form)
+            end_date = get_last_date_in_year(ts1, form)
         else:
-            e = s
+            end_date = start_date
 
         if form == '102':
             # first quarter starts from month 4
             if f1 == "%Y":
-                s = s.replace(month=4)
+                start_date = start_date.replace(month=4)
 
             # get current or next valid quarter
-            s = get_next_quarter_end_date(s)
+            start_date = get_next_quarter_end_date(start_date)
 
     # process second timestamp
     if args['<timestamp2>'] is not None:
         ts2, f2 = get_date(args['<timestamp2>'])
         if f2 == "%Y":
-            e = get_last_date_in_year(ts2, form)
+            end_date = get_last_date_in_year(ts2, form)
         else:
-            e = ts2
+            end_date = ts2
 
-    if s and e and (s.day != 1 or e.day != 1):
+    if start_date and end_date and (start_date.day != 1 or end_date.day != 1):
         print('Warning: must always use start of the month dates (day 1). Force setting day to 1 in argument dates.')
-        s = s.replace(day=1)
-        e = e.replace(day=1)
+        start_date = start_date.replace(day=1)
+        end_date = end_date.replace(day=1)
 
-    return s, e
-
-if __name__ == '__main__':
-    args = docopt(__doc__)
-    d_range = get_date_range_from_command_line(args)
-    print("Start date:", d_range[0])
-    print("End date:",   d_range[-1])
-    print("Date list:",  d_range)
+    return start_date, end_date
