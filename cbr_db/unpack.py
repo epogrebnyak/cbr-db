@@ -1,8 +1,9 @@
 import os
 from zipfile import ZipFile
 
+from .conf import settings
 from .terminal import terminal
-from .config_folders import get_public_data_folder, PATH
+from .config_folders import get_public_data_folder
 from .make_url import get_ziprar_filename
 
 
@@ -37,7 +38,7 @@ def unpack_path(filepath, form):
 
 
 def _unpack_rar(filepath, destination_dir):
-    call_string = " ".join([in_quotes(PATH['unrar']), "e", filepath, destination_dir, "-y"])
+    call_string = " ".join([in_quotes(settings.UNPACK_RAR_EXE), "e", filepath, destination_dir, "-y"])
     terminal(call_string)
 
 
@@ -48,7 +49,7 @@ def _unpack_zip(filepath, destination_dir):
 
 # TODO: not sure there are actual 7z - maybe we don't need this
 def _unpack_7z(filepath, destination_dir):
-    call_string = " ".join([in_quotes(PATH['z7']), "e", filepath, "-o" + destination_dir, "-y"])
+    call_string = " ".join([in_quotes(settings.UNPACK_7Z_EXE), "e", filepath, "-o" + destination_dir, "-y"])
     terminal(call_string)
 
 

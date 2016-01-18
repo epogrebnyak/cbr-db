@@ -12,6 +12,11 @@ TEMP_DIR = os.path.join(tempfile.gettempdir(), 'cbr-db-tests')
 FILES_DIR = os.path.join(TESTS_DIR, 'files')
 
 
+@pytest.fixture(scope='session', autouse=True)
+def use_test_settings():
+    os.environ['CBR_DB_SETTINGS'] = 'tests.settings'
+
+
 @pytest.fixture(scope='function')
 def tempdir():
     """This fixture re-creates temp directory for tests."""
