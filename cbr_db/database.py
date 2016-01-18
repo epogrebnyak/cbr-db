@@ -389,21 +389,7 @@ def create_final_dataset_in_raw_database(form, timestamp1, timestamp2=None,
         if regn_list:
             regn = regn_list.split(',')
         elif regn_file:
-            try:
-                # try reading from the current work directory
-                regn = read_values_from_file(regn_file)
-            except FileNotFoundError:
-                try:
-                    # try in the global tables dir
-                    dir_ = get_global_folder('tables')
-                    path = os.path.join(dir_, regn_file)
-                    print('-> {} was not found in the work dir. Trying in {}'.format(
-                        regn_file, path))
-
-                    regn = read_values_from_file(path)
-                except FileNotFoundError:
-                    print("-> {} not found, aborting".format(regn_file))
-                    return
+            regn = _read_regn_file(regn_file)
 
         insert_rows_into_table(
             db=db,
@@ -417,6 +403,14 @@ def create_final_dataset_in_raw_database(form, timestamp1, timestamp2=None,
 
     # make the final dataset in the raw database
     run_sql_string("call f{}_make_dataset();".format(form), db)
+
+def _read_regn_file(regn_file):
+    if not os.path.isfile(regn_file):
+        path = os.path.join(get_global_folder('tables'), regn_file)
+        if os.path.isfile(path):
+            print('-> Using {} from {}'.format(regn_file, path))
+            regn_file = path
+    return read_values_from_file(regn_file)
 
 ################################################################
 #             4. Working with the final dataset               #
