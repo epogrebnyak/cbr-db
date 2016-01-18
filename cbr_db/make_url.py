@@ -19,20 +19,17 @@ def download_form(isodate_input, form_input):
         print('Skipping download of form {} data.\nReason: {}'.format(
             form_input, str(e)))
     
-def get_url(date=None, isodate=None, form=None):
+def get_url(isodate, form):
     """
     Creates URL based on date.
     """
-    return "http://www.cbr.ru/credit/forms/" + get_ziprar_filename(date, isodate, form)
+    return "http://www.cbr.ru/credit/forms/" + get_ziprar_filename(isodate, form)
 
-def get_ziprar_filename(date=None, isodate=None, form=None):
+def get_ziprar_filename(isodate, form):
     """
-    Returns CBR archive file name for the given form and time.
+    Returns CBR archive file name for the given form and date.
     """
-    if isodate is not None:
-        date = iso2date(isodate)
-    elif date is None:
-        return None
+    date = iso2date(isodate)
 
     # date is now assumed to be defined in datetime, not ISO format
     month = zero_padded_month(date.month)
