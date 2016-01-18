@@ -99,9 +99,10 @@ def main(argv):
         batch = [_insert_arguments(x, args) for x in batch]
         # Execute batch
         cwd = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
+        env = {'CBR_DB_SETTINGS': 'settings'}
         for command in batch:
             logger.info('Calling {!r}'.format(command))
-            process = subprocess.Popen(command, cwd=cwd)
+            process = subprocess.Popen(command, cwd=cwd, env=env)
             returncode = process.wait()
             if returncode != 0:
                 raise ScriptError('Child process returned {!r}'.format(returncode))
