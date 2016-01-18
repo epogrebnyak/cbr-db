@@ -33,6 +33,9 @@ def convert_txt2csv(txt_path, form):
     """
     isodate = decompose_private_txt_filename (txt_path, form)
     csv_path = get_target_csv_path(txt_path, form)
+    # Make sure target directory exists
+    if not os.path.isdir(os.path.dirname(csv_path)):
+        os.makedirs(os.path.dirname(csv_path))
     
     CONVERTERS = {
                   '101': convert_f101_txt2csv,

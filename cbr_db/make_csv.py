@@ -163,6 +163,9 @@ def write_csv_by_path(dbf_path, csv_path, field_name_selection, form, dt):
 
 def write_csv(dbf_filename, field_name_selection, db_table_name, dbf_dir, csv_dir, form,
               dt):
+    # Make sure output directory exists
+    if not os.path.isdir(csv_dir):
+        os.makedirs(csv_dir)
     csv_filename = make_csv_filename(dbf_filename, db_table_name)
     csv_path = os.path.join(csv_dir, csv_filename)
     dbf_path = os.path.join(dbf_dir, dbf_filename)
