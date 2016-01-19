@@ -1,5 +1,5 @@
 import collections
-from cbr_db import conn
+import cbr_db.database.connection as conn
 
 
 def test_select():

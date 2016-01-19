@@ -3,7 +3,7 @@ import os
 import pytest
 
 from cbr_db import bankform
-from cbr_db import conn
+import cbr_db.database.connection as conn
 
 
 @pytest.yield_fixture

@@ -8,7 +8,7 @@ using CBR_DB_SETTINGS environment variable.
 import os
 import platform
 
-_PROJECT_FOLDER = os.path.dirname(os.path.abspath(__file__))
+_PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 _WINDOWS = (platform.system() == 'Windows')
 
 MYSQL_HOST = 'localhost'
@@ -22,15 +22,16 @@ if _WINDOWS:
         'C:\\MySQL\\bin'
     ])
 
-_DATA_FOLDER = os.path.join(_PROJECT_FOLDER, 'data')
-PUBLIC_DATA_FOLDER = os.path.join(_DATA_FOLDER, 'downloadable')
-PRIVATE_DATA_FOLDER = os.path.join(_DATA_FOLDER, 'private')
-OUTPUT_FOLDER = os.path.join(_DATA_FOLDER, 'output')
+DB_NAME_RAW = 'dbf_db'
+DB_NAME_FINAL = 'cbr_db'
+
+DATA_DIR = os.path.join(_PROJECT_DIR, 'data')
+OUTPUT_DIR = os.path.join(DATA_DIR, 'output')
 
 
 if _WINDOWS:
-    UNPACK_7Z_EXE = os.path.join(_PROJECT_FOLDER, 'bin', '7za.exe')
-    UNPACK_RAR_EXE = os.path.join(_PROJECT_FOLDER, 'bin', 'unrar.exe')
+    UNPACK_7Z_EXE = os.path.join(_PROJECT_DIR, 'bin', '7za.exe')
+    UNPACK_RAR_EXE = os.path.join(_PROJECT_DIR, 'bin', 'unrar.exe')
 else:
     UNPACK_7Z_EXE = '7z'
     UNPACK_RAR_EXE = 'unrar'

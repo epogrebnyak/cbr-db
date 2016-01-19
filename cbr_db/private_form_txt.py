@@ -22,8 +22,8 @@ import csv
 import datetime
 import os
 
-from .config_folders import get_private_data_folder, generate_private_data_annual_subfolders
 from .date_engine import shift_month_ahead, date2iso, quarter2date, conv_date2quarter
+from .filesystem import get_private_data_folder, generate_private_data_annual_subfolders
 from .global_ini import get_private_data_db_table
 
 def convert_txt2csv(txt_path, form):

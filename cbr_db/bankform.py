@@ -47,9 +47,10 @@ from .global_ini import DB_NAMES
 from .database import delete_and_create_db, save_db_to_dump, load_db_from_dump
 from .database import import_csv, import_csv_derived_from_text_files
 from .private_form_txt import convert_txt_directory_to_csv
-from .database import save_dataset_as_sql, import_dataset_from_sql, create_final_dataset_in_raw_database
-from .database import import_alloc, import_tables, import_plan, import_bank
-from .database import make_balance, test_balance, report_balance_tables_csv, report_balance_tables_xls
+from .database import save_dataset_as_sql, import_dataset_from_sql
+from .commands import import_alloc, import_tables, import_plan, import_bank,\
+    test_balance, make_balance, report_balance_tables_csv, report_balance_tables_xls,\
+    create_final_dataset_in_raw_database
 
 
 EOL = "\n"

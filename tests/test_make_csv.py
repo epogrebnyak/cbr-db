@@ -2,7 +2,7 @@ import os
 
 import pytest
 
-from cbr_db.config_folders import get_public_data_folder
+from cbr_db.filesystem import get_public_data_folder
 from cbr_db.make_csv import dbf2csv, list_csv_filepaths_by_date
 
 from .conftest import FILES_DIR, compare_dirs, copy_and_unpack

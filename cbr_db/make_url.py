@@ -1,8 +1,7 @@
 import datetime
-import sys
 
 from .date_engine import iso2date, zero_padded_month
-from .config_folders import get_public_data_folder
+from .filesystem import get_public_data_folder
 from .download import download, URLError
 
 

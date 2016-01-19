@@ -2,9 +2,9 @@ import os
 from zipfile import ZipFile
 
 from .conf import settings
-from .terminal import terminal
-from .config_folders import get_public_data_folder
+from .filesystem import get_public_data_folder
 from .make_url import get_ziprar_filename
+from .terminal import terminal
 
 
 def get_local_ziprar_filepath(isodate, form):
