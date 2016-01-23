@@ -1,6 +1,5 @@
 import os
 
-from cbr_db.cli_dates import get_date
 from cbr_db.make_csv import list_csv_filepaths_by_date
 from cbr_db.utils.text import read_regn_file
 from .conf import settings
@@ -14,6 +13,7 @@ from .filesystem import get_database_folder, prepare_output_dir,\
     get_sqldump_table_and_filename, get_private_data_folder, get_db_dumpfile_path
 from .global_ini import get_account_name_parameters, BANK_TABLE_NAME, BANK_TABLE_FIELDS, BANK_DBF_FIELDS
 from .make_xlsx import make_xlsx
+from .utils.dates import get_date
 
 
 __all__ = [

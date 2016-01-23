@@ -6,7 +6,7 @@ for input and output files.
 import os
 
 from .conf import settings
-from .date_engine import get_current_year
+from .utils.dates import get_current_year
 
 
 # This file is in subfolder of _PROJECT_ROOT_DIR, so do path.dirname() twice

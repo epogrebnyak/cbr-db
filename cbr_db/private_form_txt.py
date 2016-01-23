@@ -22,9 +22,10 @@ import csv
 import datetime
 import os
 
-from .date_engine import shift_month_ahead, date2iso, quarter2date, conv_date2quarter
 from .filesystem import get_private_data_folder, generate_private_data_annual_subfolders
 from .global_ini import get_private_data_db_table
+from .utils.dates import shift_month_ahead, date2iso, quarter2date, conv_date2quarter
+
 
 def convert_txt2csv(txt_path, form):
     """

@@ -36,17 +36,18 @@ Usage:
     # bankform.py make csv   <form> (<timestamp1> [<timestamp2>] | --all-dates) [--private-data]
     # bankform.py import csv <form> (<timestamp1> [<timestamp2>] | --all-dates) [--private-data]
 
+from datetime import date
 import sys
 
-from .docopt import docopt
-from .cli_dates import get_date_range_from_command_line
-from .make_url import download_form
-from .unpack import unpack
-from .make_csv import dbf2csv
-from .private_form_txt import convert_txt_directory_to_csv
 from .conf import settings
 from .commands import *
-
+from .docopt import docopt
+from .make_csv import dbf2csv
+from .make_url import download_form
+from .private_form_txt import convert_txt_directory_to_csv
+from .unpack import unpack
+from .utils.dates import get_date, get_next_quarter_end_date,\
+    get_date_range, get_last_date_in_year
 
 EOL = "\n"
 SUPPORTED_FORMS = ['101', '102', '123', '134', '135']
@@ -70,6 +71,67 @@ def get_db_name(arg):
         if arg[param]:
             return [db_dict[param]]
     return list(db_dict.values())
+
+
+def get_date_range_from_command_line(args):
+    """
+    Returns date range specified in command line as a list of dates in iso format.
+    """
+    s, e = get_date_endpoints(args)
+    step = 1
+    if args['<form>'] == '102':
+        step = 3
+    if s and e:
+        return [d.isoformat() for d in get_date_range(s, e, step)]
+    else:
+        return None
+
+
+def get_date_endpoints(args):
+    """
+    Returns start and end of date range specified in command line.
+    """
+    start_date = None
+    end_date = None
+    form = args['<form>']
+
+    if args['--all-dates']:
+        # Risk: hard-coded constant
+        start_date = date(2004, 2, 1)
+        end_date = date.today().replace(day=1)
+
+    # process first timestamp
+    if args['<timestamp1>'] is not None:
+        ts1, f1 = get_date(args['<timestamp1>'])
+        start_date = ts1
+        # Calculate end_date in case there is no timestamp2
+        if f1 == "%Y":
+            end_date = get_last_date_in_year(ts1, form)
+        else:
+            end_date = start_date
+
+        if form == '102':
+            # first quarter starts from month 4
+            if f1 == "%Y":
+                start_date = start_date.replace(month=4)
+
+            # get current or next valid quarter
+            start_date = get_next_quarter_end_date(start_date)
+
+    # process second timestamp
+    if args['<timestamp2>'] is not None:
+        ts2, f2 = get_date(args['<timestamp2>'])
+        if f2 == "%Y":
+            end_date = get_last_date_in_year(ts2, form)
+        else:
+            end_date = ts2
+
+    if start_date and end_date and (start_date.day != 1 or end_date.day != 1):
+        print('Warning: must always use start of the month dates (day 1). Force setting day to 1 in argument dates.')
+        start_date = start_date.replace(day=1)
+        end_date = end_date.replace(day=1)
+
+    return start_date, end_date
 
 
 def main(argv):
