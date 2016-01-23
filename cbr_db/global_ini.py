@@ -132,33 +132,3 @@ BANK_NAMES_DBF = (
 BANK_TABLE_NAME = "bank"
 BANK_TABLE_FIELDS = [("regn", "regn_name"), ("regn", "regn_name")]
 BANK_DBF_FIELDS = [("REGN", "NAME_B"), ("REGN", "NAME_B")]
-
-def get_bank_name_parameters():
-    return BANK_TABLE_NAME, BANK_TABLE_FIELDS, BANK_DBF_FIELDS
-
-#############################################################################
-# OTHER OPTIONS
-#############################################################################
-
-# encoding of the dbf files
-CODEPAGE = "cp866"
-
-#############################################################################
-# DATABASE CONFIGURATION
-#############################################################################
-
-# default values
-_DEFAULT_DB_INI_DICT = {
-    'host': 'localhost',
-    'port': 3306,
-    'user': 'test_user',
-    'passwd': 'test_password'
-}
-
-# read the database parameters from the configuration file
-DB_INI_DICT = {}
-for key in _DEFAULT_DB_INI_DICT.keys():
-    DB_INI_DICT[key] = config.get('mysql', key, fallback=_DEFAULT_DB_INI_DICT[key])
-
-# port must be integer
-DB_INI_DICT['port'] = int(DB_INI_DICT['port'])

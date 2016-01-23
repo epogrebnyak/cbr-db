@@ -77,3 +77,24 @@ def generate_private_data_annual_subfolders(form, subfolder_tag='txt'):
         dir_ = os.path.normpath(os.path.join(main_folder, str(year)))
         if os.path.isdir(dir_):
             yield dir_, year
+
+
+def get_db_dumpfile_path(db_name):
+    """
+    Returns the path to sql dump files, configured in DIRLIST in the
+    global initialization module.
+    """
+    directory = get_database_folder('database')
+    sql_filename = db_name + ".sql"
+    path = os.path.join(directory, sql_filename).replace("\\", "/")
+    return path
+
+
+def get_sqldump_table_and_filename(form):
+    """
+    Returns (f101, f101.sql) for form 101, and similar output for other forms.
+    Support function, it is not called directly from the interface.
+    """
+    table = 'f' + form
+    file = table + ".sql"
+    return table, file

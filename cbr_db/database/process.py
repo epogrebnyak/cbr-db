@@ -1,6 +1,14 @@
+"""
+This module contains interface functions to mysql processes,
+such as mysqldump, mysqlimport, etc.
+"""
+
 import os
+import re
+import tempfile
 
 from cbr_db.database.connection import get_credentials
+from cbr_db.filesystem import get_db_dumpfile_path
 from cbr_db.terminal import terminal
 from cbr_db.utils.text import replace_in_file
 
@@ -78,3 +86,36 @@ def dump_table_sql(db, table, path):
         credentials['user'], credentials['passwd'],
         db, table, path)
     terminal(string)
+
+
+def patch_sql_file(path):
+    """
+    Applies necessary patches to SQL file (such as username/password).
+    Returns path to patched file (in a temp folder).
+    """
+    with open(path, encoding='utf-8') as file:
+        text = file.read()
+    credentials = get_credentials()
+    text = re.sub(r"([`'])\w+[`']@[`']\w+[`']",
+                  r"\1{}\1@\1%\1".format(credentials['user']),
+                  text)
+    tempdir = os.path.join(tempfile.gettempdir(), 'cbr-db')
+    if not os.path.isdir(tempdir):
+        os.makedirs(tempdir)
+    temp_file_path = os.path.join(tempdir, os.path.split(path)[1])
+    with open(temp_file_path, 'w', encoding='utf-8') as file:
+        file.write(text)
+    return temp_file_path
+
+
+def mysqldump(db_name):
+    credentials = get_credentials()
+    print("Database:", db_name)
+    path = get_db_dumpfile_path(db_name)
+    #               mysqldump %1  --no-data --routines > %1.sql
+    line_command = "mysqldump -u{0} -p{1} {2} --no-data --routines > {3}".format(
+        credentials['user'], credentials['passwd'],
+        db_name, path)
+    terminal(line_command)
+    print("Dumped database structure to file <{0}.sql>. No data saved to this file.".format(
+        db_name))

@@ -43,14 +43,9 @@ from .cli_dates import get_date_range_from_command_line
 from .make_url import download_form
 from .unpack import unpack
 from .make_csv import dbf2csv
-from .global_ini import DB_NAMES
-from .database import delete_and_create_db, save_db_to_dump, load_db_from_dump
-from .database import import_csv, import_csv_derived_from_text_files
 from .private_form_txt import convert_txt_directory_to_csv
-from .database import save_dataset_as_sql, import_dataset_from_sql
-from .commands import import_alloc, import_tables, import_plan, import_bank,\
-    test_balance, make_balance, report_balance_tables_csv, report_balance_tables_xls,\
-    create_final_dataset_in_raw_database
+from .conf import settings
+from .commands import *
 
 
 EOL = "\n"
@@ -62,16 +57,20 @@ def get_selected_form(arg):
     return cli_form if cli_form in SUPPORTED_FORMS else None
 
 
-def get_db_name(arg, db_dict=DB_NAMES):
+def get_db_name(arg):
     """
     Returns a list of db names which is coded in command line by keywords 'raw' and 'final'.
-    Uses global dictionary DB_NAMES = {'raw': DB_NAME_RAW, "final": DB_NAME_FINAL}
+    Uses dictionary DB_NAMES = {'raw': DB_NAME_RAW, "final": DB_NAME_FINAL}
     """
+    db_dict = {
+        'raw': settings.DB_NAME_RAW,
+        'final': settings.DB_NAME_FINAL,
+    }
     for param in db_dict:
         if arg[param]:
             return [db_dict[param]]
-
     return list(db_dict.values())
+
 
 def main(argv):
     """
@@ -98,7 +97,7 @@ def main(argv):
                 import_tables()
 
     if arg['database']:
-        db_names = get_db_name(arg, DB_NAMES)
+        db_names = get_db_name(arg)
 
         for db_name in db_names:
                 general_database_operations(arg, db_name)

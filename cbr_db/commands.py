@@ -1,16 +1,52 @@
 import os
 
 from cbr_db.cli_dates import get_date
+from cbr_db.make_csv import list_csv_filepaths_by_date
 from cbr_db.utils.text import read_regn_file
 from .conf import settings
 from .database.api import import_records
 from .database.connection import execute_sql, clear_table, insert_rows_into_table
-from .database.process import mysqlimport_generic, source_sql_file, dump_table_csv, run_sql_string
+from .database.process import mysqlimport_generic, source_sql_file, dump_table_csv,\
+    run_sql_string, mysqlimport, dump_table_sql, patch_sql_file
 from .dbftools.formats import get_import_dbf_path_for_bank, get_import_dbf_path_for_plan
 from .dbftools.reader import get_records
-from .filesystem import get_database_folder, get_public_data_folder, prepare_output_dir
-from .global_ini import get_account_name_parameters, get_bank_name_parameters
+from .filesystem import get_database_folder, prepare_output_dir,\
+    get_sqldump_table_and_filename, get_private_data_folder, get_db_dumpfile_path
+from .global_ini import get_account_name_parameters, BANK_TABLE_NAME, BANK_TABLE_FIELDS, BANK_DBF_FIELDS
 from .make_xlsx import make_xlsx
+
+
+__all__ = [
+    'create_final_dataset_in_raw_database',
+    'delete_and_create_db',
+    'import_alloc',
+    'import_bank',
+    'import_csv',
+    'import_csv_derived_from_text_files',
+    'import_dataset_from_sql',
+    'import_plan',
+    'import_tables',
+    'load_db_from_dump',
+    'make_balance',
+    'report_balance_tables_csv',
+    'report_balance_tables_xls',
+    'save_dataset_as_sql',
+    'save_db_to_dump',
+    'test_balance'
+]
+
+
+def load_db_from_dump(db_name):
+    """
+    Loads a database structure from a dump file.
+    Standard location defined by get_db_dumpfile_path()
+    # todo: change to new directory structure
+    """
+    print("Database:", db_name)
+    path = get_db_dumpfile_path(db_name)
+    source_sql_file(patch_sql_file(path), db_name)
+    print("Loaded database structure from file <{0}.sql>. No data was imported.".format(
+        db_name))
 
 
 def import_alloc(filename='alloc_raw.txt'):
@@ -30,15 +66,11 @@ def import_bank():
     form = '101'
     db = settings.DB_NAME_FINAL
     dbf_names = get_import_dbf_path_for_bank(form)
-    table, fields_list, dbf_fields_list = get_bank_name_parameters()
-
-    clear_table(db, table)
-
-    for dbf_name, fields, dbf_fields in zip(dbf_names, fields_list, dbf_fields_list):
+    clear_table(db, BANK_TABLE_NAME)
+    for dbf_name, fields, dbf_fields in zip(dbf_names, BANK_TABLE_FIELDS, BANK_DBF_FIELDS):
         print("Importing bank names from {}".format(dbf_name))
-        import_dbf_generic(dbf_name, db, table, fields, dbf_fields)
+        import_dbf_generic(dbf_name, db, BANK_TABLE_NAME, fields, dbf_fields)
         print("-> Done")
-
     execute_sql(u"INSERT IGNORE INTO bank (regn, regn_name) VALUE (964, 'Внешэкономбанк')", db)
 
 
@@ -90,6 +122,16 @@ def import_tables():
             source_sql_file(path, database)
             # Risk: import_generic and source_sql_file - similar functions
             # different arg order
+
+
+def save_db_to_dump(db_name):
+    """
+    Saves the structure of a database to a sql dump file in the standard location.
+    Standard location defined by get_db_dumpfile_path()
+    # todo: change to new directory structure
+    # Other variety: http://code.activestate.com/recipes/286223-ohmysqldump/
+    """
+    mysqldump(db_name)
 
 
 def test_balance():
@@ -222,3 +264,49 @@ def create_final_dataset_in_raw_database(form, timestamp1, timestamp2=None,
 
     # make the final dataset in the raw database
     run_sql_string("call f{}_make_dataset();".format(form), db)
+
+
+def import_dataset_from_sql(form):
+    """
+    Imports a dataset from the default sql dump file.
+    """
+    prepare_output_dir(settings.OUTPUT_DIR)
+    filename = get_sqldump_table_and_filename(form)[1]
+    source_sql_file(os.path.join(settings.OUTPUT_DIR, filename),
+                    settings.DB_NAME_FINAL)
+
+
+def save_dataset_as_sql(form):
+    """
+    Saves the dataset corresponding to *form* to the default sql dump file.
+    """
+    prepare_output_dir(settings.OUTPUT_DIR)
+    table, file = get_sqldump_table_and_filename(form)
+    dump_table_sql(settings.DB_NAME_RAW, table,
+                   os.path.join(settings.OUTPUT_DIR, file))
+
+
+def delete_and_create_db(db_name):
+    """
+    Deletes an existing database and recreates it (empty).
+    """
+    print("Database:", db_name)
+    execute_sql("DROP DATABASE IF EXISTS {};".format(db_name))
+    execute_sql("CREATE DATABASE  {0};".format(db_name))
+    print("Deleted existing database and created empty database under same name.")
+
+
+def import_csv(isodate, form):
+    for csv_path in list_csv_filepaths_by_date(isodate, form):
+        mysqlimport(settings.DB_NAME_RAW, csv_path, ignore_lines=1)
+    print("\nFinished importing CSV files into raw data database.")
+    print("Form:", form, "Date:", isodate)
+
+
+def import_csv_derived_from_text_files(form):
+    directory = get_private_data_folder(form, 'csv')
+    for filename in os.listdir(directory):
+        csv_path = os.path.join(directory, filename)
+        mysqlimport(settings.DB_NAME_RAW, csv_path, ignore_lines=0)
+    print("\nFinished importing CSV files into raw data database.")
+    print("Directory:", directory)
