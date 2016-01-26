@@ -2,27 +2,10 @@ import csv
 from datetime import datetime
 import os
 
-from .filesystem import get_public_data_folder
+from .filesystem import get_public_data_folder, make_csv_filename, make_dbf_filename
 from .global_ini import FORM_DATA
 from .dbftools.reader import get_records
-from .utils.dates import isodate2timestamp, iso2date, date2quarter, date2iso
-
-
-def make_csv_filename(dbf_filename, db_table_name):
-    if db_table_name is None:
-        #  rename if db_table_name not supplied
-        csv_filename = dbf_filename[:-4] + ".csv"
-    else:
-        # make dbf filename same as table name, put date information in extension
-        csv_filename = db_table_name + "." + dbf_filename[:-4]
-
-    return csv_filename
-
-
-def make_dbf_filename(isodate, postfix, form):
-    ts = isodate2timestamp(form, isodate)
-    dbf_filename = ts + postfix + ".DBF"
-    return dbf_filename
+from .utils.dates import iso2date, date2quarter, date2iso
 
 
 def write_csv_by_path(dbf_path, csv_path, field_name_selection, form, dt):
@@ -103,12 +86,3 @@ def dbf2csv(isodate, form):
                   csv_dir=get_public_data_folder(form, 'csv'),
                   form=form,
                   dt=iso2date(isodate))
-
-
-def list_csv_filepaths_by_date(isodate, form):
-    for subform, info in FORM_DATA[form].items():
-        dbf_filename = make_dbf_filename(isodate, info['postfix'], form)
-        csv_filename = make_csv_filename(dbf_filename, info['db_table'])
-        csv_dir = get_public_data_folder(form, 'csv')
-        csv_path = os.path.join(csv_dir, csv_filename)
-        yield csv_path

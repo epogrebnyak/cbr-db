@@ -6,8 +6,8 @@ for input and output files.
 import os
 
 from .conf import settings
-from .utils.dates import get_current_year
-
+from .global_ini import FORM_DATA
+from .utils.dates import get_current_year, isodate2timestamp
 
 # This file is in subfolder of _PROJECT_ROOT_DIR, so do path.dirname() twice
 _PROJECT_ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -98,3 +98,37 @@ def get_sqldump_table_and_filename(form):
     table = 'f' + form
     file = table + ".sql"
     return table, file
+
+
+def make_csv_filename(dbf_filename, db_table_name):
+    """
+    Returns output CSV filename for the given input DBF file and DB table name.
+    """
+    if db_table_name is None:
+        #  rename if db_table_name not supplied
+        return dbf_filename[:-4] + ".csv"
+    else:
+        # make dbf filename same as table name, put date information in extension
+        return db_table_name + "." + dbf_filename[:-4]
+
+
+def make_dbf_filename(isodate, postfix, form):
+    """
+    Returns input DBF filename for the given date and form.
+    postfix is appended to file name before extension.
+    """
+    ts = isodate2timestamp(form, isodate)
+    dbf_filename = ts + postfix + ".DBF"
+    return dbf_filename
+
+
+def get_csv_files(isodate, form):
+    """
+    Yields CSV file paths for the given date and form.
+    """
+    for subform, info in FORM_DATA[form].items():
+        dbf_filename = make_dbf_filename(isodate, info['postfix'], form)
+        csv_filename = make_csv_filename(dbf_filename, info['db_table'])
+        csv_dir = get_public_data_folder(form, 'csv')
+        csv_path = os.path.join(csv_dir, csv_filename)
+        yield csv_path

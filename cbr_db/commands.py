@@ -1,6 +1,5 @@
 import os
 
-from cbr_db.make_csv import list_csv_filepaths_by_date
 from cbr_db.utils.text import read_regn_file
 from .conf import settings
 from .database.api import import_records
@@ -10,7 +9,8 @@ from .database.process import mysqlimport_generic, source_sql_file, dump_table_c
 from .dbftools.formats import get_import_dbf_path_for_bank, get_import_dbf_path_for_plan
 from .dbftools.reader import get_records
 from .filesystem import get_database_folder, prepare_output_dir,\
-    get_sqldump_table_and_filename, get_private_data_folder, get_db_dumpfile_path
+    get_sqldump_table_and_filename, get_private_data_folder, get_db_dumpfile_path,\
+    get_csv_files
 from .global_ini import get_account_name_parameters, BANK_TABLE_NAME, BANK_TABLE_FIELDS, BANK_DBF_FIELDS
 from .make_xlsx import make_xlsx
 from .utils.dates import get_date
@@ -297,7 +297,7 @@ def delete_and_create_db(db_name):
 
 
 def import_csv(isodate, form):
-    for csv_path in list_csv_filepaths_by_date(isodate, form):
+    for csv_path in get_csv_files(isodate, form):
         mysqlimport(settings.DB_NAME_RAW, csv_path, ignore_lines=1)
     print("\nFinished importing CSV files into raw data database.")
     print("Form:", form, "Date:", isodate)

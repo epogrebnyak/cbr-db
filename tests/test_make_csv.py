@@ -2,8 +2,7 @@ import os
 
 import pytest
 
-from cbr_db.filesystem import get_public_data_folder
-from cbr_db.make_csv import dbf2csv, list_csv_filepaths_by_date
+from cbr_db.make_csv import dbf2csv
 
 from .conftest import FILES_DIR, compare_dirs, copy_and_unpack
 
@@ -27,19 +26,3 @@ def test_dbf2csv(mocker, tempdir, form):
                  lambda form, ext: dbf_dir if ext == 'dbf' else output_dir)
     dbf2csv('2015-12-20', '101')
     compare_dirs(output_dir, csv_dir)
-
-
-@pytest.mark.parametrize('form,isodate,expected', [
-    ('101', '2015-12-01', [
-        'bulk_f101_b.112015_B',
-        'bulk_f101b1.112015B1',
-    ]),
-    ('102', '2016-01-01', [
-        'bulk_f102_P.42015_P',
-        'bulk_f102_P1.42015_P1',
-    ]),
-])
-def test_csv_filepaths_by_date(form, isodate, expected):
-    path = get_public_data_folder(form, 'csv')
-    expected = [os.path.join(path, x) for x in expected]
-    assert sorted(list_csv_filepaths_by_date(isodate, form)) == expected
