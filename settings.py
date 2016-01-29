@@ -30,8 +30,6 @@ OUTPUT_DIR = os.path.join(DATA_DIR, 'output')
 
 
 if _WINDOWS:
-    UNPACK_7Z_EXE = os.path.join(_PROJECT_DIR, 'bin', '7za.exe')
     UNPACK_RAR_EXE = os.path.join(_PROJECT_DIR, 'bin', 'unrar.exe')
 else:
-    UNPACK_7Z_EXE = '7z'
     UNPACK_RAR_EXE = 'unrar'
