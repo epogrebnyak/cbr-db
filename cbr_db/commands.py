@@ -1,6 +1,7 @@
 import os
 
 from cbr_db.utils.text import read_regn_file
+from .csvtools import write_csv_by_path
 from .conf import settings
 from .database.api import import_records
 from .database.connection import execute_sql, clear_table, insert_rows_into_table
@@ -10,14 +11,16 @@ from .dbftools.formats import get_import_dbf_path_for_bank, get_import_dbf_path_
 from .dbftools.reader import get_records
 from .filesystem import get_database_folder, prepare_output_dir,\
     get_sqldump_table_and_filename, get_private_data_folder, get_db_dumpfile_path,\
-    get_csv_files
-from .global_ini import get_account_name_parameters, BANK_TABLE_NAME, BANK_TABLE_FIELDS, BANK_DBF_FIELDS
+    get_csv_files, make_dbf_filename, make_csv_filename, get_public_data_folder
+from .global_ini import get_account_name_parameters, BANK_TABLE_NAME, BANK_TABLE_FIELDS,\
+    BANK_DBF_FIELDS, FORM_DATA
 from .make_xlsx import make_xlsx
-from .utils.dates import get_date
+from .utils.dates import get_date, iso2date
 
 
 __all__ = [
     'create_final_dataset_in_raw_database',
+    'dbf2csv',
     'delete_and_create_db',
     'import_alloc',
     'import_bank',
@@ -310,3 +313,38 @@ def import_csv_derived_from_text_files(form):
         mysqlimport(settings.DB_NAME_RAW, csv_path, ignore_lines=0)
     print("\nFinished importing CSV files into raw data database.")
     print("Directory:", directory)
+
+
+def dbf2csv(isodate, form):
+    """
+    Converts DBF files to CSV files with SQL table name as basename and date as extension.
+    This filename format allows using fast mysqlimport to read CSV files to database.
+    Function will iterate over subforms in each form.
+    """
+    dt = iso2date(isodate)
+    # Get input and output file directories
+    dbf_dir = get_public_data_folder(form, 'dbf')
+    csv_dir = get_public_data_folder(form, 'csv')
+    # Make sure output directory exists
+    if not os.path.isdir(csv_dir):
+        os.makedirs(csv_dir)
+    # Process all subforms in the given form.
+    # For example, form 101 has two subforms: f101_B and f101B1.
+    for subform, info in FORM_DATA[form].items():
+        # Get DBF file (input)
+        dbf_filename = make_dbf_filename(isodate, info['postfix'], form)
+        dbf_path = os.path.join(dbf_dir, dbf_filename)
+        if not os.path.isfile(dbf_path):
+            print("File {0} not found".format(dbf_filename))
+            continue
+        # Get CSV file (output)
+        csv_filename = make_csv_filename(dbf_filename, info['db_table'])
+        print("Converting {0} to csv file {1}".format(dbf_filename, csv_filename))
+        records = get_records(dbf_path, info['dbf_fields'])
+        write_csv_by_path(
+            records,
+            os.path.join(csv_dir, csv_filename),
+            info['dbf_fields'],
+            form,
+            dt
+        )

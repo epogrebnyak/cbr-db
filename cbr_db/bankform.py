@@ -42,7 +42,6 @@ import sys
 from .conf import settings
 from .commands import *
 from .docopt import docopt
-from .make_csv import dbf2csv
 from .make_url import download_form
 from .private_form_txt import convert_txt_directory_to_csv
 from .unpack import unpack
