@@ -106,4 +106,3 @@ def test_get_date_endpoints(mocker, today, args, start_date, end_date):
     mock.side_effect = lambda *args, **kw: date(*args, **kw)
     mock.today = lambda *x: today
     assert get_date_endpoints(args) == (start_date, end_date)
-

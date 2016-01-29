@@ -44,7 +44,7 @@ def test_shift_month_ahead():
 
 def test_shift_month_behind():
     assert dates.shift_month_behind(date(2015, 12, 1)) == date(2015, 11, 1)
-    
+
     assert dates.shift_month_behind(date(1988, 7, 1)) == date(1988, 6, 1)
 
     assert dates.shift_month_behind(date(2012, 1, 1)) == date(2011, 12, 1)

@@ -8,11 +8,12 @@ from datetime import date, datetime
 def _verify_start_of_month(*args):
     """
     Checks if day of date is 01, raises error otherwise.
-    Note: this is now a double check as cli_dates.get_date_endpoints() forces day to 1, occurrence of other day is unlikely.
+
+    Note: this is now a double check as cli_dates.get_date_endpoints()
+    forces day to 1, occurrence of other day is unlikely.
     """
-    for date in args:
-        if date.day != 1:
-            raise ValueError("All dates must be at the start of the month (day 1)")
+    if not all(x.day == 1 for x in args):
+        raise ValueError("All dates must be at the start of the month (day 1)")
 
 
 def shift_month_ahead(date):
@@ -64,11 +65,11 @@ def shift_month_to_quarter_start(month):
     12 10
     """
     # Note: former name 'get_last_quarter_month' contradicted function algorithm.
-    #"""
-    #Returns the last completed quarter from <month>. For example, if the
-    #month is 1, 2 or 3, the last completed quarter was at month 1.
-    #Note: always returns month 1, 4, 7 or 10.
-    #"""
+    # """
+    # Returns the last completed quarter from <month>. For example, if the
+    # month is 1, 2 or 3, the last completed quarter was at month 1.
+    # Note: always returns month 1, 4, 7 or 10.
+    # """
     quarter = (month - 1) // 3
     return quarter * 3 + 1
 
@@ -91,8 +92,10 @@ def get_date_range(start_date, end_date, step=1):
 def get_date_from_quarter_string(timestamp):
     """
     Returns day 1 of quarter following <timestamp> argument.
+
     Example: for timestamp = '1q2015' returns date object with date '2015-04-01'
-    <timestamp describes a date using a quarter-year  notation [1-4]q[YYYY], [1-4]Q[YYYY], [YYYY]q[1-4], [YYYY]Q[1-4]
+    <timestamp> describes a date using a quarter-year notation
+        [1-4]q[YYYY], [1-4]Q[YYYY], [YYYY]q[1-4], [YYYY]Q[1-4]
     <timestamp> examples: 1Q2005, 2q2005, 2005Q3, 2005q4
     """
     # not todo: may use regex to catch year/quarter
@@ -125,7 +128,8 @@ _SPECIAL_FORMATS = [get_date_from_quarter_string]
 
 def get_date(string):
     """
-    Parses <string> as date using several predefined text <formats> and <special_formats> functions,
+    Parses <string> as date using several predefined text <formats>
+    and <special_formats> functions,
     returning the date and the its matching format.
     """
 
@@ -206,7 +210,9 @@ def zero_padded_month(month):
 
 def date2quarter(date):
     """
-    Returns the last completed quarter (year, quarter) tuple from a <date> object (a reverse quarter2date).
+    Returns the last completed quarter (year, quarter) tuple
+    from a <date> object (a reverse quarter2date).
+
     The function expects a valid end-of-quarter month (months 1, 4, 7, 10) .
     """
     if date.month == 1:
@@ -220,14 +226,14 @@ def date2quarter(date):
 def conv_date2quarter(isodate):
     """
     Returns year and quarter which correspond to reporting <isodate>
+
+    .. doctest::
+
+        >>> conv_date2quarter('2015-12-01')
+        (2015, 4)
     """
-    date = iso2date(isodate)
-    date = shift_month_behind(date)
-    mo2qtr = {1:1, 2:1, 3:1,
-              4:2, 5:2, 6:2,
-              7:3, 8:3, 9:3,
-             10:4, 11:4, 12:4}
-    return date.year, mo2qtr[date.month]
+    dt = shift_month_behind(iso2date(isodate))
+    return dt.year, (dt.month - 1) // 3 + 1
 
 
 def quarter2date(year, quarter):

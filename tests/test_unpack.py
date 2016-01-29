@@ -11,11 +11,11 @@ from .conftest import FILES_DIR, compare_dirs
 def test_get_local_ziprar_filepath(mocker):
     mocker.patch('cbr_db.unpack.get_public_data_folder', return_value='dummy')
     # Older archives are in zip
-    assert get_local_ziprar_filepath('2005-12-01', '101') ==\
-           os.path.join('dummy', '101-20051201.zip')
+    assert (get_local_ziprar_filepath('2005-12-01', '101') ==
+            os.path.join('dummy', '101-20051201.zip'))
     # Newer archives are in rar
-    assert get_local_ziprar_filepath('2015-12-01', '101') ==\
-           os.path.join('dummy', '101-20151201.rar')
+    assert (get_local_ziprar_filepath('2015-12-01', '101') ==
+            os.path.join('dummy', '101-20151201.rar'))
 
 
 @pytest.mark.parametrize('filename,form', [

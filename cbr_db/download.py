@@ -1,8 +1,8 @@
 from urllib import request, parse
-from urllib.error import URLError
 from os import path, makedirs
 import shutil
 import arrow
+
 
 def get_date(url):
     """
@@ -13,11 +13,13 @@ def get_date(url):
     date = url.info().get('Last-Modified')
     return arrow.get(date, 'ddd D MMM YYYY HH:mm:ss')
 
+
 def get_filename(url, dir_=""):
     """
     Returns the name of the file pointed by url, when put in directory *dir*
     """
     return path.join(dir_, path.basename(parse.urlsplit(url).path))
+
 
 def download(url, dir_, force=False, verbose=True):
     """
@@ -37,7 +39,7 @@ def download(url, dir_, force=False, verbose=True):
     if force or mod_remote > mod_local:
         if verbose:
             print("-> Downloading {}".format(url))
-        
+
         makedirs(dir_, exist_ok=True)
         with request.urlopen(url) as response, open(filename, 'wb') as out:
             shutil.copyfileobj(response, out)  # downloads in chunks

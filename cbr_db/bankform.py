@@ -9,12 +9,14 @@ Usage:
     bankform.py unpack     <form> (<timestamp1> [<timestamp2>] | --all-dates)
     bankform.py make csv   <form> (<timestamp1> [<timestamp2>] | --all-dates)
     bankform.py import csv <form> (<timestamp1> [<timestamp2>] | --all-dates)
-    bankform.py update     <form> (<timestamp1> [<timestamp2>] | --all-dates) [--no-download]
+    bankform.py update     <form> (<timestamp1> [<timestamp2>] | --all-dates)
+        [--no-download]
     bankform.py import plan <form>
     bankform.py import bank
     bankform.py make csv   <form> --private-data [--all-dates]
     bankform.py import csv <form> --private-data [--all-dates]
-    bankform.py make dataset <form> <timestamp1> [<timestamp2>] [--regn=<regn_list> | --regn-file=<file> | --regn-all]
+    bankform.py make dataset <form> <timestamp1> [<timestamp2>]
+        [--regn=<regn_list> | --regn-file=<file> | --regn-all]
     bankform.py save    dataset <form>
     bankform.py import  dataset <form>
     bankform.py migrate dataset <form>
@@ -28,19 +30,19 @@ Usage:
 
 # todo:
 
-# must change: 
-    # bankform.py make csv   <form> --private-data [--all-dates]
-    # bankform.py import csv <form> --private-data [--all-dates]
-    
-# to: 
-    # bankform.py make csv   <form> (<timestamp1> [<timestamp2>] | --all-dates) [--private-data]
-    # bankform.py import csv <form> (<timestamp1> [<timestamp2>] | --all-dates) [--private-data]
+# must change:
+# bankform.py make csv   <form> --private-data [--all-dates]
+# bankform.py import csv <form> --private-data [--all-dates]
+
+# to:
+# bankform.py make csv   <form> (<timestamp1> [<timestamp2>] | --all-dates) [--private-data]
+# bankform.py import csv <form> (<timestamp1> [<timestamp2>] | --all-dates) [--private-data]
 
 from datetime import date
 import sys
 
 from .conf import settings
-from .commands import *
+from .commands import *  # NOQA
 from .docopt import docopt
 from .make_url import download_form
 from .private_form_txt import convert_txt_directory_to_csv
@@ -52,7 +54,7 @@ EOL = "\n"
 SUPPORTED_FORMS = ['101', '102', '123', '134', '135']
 
 
-def get_selected_form(arg):    
+def get_selected_form(arg):
     cli_form = arg["<form>"]
     return cli_form if cli_form in SUPPORTED_FORMS else None
 
@@ -126,7 +128,8 @@ def get_date_endpoints(args):
             end_date = ts2
 
     if start_date and end_date and (start_date.day != 1 or end_date.day != 1):
-        print('Warning: must always use start of the month dates (day 1). Force setting day to 1 in argument dates.')
+        print('Warning: must always use start of the month dates (day 1). '
+              'Force setting day to 1 in argument dates.')
         start_date = start_date.replace(day=1)
         end_date = end_date.replace(day=1)
 
@@ -189,7 +192,7 @@ def main(argv):
             # do all data import operations
             if arg['update']:
                 if not arg['--no-download']:
-                   download_form(isodate, form)                   
+                    download_form(isodate, form)
                 unpack(isodate, form)
                 dbf2csv(isodate, form)
                 import_csv(isodate, form)
@@ -207,7 +210,7 @@ def main(argv):
     # 3. Dataset manipulation in raw and final database
     if arg['dataset']:
         if arg['make']:
-            timestamp1 = date_range[0] 
+            timestamp1 = date_range[0]
             timestamp2 = date_range[-1]
             regn = arg['--regn']
             regn_file = arg['--regn-file']
@@ -225,7 +228,7 @@ def main(argv):
     # 4. Working with final database
     if arg['import'] and arg['plan']:
         import_plan(form)
-        
+
     if arg['import'] and arg['bank']:
         import_bank()
 
@@ -241,11 +244,12 @@ def main(argv):
     if arg['test'] and arg['balance']:
         test_balance()
 
-    if arg['report'] and (arg['balance'] or arg['form']):        
+    if arg['report'] and (arg['balance'] or arg['form']):
         if arg['--xlsx']:
             report_balance_tables_xls()
         else:
             report_balance_tables_csv()
+
 
 if __name__ == '__main__':
     main(sys.argv[1:])

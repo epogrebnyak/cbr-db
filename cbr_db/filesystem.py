@@ -39,7 +39,7 @@ def get_database_folder(folder_tag):
 def _get_dir_structure(folder, form):
     return {
         'rar': os.path.join(folder, form, 'rarzip'),
-        'dbf': os.path.join(folder, form, 'dbf' ),
+        'dbf': os.path.join(folder, form, 'dbf'),
         'csv': os.path.join(folder, form, 'csv'),
         'txt': os.path.join(folder, form, 'txt')
     }
@@ -55,6 +55,7 @@ def get_public_data_folder(form, subfolder_tag):
     """
     dir_list = _get_dir_structure(os.path.join(settings.DATA_DIR, 'downloadable'), form)
     return dir_list[subfolder_tag]
+
 
 def get_private_data_folder(form, subfolder_tag):
     """

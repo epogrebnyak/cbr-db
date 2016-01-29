@@ -1,9 +1,9 @@
 """
-Database names + credentials and form descriptions. 
+Database names + credentials and form descriptions.
 
 Todo: separate configparser.ConfigParser() and form decriptions in different files.
 
-Contents of this file 
+Contents of this file
    settings.py (new)         - reads with configparser.ConfigParser()  + database names + codepage
    form_definitions.py (new) - hardcoded form parameters + access functions
 
@@ -80,25 +80,22 @@ FORM_DATA = {
     '102': f102
 }
 
-# private data:
 
 def get_private_data_param(form, tag):
-    table_name_dict = {'101':
-                        {'db_table':'bulk_f101_private'
-                         }, 
-                       '102':
-                        {
-                        'db_table':'bulk_f102_private'}
-                      }
+    table_name_dict = {
+        '101': {
+            'db_table': 'bulk_f101_private'
+        },
+        '102': {
+            'db_table': 'bulk_f102_private'
+        }
+    }
     return table_name_dict[form][tag]
+
 
 def get_private_data_db_table(form):
     return get_private_data_param(form, 'db_table')
-    
 
-    
-
-# Account names
 
 ACCOUNT_NAMES_DBF = {
     '101': 'NAMES.DBF',
@@ -119,6 +116,7 @@ ACCOUNT_DBF_FIELDS = {
     '101': ("PLAN", "NUM_SC", "NAME", "TYPE"),
     '102': ("NOM", "PRSTR", "CODE", "NAME")
 }
+
 
 def get_account_name_parameters(form):
     return ACCOUNT_TABLE_NAME[form], ACCOUNT_TABLE_FIELDS[form], ACCOUNT_DBF_FIELDS[form]

@@ -18,7 +18,7 @@ def cwd(scope='module', autouse=True):
 def get_regns():
     # TODO: we are using working database for tests. This is bad!
     return sorted([
-        t[0] for t in 
+        t[0] for t in
         conn.execute_sql("SELECT regn FROM cfg_regn_in_focus",
                          database="dbf_db")
     ])

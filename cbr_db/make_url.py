@@ -1,7 +1,8 @@
 import datetime
+from urllib.request import URLError
 
 from .filesystem import get_public_data_folder
-from .download import download, URLError
+from .download import download
 from .utils.dates import iso2date, zero_padded_month
 
 
@@ -11,18 +12,20 @@ def download_form(isodate_input, form_input):
     """
     url = get_url(isodate=isodate_input, form=form_input)
     dir_ = get_public_data_folder(form_input, 'rar')
-    
-    try:    
+
+    try:
         download(url, dir_)
     except URLError as e:
         print('Skipping download of form {} data.\nReason: {}'.format(
             form_input, str(e)))
-    
+
+
 def get_url(isodate, form):
     """
     Creates URL based on date.
     """
     return "http://www.cbr.ru/credit/forms/" + get_ziprar_filename(isodate, form)
+
 
 def get_ziprar_filename(isodate, form):
     """
@@ -34,12 +37,13 @@ def get_ziprar_filename(isodate, form):
     month = zero_padded_month(date.month)
     year = date.year
     extension = get_extension(date)
-    
+
     form = str(form)
     # TODO: remove harcoded form check
     if form not in ('101', '102'):
         raise ValueError('Form {} not supported yet.'.format(form))
     return "{}-{}{}01.{}".format(form, year, month, extension)
+
 
 def get_extension(date):
     # dbf files are avaialble since Feb-2004. They are in zip format up to Dec-2008

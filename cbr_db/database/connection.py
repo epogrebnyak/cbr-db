@@ -1,4 +1,3 @@
-import contextlib
 from contextlib import closing
 
 import pymysql

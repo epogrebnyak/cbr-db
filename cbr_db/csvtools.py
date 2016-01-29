@@ -10,7 +10,9 @@ def write_csv_by_path(dbf_records, csv_path, field_name_selection, form, dt):
     startTime = datetime.now()
     # ----------------------
     with open(csv_path, 'w') as csvfile:
-        writer = csv.DictWriter(csvfile, delimiter='\t', lineterminator='\n',  fieldnames=field_name_selection)
+        writer = csv.DictWriter(csvfile,
+                                delimiter='\t', lineterminator='\n',
+                                fieldnames=field_name_selection)
         writer.writeheader()
 
         n_skipped = 0

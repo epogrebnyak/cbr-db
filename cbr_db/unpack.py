@@ -31,26 +31,23 @@ def unpack_path(filepath, form):
         _unpack_rar(filepath, destination_directory)
     elif ext == 'zip':
         _unpack_zip(filepath, destination_directory)
-    elif ext == '7z':
-        _unpack_7z(filepath, destination_directory)
     else:
         raise Exception('Unsupported archive type: {}'.format(filepath))
 
 
 def _unpack_rar(filepath, destination_dir):
-    call_string = " ".join([in_quotes(settings.UNPACK_RAR_EXE), "e", filepath, destination_dir, "-y"])
+    call_string = " ".join([
+        in_quotes(settings.UNPACK_RAR_EXE),
+        "e", filepath,
+        destination_dir,
+        "-y"
+    ])
     terminal(call_string)
 
 
 def _unpack_zip(filepath, destination_dir):
     with ZipFile(filepath, 'r') as file:
         file.extractall(destination_dir)
-
-
-# TODO: not sure there are actual 7z - maybe we don't need this
-def _unpack_7z(filepath, destination_dir):
-    call_string = " ".join([in_quotes(settings.UNPACK_7Z_EXE), "e", filepath, "-o" + destination_dir, "-y"])
-    terminal(call_string)
 
 
 def in_quotes(str):

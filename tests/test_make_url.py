@@ -1,7 +1,7 @@
 from cbr_db.make_url import get_extension, get_url, get_ziprar_filename
 from datetime import date
 
-    
+
 def test_get_extension():
     assert get_extension(date(2004, 1, 30)) is None
     assert 'zip' == get_extension(date(2004, 2, 10))

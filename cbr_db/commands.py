@@ -6,7 +6,7 @@ from .conf import settings
 from .database.api import import_records
 from .database.connection import execute_sql, clear_table, insert_rows_into_table
 from .database.process import mysqlimport_generic, source_sql_file, dump_table_csv,\
-    run_sql_string, mysqlimport, dump_table_sql, patch_sql_file
+    run_sql_string, mysqlimport, dump_table_sql, patch_sql_file, mysqldump
 from .dbftools.formats import get_import_dbf_path_for_bank, get_import_dbf_path_for_plan
 from .dbftools.reader import get_records
 from .filesystem import get_database_folder, prepare_output_dir,\

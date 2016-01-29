@@ -14,8 +14,8 @@ def test_return():
     resp = conn.execute_sql('SHOW DATABASES')
     assert isinstance(resp, collections.Iterable)
     assert len(resp) > 0
-            
+
     # empty set
-    resp = conn.execute_sql('SHOW DATABASES WHERE "Database" = "xASFghd9"');
+    resp = conn.execute_sql('SHOW DATABASES WHERE "Database" = "xASFghd9"')
     assert isinstance(resp, collections.Iterable)
     assert len(resp) == 0
