@@ -4,7 +4,7 @@ from zipfile import ZipFile
 from .conf import settings
 from .filesystem import get_public_data_folder
 from .make_url import get_ziprar_filename
-from .terminal import terminal
+import subprocess
 
 
 def get_local_ziprar_filepath(isodate, form):
@@ -36,13 +36,12 @@ def unpack_path(filepath, form):
 
 
 def _unpack_rar(filepath, destination_dir):
-    call_string = " ".join([
-        in_quotes(settings.UNPACK_RAR_EXE),
-        "e", filepath,
+    subprocess.check_call([
+        settings.UNPACK_RAR_EXE,
+        'e', filepath,
         destination_dir,
-        "-y"
+        '-y'
     ])
-    terminal(call_string)
 
 
 def _unpack_zip(filepath, destination_dir):

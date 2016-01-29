@@ -5,33 +5,43 @@ such as mysqldump, mysqlimport, etc.
 
 import os
 import re
+import subprocess
 import tempfile
+import time
 
 from cbr_db.database.connection import get_credentials
 from cbr_db.filesystem import get_db_dumpfile_path
-from cbr_db.terminal import terminal
 from cbr_db.utils.text import replace_in_file
 
 
 def mysqlimport_generic(database, path):
     credentials = get_credentials()
-    call_string = "mysqlimport -u{0} -p{1} {2} {3} --delete".format(
-        credentials['user'], credentials['passwd'],
-        database, path)
-    terminal(call_string)
+    run_process([
+        'mysqlimport',
+        '-u' + credentials['user'],
+        '-p' + credentials['passwd'],
+        database,
+        path,
+        '--delete',
+    ])
 
 
 def mysqlimport(db_name, csv_path, ignore_lines=1, add_mode='ignore'):
     credentials = get_credentials()
     # Trying to use mysqlimport without --lines-terminated-by="\r\n"
     # (this works on Debian linux on remote server)
-    command_line = r'mysqlimport -u{0} -p{1} --ignore_lines={2} --{3} {4} "{5}" '.format(
-                    credentials['user'], credentials['passwd'],
-                    ignore_lines, add_mode, db_name, csv_path)
-    terminal(command_line)
+    run_process([
+        'mysqlimport',
+        '-u' + credentials['user'],
+        '-p' + credentials['passwd'],
+        '--ignore_lines={}'.format(ignore_lines),
+        '--{}'.format(add_mode),
+        db_name,
+        csv_path,
+    ])
 
 
-def run_sql_string(string, database=None, verbose=False):
+def run_sql_string(string, database, verbose=False):
     """
     Runs <string> as command for mysql.exe
     Notes:
@@ -41,20 +51,16 @@ def run_sql_string(string, database=None, verbose=False):
        For SQL commands may also use conn.execute_sql()
     """
     credentials = get_credentials()
-    if database is None:
-        call_string = "mysql -u{0} -p{1} -e \"{2}\"".format(
-            credentials['user'], credentials['passwd'],
-            string)
-    else:
-        call_string = "mysql -u{0} -p{1} --database {2} --execute \"{3}\"".format(
-            credentials['user'], credentials['passwd'],
-            database, string)
-
-    # todo: -v not showing to screen, check if it so, change
+    cmdline = [
+        'mysql',
+        '-u' + credentials['user'],
+        '-p' + credentials['passwd'],
+        '--database', database,
+        '--execute', string,
+    ]
     if verbose:
-        call_string = call_string + " -v"
-
-    terminal(call_string)
+        cmdline.append('-v')
+    run_process(cmdline)
 
 
 def source_sql_file(sql_filename, db_name):
@@ -68,11 +74,16 @@ def dump_table_csv(db, table, directory):
     Saves database table in specified directory as csv file.
     """
     credentials = get_credentials()
-    call_string = r'mysqldump -u{0} -p{1} --fields-terminated-by="\t" ' \
-                  r'--lines-terminated-by="\r\n" --tab="{2}" {3} {4}'.format(
-                    credentials['user'], credentials['passwd'],
-                    directory, db, table)
-    terminal(call_string)
+    run_process([
+        'mysqldump',
+        '-u' + credentials['user'],
+        '-p' + credentials['passwd'],
+        '--fields-terminated-by="\\t"',
+        '--lines-terminated-by="\\r\\n"',
+        '--tab', directory,
+        db,
+        table,
+    ])
     # Note: below is a fix to kill unnecessary slashes in txt file.
     replace_in_file(os.path.join(directory, table + ".txt"), "\\", "")
     # more cleanup, delete extra sql files:
@@ -85,11 +96,18 @@ def dump_table_sql(db, table, path):
     Dumps table from database to local directory as a SQL file.
     """
     credentials = get_credentials()
-    string = r'mysqldump -u{0} -p{1} {2} {3} --add-drop-table=FALSE ' \
-             r'--no-create-info --insert-ignore > "{4}"'.format(
-                credentials['user'], credentials['passwd'],
-                db, table, path)
-    terminal(string)
+    run_process([
+        'mysqldump',
+        '-u' + credentials['user'],
+        '-p' + credentials['passwd'],
+        '--add-drop-table=FALSE',
+        '--no-create-info',
+        '--insert-ignore',
+        db,
+        table,
+        '>',
+        path
+    ], shell=True)
 
 
 def patch_sql_file(path):
@@ -116,10 +134,21 @@ def mysqldump(db_name):
     credentials = get_credentials()
     print("Database:", db_name)
     path = get_db_dumpfile_path(db_name)
-    #               mysqldump %1  --no-data --routines > %1.sql
-    line_command = "mysqldump -u{0} -p{1} {2} --no-data --routines > {3}".format(
-        credentials['user'], credentials['passwd'],
-        db_name, path)
-    terminal(line_command)
-    print("Dumped database structure to file <{0}.sql>. No data saved to this file.".format(
-        db_name))
+    # mysqldump %1  --no-data --routines > %1.sql
+    run_process([
+        'mysqldump',
+        '-u' + credentials['user'],
+        '-p' + credentials['passwd'],
+        db_name,
+        '--no-data',
+        '--routines',
+        '>', path
+    ], shell=True)
+    print("Dumped DB schema {} to {}".format(db_name, os.path.split(path)[1]))
+
+
+def run_process(cmdline, shell=False):
+    print('Calling: {!r}'.format(cmdline))
+    start_time = time.monotonic()
+    subprocess.check_call(cmdline, shell=shell)
+    print("Elapsed time: {:.2f}".format(time.monotonic() - start_time))
