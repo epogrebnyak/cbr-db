@@ -96,18 +96,18 @@ def dump_table_sql(db, table, path):
     Dumps table from database to local directory as a SQL file.
     """
     credentials = get_credentials()
-    run_process([
-        'mysqldump',
-        '-u' + credentials['user'],
-        '-p' + credentials['passwd'],
-        '--add-drop-table=FALSE',
-        '--no-create-info',
-        '--insert-ignore',
-        db,
-        table,
-        '>',
-        path
-    ], shell=True)
+    with open(path, 'wb') as file:
+        run_process([
+            'mysqldump',
+            '-u' + credentials['user'],
+            '-p' + credentials['passwd'],
+            '--add-drop-table=FALSE',
+            '--no-create-info',
+            '--insert-ignore',
+            db,
+            table,
+        ], stdout=file)
+    print('Table {!r}.{!r} saved to {}'.format(db, table, path))
 
 
 def patch_sql_file(path):
