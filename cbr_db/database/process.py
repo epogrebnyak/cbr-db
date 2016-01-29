@@ -20,9 +20,9 @@ def mysqlimport_generic(database, path):
         'mysqlimport',
         '-u' + credentials['user'],
         '-p' + credentials['passwd'],
+        '--delete',
         database,
         path,
-        '--delete',
     ])
 
 
@@ -132,23 +132,22 @@ def patch_sql_file(path):
 
 def mysqldump(db_name):
     credentials = get_credentials()
-    print("Database:", db_name)
+    print("Database: ", db_name)
     path = get_db_dumpfile_path(db_name)
-    # mysqldump %1  --no-data --routines > %1.sql
-    run_process([
-        'mysqldump',
-        '-u' + credentials['user'],
-        '-p' + credentials['passwd'],
-        db_name,
-        '--no-data',
-        '--routines',
-        '>', path
-    ], shell=True)
-    print("Dumped DB schema {} to {}".format(db_name, os.path.split(path)[1]))
+    with open(path, 'wb') as file:
+        run_process([
+            'mysqldump',
+            '-u' + credentials['user'],
+            '-p' + credentials['passwd'],
+            '--no-data',
+            '--routines',
+            db_name,
+        ], stdout=file)
+    print("Dumped DB schema {!r} to {}".format(db_name, path))
 
 
-def run_process(cmdline, shell=False):
+def run_process(cmdline, shell=False, stdout=None, stderr=None):
     print('Calling: {!r}'.format(cmdline))
     start_time = time.monotonic()
-    subprocess.check_call(cmdline, shell=shell)
+    subprocess.check_call(cmdline, shell=shell, stdout=stdout, stderr=stderr)
     print("Elapsed time: {:.2f}".format(time.monotonic() - start_time))
