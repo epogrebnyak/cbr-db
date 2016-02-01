@@ -1,36 +1,3 @@
-"""
-Database names + credentials and form descriptions.
-
-Todo: separate configparser.ConfigParser() and form decriptions in different files.
-
-Contents of this file
-   settings.py (new)         - reads with configparser.ConfigParser()  + database names + codepage
-   form_definitions.py (new) - hardcoded form parameters + access functions
-
-Must separate global_ini.py into two fils + change import dependencies in other project files.
-Check with https://github.com/epogrebnyak/cbr-db/blob/master/cbr_db/script/test-one-date-101.bat
-
-Not changed:
-   config_folders.py
-"""
-
-import configparser
-
-#############################################################################
-# CONFIGURATION FILE
-#############################################################################
-
-config = configparser.ConfigParser()
-config.read('../settings.cfg')
-
-#############################################################################
-# DATABASE NAMES
-#############################################################################
-
-DB_NAME_RAW = 'dbf_db'
-DB_NAME_FINAL = 'cbr_db'
-DB_NAMES = {'raw': DB_NAME_RAW, 'final': DB_NAME_FINAL}
-
 #############################################################################
 # FORM DESCRIPTIONS
 #############################################################################
