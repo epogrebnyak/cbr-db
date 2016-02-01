@@ -7,6 +7,7 @@ __pycache__
 .cache/
 .coverage
 htmlcov/
+.tox/
 
 # Output files are excluded from source control.
 # If you want to store a report in git, move it to `reports` folder.
