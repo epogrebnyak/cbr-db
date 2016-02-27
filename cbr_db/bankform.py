@@ -9,12 +9,14 @@ Usage:
     bankform.py unpack     <form> (<timestamp1> [<timestamp2>] | --all-dates)
     bankform.py make csv   <form> (<timestamp1> [<timestamp2>] | --all-dates)
     bankform.py import csv <form> (<timestamp1> [<timestamp2>] | --all-dates)
-    bankform.py update     <form> (<timestamp1> [<timestamp2>] | --all-dates) [--no-download]
+    bankform.py update     <form> (<timestamp1> [<timestamp2>] | --all-dates)
+        [--no-download]
     bankform.py import plan <form>
     bankform.py import bank
     bankform.py make csv   <form> --private-data [--all-dates]
     bankform.py import csv <form> --private-data [--all-dates]
-    bankform.py make dataset <form> <timestamp1> [<timestamp2>] [--regn=<regn_list> | --regn-file=<file> | --regn-all]
+    bankform.py make dataset <form> <timestamp1> [<timestamp2>]
+        [--regn=<regn_list> | --regn-file=<file> | --regn-all]
     bankform.py save    dataset <form>
     bankform.py import  dataset <form>
     bankform.py migrate dataset <form>
@@ -28,50 +30,111 @@ Usage:
 
 # todo:
 
-# must change: 
-    # bankform.py make csv   <form> --private-data [--all-dates]
-    # bankform.py import csv <form> --private-data [--all-dates]
-    
-# to: 
-    # bankform.py make csv   <form> (<timestamp1> [<timestamp2>] | --all-dates) [--private-data]
-    # bankform.py import csv <form> (<timestamp1> [<timestamp2>] | --all-dates) [--private-data]
+# must change:
+# bankform.py make csv   <form> --private-data [--all-dates]
+# bankform.py import csv <form> --private-data [--all-dates]
 
+# to:
+# bankform.py make csv   <form> (<timestamp1> [<timestamp2>] | --all-dates) [--private-data]
+# bankform.py import csv <form> (<timestamp1> [<timestamp2>] | --all-dates) [--private-data]
+
+from datetime import date
 import sys
 
+from .conf import settings
+from .commands import *  # NOQA
 from .docopt import docopt
-from .cli_dates import get_date_range_from_command_line
 from .make_url import download_form
-from .unpack import unpack
-from .make_csv import dbf2csv
-from .global_ini import DB_NAMES
-from .config_folders  import create_default_directories
-from .database import delete_and_create_db, save_db_to_dump, load_db_from_dump
-from .database import import_csv, import_csv_derived_from_text_files
 from .private_form_txt import convert_txt_directory_to_csv
-from .database import save_dataset_as_sql, import_dataset_from_sql, create_final_dataset_in_raw_database
-from .database import import_alloc, import_tables, import_plan, import_bank
-from .database import make_balance, test_balance, report_balance_tables_csv, report_balance_tables_xls
-
+from .unpack import unpack
+from .utils.dates import get_date, get_next_quarter_end_date,\
+    get_date_range, get_last_date_in_year
 
 EOL = "\n"
 SUPPORTED_FORMS = ['101', '102', '123', '134', '135']
 
 
-def get_selected_form(arg):    
+def get_selected_form(arg):
     cli_form = arg["<form>"]
     return cli_form if cli_form in SUPPORTED_FORMS else None
 
 
-def get_db_name(arg, db_dict=DB_NAMES):
+def get_db_name(arg):
     """
     Returns a list of db names which is coded in command line by keywords 'raw' and 'final'.
-    Uses global dictionary DB_NAMES = {'raw': DB_NAME_RAW, "final": DB_NAME_FINAL}
+    Uses dictionary DB_NAMES = {'raw': DB_NAME_RAW, "final": DB_NAME_FINAL}
     """
+    db_dict = {
+        'raw': settings.DB_NAME_RAW,
+        'final': settings.DB_NAME_FINAL,
+    }
     for param in db_dict:
         if arg[param]:
             return [db_dict[param]]
-
     return list(db_dict.values())
+
+
+def get_date_range_from_command_line(args):
+    """
+    Returns date range specified in command line as a list of dates in iso format.
+    """
+    s, e = get_date_endpoints(args)
+    step = 1
+    if args['<form>'] == '102':
+        step = 3
+    if s and e:
+        return [d.isoformat() for d in get_date_range(s, e, step)]
+    else:
+        return None
+
+
+def get_date_endpoints(args):
+    """
+    Returns start and end of date range specified in command line.
+    """
+    start_date = None
+    end_date = None
+    form = args['<form>']
+
+    if args['--all-dates']:
+        # Risk: hard-coded constant
+        start_date = date(2004, 2, 1)
+        end_date = date.today().replace(day=1)
+
+    # process first timestamp
+    if args['<timestamp1>'] is not None:
+        ts1, f1 = get_date(args['<timestamp1>'])
+        start_date = ts1
+        # Calculate end_date in case there is no timestamp2
+        if f1 == "%Y":
+            end_date = get_last_date_in_year(ts1, form)
+        else:
+            end_date = start_date
+
+        if form == '102':
+            # first quarter starts from month 4
+            if f1 == "%Y":
+                start_date = start_date.replace(month=4)
+
+            # get current or next valid quarter
+            start_date = get_next_quarter_end_date(start_date)
+
+    # process second timestamp
+    if args['<timestamp2>'] is not None:
+        ts2, f2 = get_date(args['<timestamp2>'])
+        if f2 == "%Y":
+            end_date = get_last_date_in_year(ts2, form)
+        else:
+            end_date = ts2
+
+    if start_date and end_date and (start_date.day != 1 or end_date.day != 1):
+        print('Warning: must always use start of the month dates (day 1). '
+              'Force setting day to 1 in argument dates.')
+        start_date = start_date.replace(day=1)
+        end_date = end_date.replace(day=1)
+
+    return start_date, end_date
+
 
 def main(argv):
     """
@@ -81,8 +144,6 @@ def main(argv):
     arg = docopt(__doc__, argv)
     form = get_selected_form(arg)
     date_range = get_date_range_from_command_line(arg)
-    
-    create_default_directories()
 
     # 1. General database operations
     def general_database_operations(arg, db_name):
@@ -100,7 +161,7 @@ def main(argv):
                 import_tables()
 
     if arg['database']:
-        db_names = get_db_name(arg, DB_NAMES)
+        db_names = get_db_name(arg)
 
         for db_name in db_names:
                 general_database_operations(arg, db_name)
@@ -131,7 +192,7 @@ def main(argv):
             # do all data import operations
             if arg['update']:
                 if not arg['--no-download']:
-                   download_form(isodate, form)                   
+                    download_form(isodate, form)
                 unpack(isodate, form)
                 dbf2csv(isodate, form)
                 import_csv(isodate, form)
@@ -149,7 +210,7 @@ def main(argv):
     # 3. Dataset manipulation in raw and final database
     if arg['dataset']:
         if arg['make']:
-            timestamp1 = date_range[0] 
+            timestamp1 = date_range[0]
             timestamp2 = date_range[-1]
             regn = arg['--regn']
             regn_file = arg['--regn-file']
@@ -167,7 +228,7 @@ def main(argv):
     # 4. Working with final database
     if arg['import'] and arg['plan']:
         import_plan(form)
-        
+
     if arg['import'] and arg['bank']:
         import_bank()
 
@@ -183,11 +244,12 @@ def main(argv):
     if arg['test'] and arg['balance']:
         test_balance()
 
-    if arg['report'] and (arg['balance'] or arg['form']):        
+    if arg['report'] and (arg['balance'] or arg['form']):
         if arg['--xlsx']:
             report_balance_tables_xls()
         else:
             report_balance_tables_csv()
+
 
 if __name__ == '__main__':
     main(sys.argv[1:])

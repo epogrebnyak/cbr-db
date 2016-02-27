@@ -15,7 +15,7 @@ def _configure_logging(verbose=True):
     """Configure logging (console only)."""
     level = logging.DEBUG if verbose else logging.INFO
     logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
-                        datefmt= '%Y-%m-%d %H:%M:%S',
+                        datefmt='%Y-%m-%d %H:%M:%S',
                         level=level)
 
 
@@ -99,9 +99,10 @@ def main(argv):
         batch = [_insert_arguments(x, args) for x in batch]
         # Execute batch
         cwd = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
+        env = {'CBR_DB_SETTINGS': 'settings'}
         for command in batch:
             logger.info('Calling {!r}'.format(command))
-            process = subprocess.Popen(command, cwd=cwd)
+            process = subprocess.Popen(command, cwd=cwd, env=env)
             returncode = process.wait()
             if returncode != 0:
                 raise ScriptError('Child process returned {!r}'.format(returncode))

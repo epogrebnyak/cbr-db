@@ -1,6 +1,7 @@
+cython
+python-dateutil==2.4.2
 pymysql==0.6.6
 dbfread==2.0.4
-arrow==0.5.4
 xlsxwriter==0.6.7
-pandas==0.15.2
+pandas==0.17.1
 sqlalchemy==0.9.9

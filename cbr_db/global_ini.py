@@ -1,36 +1,3 @@
-"""
-Database names + credentials and form descriptions. 
-
-Todo: separate configparser.ConfigParser() and form decriptions in different files.
-
-Contents of this file 
-   settings.py (new)         - reads with configparser.ConfigParser()  + database names + codepage
-   form_definitions.py (new) - hardcoded form parameters + access functions
-
-Must separate global_ini.py into two fils + change import dependencies in other project files.
-Check with https://github.com/epogrebnyak/cbr-db/blob/master/cbr_db/script/test-one-date-101.bat
-
-Not changed:
-   config_folders.py
-"""
-
-import configparser
-
-#############################################################################
-# CONFIGURATION FILE
-#############################################################################
-
-config = configparser.ConfigParser()
-config.read('../settings.cfg')
-
-#############################################################################
-# DATABASE NAMES
-#############################################################################
-
-DB_NAME_RAW = 'dbf_db'
-DB_NAME_FINAL = 'cbr_db'
-DB_NAMES = {'raw': DB_NAME_RAW, 'final': DB_NAME_FINAL}
-
 #############################################################################
 # FORM DESCRIPTIONS
 #############################################################################
@@ -80,25 +47,22 @@ FORM_DATA = {
     '102': f102
 }
 
-# private data:
 
 def get_private_data_param(form, tag):
-    table_name_dict = {'101':
-                        {'db_table':'bulk_f101_private'
-                         }, 
-                       '102':
-                        {
-                        'db_table':'bulk_f102_private'}
-                      }
+    table_name_dict = {
+        '101': {
+            'db_table': 'bulk_f101_private'
+        },
+        '102': {
+            'db_table': 'bulk_f102_private'
+        }
+    }
     return table_name_dict[form][tag]
+
 
 def get_private_data_db_table(form):
     return get_private_data_param(form, 'db_table')
-    
 
-    
-
-# Account names
 
 ACCOUNT_NAMES_DBF = {
     '101': 'NAMES.DBF',
@@ -120,6 +84,7 @@ ACCOUNT_DBF_FIELDS = {
     '102': ("NOM", "PRSTR", "CODE", "NAME")
 }
 
+
 def get_account_name_parameters(form):
     return ACCOUNT_TABLE_NAME[form], ACCOUNT_TABLE_FIELDS[form], ACCOUNT_DBF_FIELDS[form]
 
@@ -132,33 +97,3 @@ BANK_NAMES_DBF = (
 BANK_TABLE_NAME = "bank"
 BANK_TABLE_FIELDS = [("regn", "regn_name"), ("regn", "regn_name")]
 BANK_DBF_FIELDS = [("REGN", "NAME_B"), ("REGN", "NAME_B")]
-
-def get_bank_name_parameters():
-    return BANK_TABLE_NAME, BANK_TABLE_FIELDS, BANK_DBF_FIELDS
-
-#############################################################################
-# OTHER OPTIONS
-#############################################################################
-
-# encoding of the dbf files
-CODEPAGE = "cp866"
-
-#############################################################################
-# DATABASE CONFIGURATION
-#############################################################################
-
-# default values
-_DEFAULT_DB_INI_DICT = {
-    'host': 'localhost',
-    'port': 3306,
-    'user': 'test_user',
-    'passwd': 'test_password'
-}
-
-# read the database parameters from the configuration file
-DB_INI_DICT = {}
-for key in _DEFAULT_DB_INI_DICT.keys():
-    DB_INI_DICT[key] = config.get('mysql', key, fallback=_DEFAULT_DB_INI_DICT[key])
-
-# port must be integer
-DB_INI_DICT['port'] = int(DB_INI_DICT['port'])

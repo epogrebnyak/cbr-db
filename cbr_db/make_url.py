@@ -1,9 +1,9 @@
 import datetime
-import sys
+from urllib.request import URLError
 
-from .date_engine import iso2date, zero_padded_month
-from .config_folders import get_public_data_folder
-from .download import download, URLError
+from .filesystem import get_public_data_folder
+from .download import download
+from .utils.dates import iso2date, zero_padded_month
 
 
 def download_form(isodate_input, form_input):
@@ -12,42 +12,38 @@ def download_form(isodate_input, form_input):
     """
     url = get_url(isodate=isodate_input, form=form_input)
     dir_ = get_public_data_folder(form_input, 'rar')
-    
-    try:    
+
+    try:
         download(url, dir_)
     except URLError as e:
         print('Skipping download of form {} data.\nReason: {}'.format(
             form_input, str(e)))
-    
-def get_url(date=None, isodate=None, form=None):
-    """
-    Creates URL based on date for forms 101 and 102
-    TODO: remove harcoded form check
-    """
-    form = str(form)    
-    
-    if form in ('101', '102'):
-        return "http://www.cbr.ru/credit/forms/" + get_ziprar_filename(date, isodate, form)
-    else:
-        raise ValueError('Form {} not supported yet.'.format(form))
 
-def get_ziprar_filename(date=None, isodate=None, form=None):
-    if isodate is not None:
-        date = iso2date(isodate)
-    elif date is None:
-        return None
+
+def get_url(isodate, form):
+    """
+    Creates URL based on date.
+    """
+    return "http://www.cbr.ru/credit/forms/" + get_ziprar_filename(isodate, form)
+
+
+def get_ziprar_filename(isodate, form):
+    """
+    Returns CBR archive file name for the given form and date.
+    """
+    date = iso2date(isodate)
 
     # date is now assumed to be defined in datetime, not ISO format
     month = zero_padded_month(date.month)
     year = date.year
     extension = get_extension(date)
-    
-    form = str(form)
 
-    if form in ('101', '102'):
-        return "{}-{}{}01.{}".format(form, year, month, extension)
-    else:
+    form = str(form)
+    # TODO: remove harcoded form check
+    if form not in ('101', '102'):
         raise ValueError('Form {} not supported yet.'.format(form))
+    return "{}-{}{}01.{}".format(form, year, month, extension)
+
 
 def get_extension(date):
     # dbf files are avaialble since Feb-2004. They are in zip format up to Dec-2008
@@ -63,9 +59,3 @@ def get_extension(date):
     # rar_end_date   = datetime.datetime.now().date().replace(day=1)
     if date >= rar_start_date:
         return 'rar'
-
-if __name__ == "__main__":
-    assert len(sys.argv) == 3, "Usage: make_url.py form date"
-    form = sys.argv[1]
-    date = sys.argv[2]
-    print(get_url(isodate=date, form=form))
