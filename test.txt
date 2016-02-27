@@ -1,0 +1,651 @@
+============================= test session starts =============================
+platform win32 -- Python 3.5.1, pytest-2.8.1, py-1.4.30, pluggy-0.3.1
+rootdir: D:\git\cbr-db, inifile: 
+plugins: cov-2.2.0
+collected 52 items
+
+test.txt s
+stream_src\test_dbf_stream.py ...
+tests\test_bankform.py ..
+tests\test_cli_dates.py ..EE
+tests\test_commands.py E
+tests\test_conn.py ..
+tests\test_database.py E
+tests\test_download.py EE
+tests\test_filesystem.py ...
+tests\test_make_url.py ...
+tests\test_select_regn.py FFFF
+tests\test_unpack.py EEE
+tests\test_utils_dates.py .................EEEEEE
+
+=================================== ERRORS ====================================
+ ERROR at setup of test_get_date_endpoints[today0-args0-start_date0-end_date0] 
+file D:\git\cbr-db\tests\test_cli_dates.py, line 90
+  @pytest.mark.parametrize('today,args,start_date,end_date', [
+      (date(2015, 5, 15), {
+          '<form>': '101',
+          '--all-dates': True,
+          '<timestamp1>': None,
+          '<timestamp2>': None,
+      }, date(2004, 2, 1), date(2015, 5, 1)),
+      (date(2015, 5, 15), {
+          '<form>': '101',
+          '--all-dates': True,
+          '<timestamp1>': '2015-03-15',
+          '<timestamp2>': '2015-04-15',
+      }, date(2015, 3, 1), date(2015, 4, 1)),
+  ])
+  def test_get_date_endpoints(mocker, today, args, start_date, end_date):
+        fixture 'mocker' not found
+        available fixtures: tmpdir_factory, capfd, tmpdir, tempdir, pytestconfig, cache, cov, monkeypatch, use_test_settings, record_xml_property, recwarn, capsys
+        use 'py.test --fixtures [testpath]' for help on them.
+
+D:\git\cbr-db\tests\test_cli_dates.py:90
+ ERROR at setup of test_get_date_endpoints[today1-args1-start_date1-end_date1] 
+file D:\git\cbr-db\tests\test_cli_dates.py, line 90
+  @pytest.mark.parametrize('today,args,start_date,end_date', [
+      (date(2015, 5, 15), {
+          '<form>': '101',
+          '--all-dates': True,
+          '<timestamp1>': None,
+          '<timestamp2>': None,
+      }, date(2004, 2, 1), date(2015, 5, 1)),
+      (date(2015, 5, 15), {
+          '<form>': '101',
+          '--all-dates': True,
+          '<timestamp1>': '2015-03-15',
+          '<timestamp2>': '2015-04-15',
+      }, date(2015, 3, 1), date(2015, 4, 1)),
+  ])
+  def test_get_date_endpoints(mocker, today, args, start_date, end_date):
+        fixture 'mocker' not found
+        available fixtures: tmpdir_factory, capfd, tmpdir, tempdir, pytestconfig, cache, cov, monkeypatch, use_test_settings, record_xml_property, recwarn, capsys
+        use 'py.test --fixtures [testpath]' for help on them.
+
+D:\git\cbr-db\tests\test_cli_dates.py:90
+_____________________ ERROR at setup of test_dbf2csv[101] _____________________
+file D:\git\cbr-db\tests\test_commands.py, line 10
+  @pytest.mark.parametrize('form', ['101'])
+  def test_dbf2csv(mocker, tempdir, form):
+        fixture 'mocker' not found
+        available fixtures: tmpdir_factory, capfd, tmpdir, tempdir, pytestconfig, cache, cov, monkeypatch, use_test_settings, record_xml_property, recwarn, capsys
+        use 'py.test --fixtures [testpath]' for help on them.
+
+D:\git\cbr-db\tests\test_commands.py:10
+______________________ ERROR at setup of test_mysqldump _______________________
+file D:\git\cbr-db\tests\test_database.py, line 9
+  def test_mysqldump(mocker, tempdir):
+        fixture 'mocker' not found
+        available fixtures: tmpdir_factory, capfd, tmpdir, tempdir, pytestconfig, cache, cov, monkeypatch, use_test_settings, record_xml_property, recwarn, capsys
+        use 'py.test --fixtures [testpath]' for help on them.
+
+D:\git\cbr-db\tests\test_database.py:9
+__________________ ERROR at setup of test_get_last_modified ___________________
+file D:\git\cbr-db\tests\test_download.py, line 8
+  def test_get_last_modified(mocker):
+        fixture 'mocker' not found
+        available fixtures: tmpdir_factory, capfd, tmpdir, tempdir, pytestconfig, cache, cov, monkeypatch, use_test_settings, record_xml_property, recwarn, capsys
+        use 'py.test --fixtures [testpath]' for help on them.
+
+D:\git\cbr-db\tests\test_download.py:8
+_______________________ ERROR at setup of test_download _______________________
+file D:\git\cbr-db\tests\test_download.py, line 15
+  def test_download(mocker, tempdir):
+        fixture 'mocker' not found
+        available fixtures: tmpdir_factory, capfd, tmpdir, tempdir, pytestconfig, cache, cov, monkeypatch, use_test_settings, record_xml_property, recwarn, capsys
+        use 'py.test --fixtures [testpath]' for help on them.
+
+D:\git\cbr-db\tests\test_download.py:15
+______________ ERROR at setup of test_get_local_ziprar_filepath _______________
+file D:\git\cbr-db\tests\test_unpack.py, line 11
+  def test_get_local_ziprar_filepath(mocker):
+        fixture 'mocker' not found
+        available fixtures: tmpdir_factory, capfd, tmpdir, tempdir, pytestconfig, cache, cov, monkeypatch, use_test_settings, record_xml_property, recwarn, capsys
+        use 'py.test --fixtures [testpath]' for help on them.
+
+D:\git\cbr-db\tests\test_unpack.py:11
+__________ ERROR at setup of test_unpack_path[101-20051201.zip-101] ___________
+file D:\git\cbr-db\tests\test_unpack.py, line 21
+  @pytest.mark.parametrize('filename,form', [
+      ('101-20051201.zip', '101'),
+      ('101-20151201.rar', '101')
+  ])
+  def test_unpack_path(mocker, tempdir, filename, form):
+        fixture 'mocker' not found
+        available fixtures: tmpdir_factory, capfd, tmpdir, tempdir, pytestconfig, cache, cov, monkeypatch, use_test_settings, record_xml_property, recwarn, capsys
+        use 'py.test --fixtures [testpath]' for help on them.
+
+D:\git\cbr-db\tests\test_unpack.py:21
+__________ ERROR at setup of test_unpack_path[101-20151201.rar-101] ___________
+file D:\git\cbr-db\tests\test_unpack.py, line 21
+  @pytest.mark.parametrize('filename,form', [
+      ('101-20051201.zip', '101'),
+      ('101-20151201.rar', '101')
+  ])
+  def test_unpack_path(mocker, tempdir, filename, form):
+        fixture 'mocker' not found
+        available fixtures: tmpdir_factory, capfd, tmpdir, tempdir, pytestconfig, cache, cov, monkeypatch, use_test_settings, record_xml_property, recwarn, capsys
+        use 'py.test --fixtures [testpath]' for help on them.
+
+D:\git\cbr-db\tests\test_unpack.py:21
+___ ERROR at setup of test_get_last_date_in_year[101-today0-dt0-expected0] ____
+file D:\git\cbr-db\tests\test_utils_dates.py, line 160
+  @pytest.mark.parametrize('form,today,dt,expected', [
+      # Form 101
+      ('101', date(2015, 5, 15), date(2014, 1, 1), date(2014, 12, 1)),
+      ('101', date(2015, 5, 15), date(2015, 1, 1), date(2015, 5, 1)),
+      ('101', date(2015, 5, 15), date(2016, 1, 1), date(2015, 5, 1)),
+      # Form 102 - per quarter
+      ('102', date(2015, 5, 15), date(2014, 1, 1), date(2015, 1, 1)),
+      ('102', date(2015, 5, 15), date(2015, 1, 1), date(2015, 4, 1)),
+      ('102', date(2015, 5, 15), date(2016, 1, 1), date(2015, 4, 1)),
+
+  ])
+  def test_get_last_date_in_year(mocker, form, today, dt, expected):
+        fixture 'mocker' not found
+        available fixtures: tmpdir_factory, capfd, tmpdir, tempdir, pytestconfig, cache, cov, monkeypatch, use_test_settings, record_xml_property, recwarn, capsys
+        use 'py.test --fixtures [testpath]' for help on them.
+
+D:\git\cbr-db\tests\test_utils_dates.py:160
+___ ERROR at setup of test_get_last_date_in_year[101-today1-dt1-expected1] ____
+file D:\git\cbr-db\tests\test_utils_dates.py, line 160
+  @pytest.mark.parametrize('form,today,dt,expected', [
+      # Form 101
+      ('101', date(2015, 5, 15), date(2014, 1, 1), date(2014, 12, 1)),
+      ('101', date(2015, 5, 15), date(2015, 1, 1), date(2015, 5, 1)),
+      ('101', date(2015, 5, 15), date(2016, 1, 1), date(2015, 5, 1)),
+      # Form 102 - per quarter
+      ('102', date(2015, 5, 15), date(2014, 1, 1), date(2015, 1, 1)),
+      ('102', date(2015, 5, 15), date(2015, 1, 1), date(2015, 4, 1)),
+      ('102', date(2015, 5, 15), date(2016, 1, 1), date(2015, 4, 1)),
+
+  ])
+  def test_get_last_date_in_year(mocker, form, today, dt, expected):
+        fixture 'mocker' not found
+        available fixtures: tmpdir_factory, capfd, tmpdir, tempdir, pytestconfig, cache, cov, monkeypatch, use_test_settings, record_xml_property, recwarn, capsys
+        use 'py.test --fixtures [testpath]' for help on them.
+
+D:\git\cbr-db\tests\test_utils_dates.py:160
+___ ERROR at setup of test_get_last_date_in_year[101-today2-dt2-expected2] ____
+file D:\git\cbr-db\tests\test_utils_dates.py, line 160
+  @pytest.mark.parametrize('form,today,dt,expected', [
+      # Form 101
+      ('101', date(2015, 5, 15), date(2014, 1, 1), date(2014, 12, 1)),
+      ('101', date(2015, 5, 15), date(2015, 1, 1), date(2015, 5, 1)),
+      ('101', date(2015, 5, 15), date(2016, 1, 1), date(2015, 5, 1)),
+      # Form 102 - per quarter
+      ('102', date(2015, 5, 15), date(2014, 1, 1), date(2015, 1, 1)),
+      ('102', date(2015, 5, 15), date(2015, 1, 1), date(2015, 4, 1)),
+      ('102', date(2015, 5, 15), date(2016, 1, 1), date(2015, 4, 1)),
+
+  ])
+  def test_get_last_date_in_year(mocker, form, today, dt, expected):
+        fixture 'mocker' not found
+        available fixtures: tmpdir_factory, capfd, tmpdir, tempdir, pytestconfig, cache, cov, monkeypatch, use_test_settings, record_xml_property, recwarn, capsys
+        use 'py.test --fixtures [testpath]' for help on them.
+
+D:\git\cbr-db\tests\test_utils_dates.py:160
+___ ERROR at setup of test_get_last_date_in_year[102-today3-dt3-expected3] ____
+file D:\git\cbr-db\tests\test_utils_dates.py, line 160
+  @pytest.mark.parametrize('form,today,dt,expected', [
+      # Form 101
+      ('101', date(2015, 5, 15), date(2014, 1, 1), date(2014, 12, 1)),
+      ('101', date(2015, 5, 15), date(2015, 1, 1), date(2015, 5, 1)),
+      ('101', date(2015, 5, 15), date(2016, 1, 1), date(2015, 5, 1)),
+      # Form 102 - per quarter
+      ('102', date(2015, 5, 15), date(2014, 1, 1), date(2015, 1, 1)),
+      ('102', date(2015, 5, 15), date(2015, 1, 1), date(2015, 4, 1)),
+      ('102', date(2015, 5, 15), date(2016, 1, 1), date(2015, 4, 1)),
+
+  ])
+  def test_get_last_date_in_year(mocker, form, today, dt, expected):
+        fixture 'mocker' not found
+        available fixtures: tmpdir_factory, capfd, tmpdir, tempdir, pytestconfig, cache, cov, monkeypatch, use_test_settings, record_xml_property, recwarn, capsys
+        use 'py.test --fixtures [testpath]' for help on them.
+
+D:\git\cbr-db\tests\test_utils_dates.py:160
+___ ERROR at setup of test_get_last_date_in_year[102-today4-dt4-expected4] ____
+file D:\git\cbr-db\tests\test_utils_dates.py, line 160
+  @pytest.mark.parametrize('form,today,dt,expected', [
+      # Form 101
+      ('101', date(2015, 5, 15), date(2014, 1, 1), date(2014, 12, 1)),
+      ('101', date(2015, 5, 15), date(2015, 1, 1), date(2015, 5, 1)),
+      ('101', date(2015, 5, 15), date(2016, 1, 1), date(2015, 5, 1)),
+      # Form 102 - per quarter
+      ('102', date(2015, 5, 15), date(2014, 1, 1), date(2015, 1, 1)),
+      ('102', date(2015, 5, 15), date(2015, 1, 1), date(2015, 4, 1)),
+      ('102', date(2015, 5, 15), date(2016, 1, 1), date(2015, 4, 1)),
+
+  ])
+  def test_get_last_date_in_year(mocker, form, today, dt, expected):
+        fixture 'mocker' not found
+        available fixtures: tmpdir_factory, capfd, tmpdir, tempdir, pytestconfig, cache, cov, monkeypatch, use_test_settings, record_xml_property, recwarn, capsys
+        use 'py.test --fixtures [testpath]' for help on them.
+
+D:\git\cbr-db\tests\test_utils_dates.py:160
+___ ERROR at setup of test_get_last_date_in_year[102-today5-dt5-expected5] ____
+file D:\git\cbr-db\tests\test_utils_dates.py, line 160
+  @pytest.mark.parametrize('form,today,dt,expected', [
+      # Form 101
+      ('101', date(2015, 5, 15), date(2014, 1, 1), date(2014, 12, 1)),
+      ('101', date(2015, 5, 15), date(2015, 1, 1), date(2015, 5, 1)),
+      ('101', date(2015, 5, 15), date(2016, 1, 1), date(2015, 5, 1)),
+      # Form 102 - per quarter
+      ('102', date(2015, 5, 15), date(2014, 1, 1), date(2015, 1, 1)),
+      ('102', date(2015, 5, 15), date(2015, 1, 1), date(2015, 4, 1)),
+      ('102', date(2015, 5, 15), date(2016, 1, 1), date(2015, 4, 1)),
+
+  ])
+  def test_get_last_date_in_year(mocker, form, today, dt, expected):
+        fixture 'mocker' not found
+        available fixtures: tmpdir_factory, capfd, tmpdir, tempdir, pytestconfig, cache, cov, monkeypatch, use_test_settings, record_xml_property, recwarn, capsys
+        use 'py.test --fixtures [testpath]' for help on them.
+
+D:\git\cbr-db\tests\test_utils_dates.py:160
+================================== FAILURES ===================================
+_____________________________ test_regn_list_one ______________________________
+
+    def test_regn_list_one():
+>       bankform.main("make dataset 101 2015 --regn=964".split(' '))
+
+tests\test_select_regn.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+cbr_db\bankform.py:219: in main
+    regn, regn_file, regn_all)
+cbr_db\commands.py:243: in create_final_dataset_in_raw_database
+    run_sql_string("call cfg_init_populate_dates();", db)
+cbr_db\database\process.py:63: in run_sql_string
+    run_process(cmdline)
+cbr_db\database\process.py:152: in run_process
+    subprocess.check_call(cmdline, shell=shell, stdout=stdout, stderr=stderr)
+C:\Users\Евгений\Anaconda3\lib\subprocess.py:579: in check_call
+    retcode = call(*popenargs, **kwargs)
+C:\Users\Евгений\Anaconda3\lib\subprocess.py:560: in call
+    with Popen(*popenargs, **kwargs) as p:
+C:\Users\Евгений\Anaconda3\lib\subprocess.py:950: in __init__
+    restore_signals, start_new_session)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <subprocess.Popen object at 0x00000271A66C45C0>
+args = 'mysql -utest_user -ptest_password --database dbf_db --execute "call cfg_init_populate_dates();"'
+executable = None, preexec_fn = None, close_fds = True, pass_fds = ()
+cwd = None, env = None
+startupinfo = <subprocess.STARTUPINFO object at 0x00000271A66F5EF0>
+creationflags = 0, shell = False, p2cread = -1, p2cwrite = -1, c2pread = -1
+c2pwrite = -1, errread = -1, errwrite = -1, unused_restore_signals = True
+unused_start_new_session = False
+
+    def _execute_child(self, args, executable, preexec_fn, close_fds,
+                       pass_fds, cwd, env,
+                       startupinfo, creationflags, shell,
+                       p2cread, p2cwrite,
+                       c2pread, c2pwrite,
+                       errread, errwrite,
+                       unused_restore_signals, unused_start_new_session):
+        """Execute program (MS Windows version)"""
+    
+        assert not pass_fds, "pass_fds not supported on Windows."
+    
+        if not isinstance(args, str):
+            args = list2cmdline(args)
+    
+        # Process startup details
+        if startupinfo is None:
+            startupinfo = STARTUPINFO()
+        if -1 not in (p2cread, c2pwrite, errwrite):
+            startupinfo.dwFlags |= _winapi.STARTF_USESTDHANDLES
+            startupinfo.hStdInput = p2cread
+            startupinfo.hStdOutput = c2pwrite
+            startupinfo.hStdError = errwrite
+    
+        if shell:
+            startupinfo.dwFlags |= _winapi.STARTF_USESHOWWINDOW
+            startupinfo.wShowWindow = _winapi.SW_HIDE
+            comspec = os.environ.get("COMSPEC", "cmd.exe")
+            args = '{} /c "{}"'.format (comspec, args)
+    
+        # Start the process
+        try:
+            hp, ht, pid, tid = _winapi.CreateProcess(executable, args,
+                                     # no special security
+                                     None, None,
+                                     int(not close_fds),
+                                     creationflags,
+                                     env,
+                                     cwd,
+>                                    startupinfo)
+E                                    FileNotFoundError: [WinError 2] Не удается найти указанный файл
+
+C:\Users\Евгений\Anaconda3\lib\subprocess.py:1220: FileNotFoundError
+---------------------------- Captured stdout call -----------------------------
+
+Date: 2015-01-01
+
+Date: 2015-02-01
+
+Date: 2015-03-01
+
+Date: 2015-04-01
+
+Date: 2015-05-01
+
+Date: 2015-06-01
+
+Date: 2015-07-01
+
+Date: 2015-08-01
+
+Date: 2015-09-01
+
+Date: 2015-10-01
+
+Date: 2015-11-01
+
+Date: 2015-12-01
+Calling: ['mysql', '-utest_user', '-ptest_password', '--database', 'dbf_db', '--execute', 'call cfg_init_populate_dates();']
+_____________________________ test_regn_list_many _____________________________
+
+    def test_regn_list_many():
+>       bankform.main("make dataset 101 2015 --regn=2,5,3,1".split(' '))
+
+tests\test_select_regn.py:33: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+cbr_db\bankform.py:219: in main
+    regn, regn_file, regn_all)
+cbr_db\commands.py:243: in create_final_dataset_in_raw_database
+    run_sql_string("call cfg_init_populate_dates();", db)
+cbr_db\database\process.py:63: in run_sql_string
+    run_process(cmdline)
+cbr_db\database\process.py:152: in run_process
+    subprocess.check_call(cmdline, shell=shell, stdout=stdout, stderr=stderr)
+C:\Users\Евгений\Anaconda3\lib\subprocess.py:579: in check_call
+    retcode = call(*popenargs, **kwargs)
+C:\Users\Евгений\Anaconda3\lib\subprocess.py:560: in call
+    with Popen(*popenargs, **kwargs) as p:
+C:\Users\Евгений\Anaconda3\lib\subprocess.py:950: in __init__
+    restore_signals, start_new_session)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <subprocess.Popen object at 0x00000271A66BBDD8>
+args = 'mysql -utest_user -ptest_password --database dbf_db --execute "call cfg_init_populate_dates();"'
+executable = None, preexec_fn = None, close_fds = True, pass_fds = ()
+cwd = None, env = None
+startupinfo = <subprocess.STARTUPINFO object at 0x00000271A665DE10>
+creationflags = 0, shell = False, p2cread = -1, p2cwrite = -1, c2pread = -1
+c2pwrite = -1, errread = -1, errwrite = -1, unused_restore_signals = True
+unused_start_new_session = False
+
+    def _execute_child(self, args, executable, preexec_fn, close_fds,
+                       pass_fds, cwd, env,
+                       startupinfo, creationflags, shell,
+                       p2cread, p2cwrite,
+                       c2pread, c2pwrite,
+                       errread, errwrite,
+                       unused_restore_signals, unused_start_new_session):
+        """Execute program (MS Windows version)"""
+    
+        assert not pass_fds, "pass_fds not supported on Windows."
+    
+        if not isinstance(args, str):
+            args = list2cmdline(args)
+    
+        # Process startup details
+        if startupinfo is None:
+            startupinfo = STARTUPINFO()
+        if -1 not in (p2cread, c2pwrite, errwrite):
+            startupinfo.dwFlags |= _winapi.STARTF_USESTDHANDLES
+            startupinfo.hStdInput = p2cread
+            startupinfo.hStdOutput = c2pwrite
+            startupinfo.hStdError = errwrite
+    
+        if shell:
+            startupinfo.dwFlags |= _winapi.STARTF_USESHOWWINDOW
+            startupinfo.wShowWindow = _winapi.SW_HIDE
+            comspec = os.environ.get("COMSPEC", "cmd.exe")
+            args = '{} /c "{}"'.format (comspec, args)
+    
+        # Start the process
+        try:
+            hp, ht, pid, tid = _winapi.CreateProcess(executable, args,
+                                     # no special security
+                                     None, None,
+                                     int(not close_fds),
+                                     creationflags,
+                                     env,
+                                     cwd,
+>                                    startupinfo)
+E                                    FileNotFoundError: [WinError 2] Не удается найти указанный файл
+
+C:\Users\Евгений\Anaconda3\lib\subprocess.py:1220: FileNotFoundError
+---------------------------- Captured stdout call -----------------------------
+
+Date: 2015-01-01
+
+Date: 2015-02-01
+
+Date: 2015-03-01
+
+Date: 2015-04-01
+
+Date: 2015-05-01
+
+Date: 2015-06-01
+
+Date: 2015-07-01
+
+Date: 2015-08-01
+
+Date: 2015-09-01
+
+Date: 2015-10-01
+
+Date: 2015-11-01
+
+Date: 2015-12-01
+Calling: ['mysql', '-utest_user', '-ptest_password', '--database', 'dbf_db', '--execute', 'call cfg_init_populate_dates();']
+________________________________ test_regn_all ________________________________
+
+    def test_regn_all():
+        """warning: this tests depends on the current database contents, that
+        must be populated."""
+>       bankform.main("make dataset 101 2015".split(' '))
+
+tests\test_select_regn.py:40: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+cbr_db\bankform.py:219: in main
+    regn, regn_file, regn_all)
+cbr_db\commands.py:243: in create_final_dataset_in_raw_database
+    run_sql_string("call cfg_init_populate_dates();", db)
+cbr_db\database\process.py:63: in run_sql_string
+    run_process(cmdline)
+cbr_db\database\process.py:152: in run_process
+    subprocess.check_call(cmdline, shell=shell, stdout=stdout, stderr=stderr)
+C:\Users\Евгений\Anaconda3\lib\subprocess.py:579: in check_call
+    retcode = call(*popenargs, **kwargs)
+C:\Users\Евгений\Anaconda3\lib\subprocess.py:560: in call
+    with Popen(*popenargs, **kwargs) as p:
+C:\Users\Евгений\Anaconda3\lib\subprocess.py:950: in __init__
+    restore_signals, start_new_session)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <subprocess.Popen object at 0x00000271A2E203C8>
+args = 'mysql -utest_user -ptest_password --database dbf_db --execute "call cfg_init_populate_dates();"'
+executable = None, preexec_fn = None, close_fds = True, pass_fds = ()
+cwd = None, env = None
+startupinfo = <subprocess.STARTUPINFO object at 0x00000271A56C5EB8>
+creationflags = 0, shell = False, p2cread = -1, p2cwrite = -1, c2pread = -1
+c2pwrite = -1, errread = -1, errwrite = -1, unused_restore_signals = True
+unused_start_new_session = False
+
+    def _execute_child(self, args, executable, preexec_fn, close_fds,
+                       pass_fds, cwd, env,
+                       startupinfo, creationflags, shell,
+                       p2cread, p2cwrite,
+                       c2pread, c2pwrite,
+                       errread, errwrite,
+                       unused_restore_signals, unused_start_new_session):
+        """Execute program (MS Windows version)"""
+    
+        assert not pass_fds, "pass_fds not supported on Windows."
+    
+        if not isinstance(args, str):
+            args = list2cmdline(args)
+    
+        # Process startup details
+        if startupinfo is None:
+            startupinfo = STARTUPINFO()
+        if -1 not in (p2cread, c2pwrite, errwrite):
+            startupinfo.dwFlags |= _winapi.STARTF_USESTDHANDLES
+            startupinfo.hStdInput = p2cread
+            startupinfo.hStdOutput = c2pwrite
+            startupinfo.hStdError = errwrite
+    
+        if shell:
+            startupinfo.dwFlags |= _winapi.STARTF_USESHOWWINDOW
+            startupinfo.wShowWindow = _winapi.SW_HIDE
+            comspec = os.environ.get("COMSPEC", "cmd.exe")
+            args = '{} /c "{}"'.format (comspec, args)
+    
+        # Start the process
+        try:
+            hp, ht, pid, tid = _winapi.CreateProcess(executable, args,
+                                     # no special security
+                                     None, None,
+                                     int(not close_fds),
+                                     creationflags,
+                                     env,
+                                     cwd,
+>                                    startupinfo)
+E                                    FileNotFoundError: [WinError 2] Не удается найти указанный файл
+
+C:\Users\Евгений\Anaconda3\lib\subprocess.py:1220: FileNotFoundError
+---------------------------- Captured stdout call -----------------------------
+
+Date: 2015-01-01
+
+Date: 2015-02-01
+
+Date: 2015-03-01
+
+Date: 2015-04-01
+
+Date: 2015-05-01
+
+Date: 2015-06-01
+
+Date: 2015-07-01
+
+Date: 2015-08-01
+
+Date: 2015-09-01
+
+Date: 2015-10-01
+
+Date: 2015-11-01
+
+Date: 2015-12-01
+Calling: ['mysql', '-utest_user', '-ptest_password', '--database', 'dbf_db', '--execute', 'call cfg_init_populate_dates();']
+_____________________________ test_regn_list_file _____________________________
+
+cwd = 'D:\\git\\cbr-db\\tests'
+
+    def test_regn_list_file(cwd):
+        regn_file = os.path.join(cwd, 'regn.txt')
+>       bankform.main(['make', 'dataset', '101', '2015', '--regn-file={}'.format(regn_file)])
+
+test_select_regn.py:51: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\cbr_db\bankform.py:219: in main
+    regn, regn_file, regn_all)
+..\cbr_db\commands.py:243: in create_final_dataset_in_raw_database
+    run_sql_string("call cfg_init_populate_dates();", db)
+..\cbr_db\database\process.py:63: in run_sql_string
+    run_process(cmdline)
+..\cbr_db\database\process.py:152: in run_process
+    subprocess.check_call(cmdline, shell=shell, stdout=stdout, stderr=stderr)
+C:\Users\Евгений\Anaconda3\lib\subprocess.py:579: in check_call
+    retcode = call(*popenargs, **kwargs)
+C:\Users\Евгений\Anaconda3\lib\subprocess.py:560: in call
+    with Popen(*popenargs, **kwargs) as p:
+C:\Users\Евгений\Anaconda3\lib\subprocess.py:950: in __init__
+    restore_signals, start_new_session)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <subprocess.Popen object at 0x00000271A5A305C0>
+args = 'mysql -utest_user -ptest_password --database dbf_db --execute "call cfg_init_populate_dates();"'
+executable = None, preexec_fn = None, close_fds = True, pass_fds = ()
+cwd = None, env = None
+startupinfo = <subprocess.STARTUPINFO object at 0x00000271A5A30240>
+creationflags = 0, shell = False, p2cread = -1, p2cwrite = -1, c2pread = -1
+c2pwrite = -1, errread = -1, errwrite = -1, unused_restore_signals = True
+unused_start_new_session = False
+
+    def _execute_child(self, args, executable, preexec_fn, close_fds,
+                       pass_fds, cwd, env,
+                       startupinfo, creationflags, shell,
+                       p2cread, p2cwrite,
+                       c2pread, c2pwrite,
+                       errread, errwrite,
+                       unused_restore_signals, unused_start_new_session):
+        """Execute program (MS Windows version)"""
+    
+        assert not pass_fds, "pass_fds not supported on Windows."
+    
+        if not isinstance(args, str):
+            args = list2cmdline(args)
+    
+        # Process startup details
+        if startupinfo is None:
+            startupinfo = STARTUPINFO()
+        if -1 not in (p2cread, c2pwrite, errwrite):
+            startupinfo.dwFlags |= _winapi.STARTF_USESTDHANDLES
+            startupinfo.hStdInput = p2cread
+            startupinfo.hStdOutput = c2pwrite
+            startupinfo.hStdError = errwrite
+    
+        if shell:
+            startupinfo.dwFlags |= _winapi.STARTF_USESHOWWINDOW
+            startupinfo.wShowWindow = _winapi.SW_HIDE
+            comspec = os.environ.get("COMSPEC", "cmd.exe")
+            args = '{} /c "{}"'.format (comspec, args)
+    
+        # Start the process
+        try:
+            hp, ht, pid, tid = _winapi.CreateProcess(executable, args,
+                                     # no special security
+                                     None, None,
+                                     int(not close_fds),
+                                     creationflags,
+                                     env,
+                                     cwd,
+>                                    startupinfo)
+E                                    FileNotFoundError: [WinError 2] Не удается найти указанный файл
+
+C:\Users\Евгений\Anaconda3\lib\subprocess.py:1220: FileNotFoundError
+---------------------------- Captured stdout call -----------------------------
+
+Date: 2015-01-01
+
+Date: 2015-02-01
+
+Date: 2015-03-01
+
+Date: 2015-04-01
+
+Date: 2015-05-01
+
+Date: 2015-06-01
+
+Date: 2015-07-01
+
+Date: 2015-08-01
+
+Date: 2015-09-01
+
+Date: 2015-10-01
+
+Date: 2015-11-01
+
+Date: 2015-12-01
+Calling: ['mysql', '-utest_user', '-ptest_password', '--database', 'dbf_db', '--execute', 'call cfg_init_populate_dates();']
+========== 4 failed, 32 passed, 1 skipped, 15 error in 1.49 seconds ===========
