@@ -26,11 +26,13 @@ For more information see:
 
 For full command line interface: 
 ```
-python bankform.py 
+python -m cbr_db.bankform 
 ```
-or equivalent 
+
+or
+
 ```
-baf
+baf.bat
 ```
 
 ## Sample script
