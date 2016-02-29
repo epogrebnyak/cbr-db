@@ -99,7 +99,8 @@ def main(argv):
         batch = [_insert_arguments(x, args) for x in batch]
         # Execute batch
         cwd = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
-        env = {'CBR_DB_SETTINGS': 'settings'}
+        env = dict(os.environ)
+        env['CBR_DB_SETTINGS'] = 'settings'
         for command in batch:
             logger.info('Calling {!r}'.format(command))
             process = subprocess.Popen(command, cwd=cwd, env=env)
