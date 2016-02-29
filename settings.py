@@ -20,9 +20,9 @@ MYSQL_HOST = 'localhost'
 MYSQL_PORT = 3306
 MYSQL_USER = 'test_user'
 MYSQL_PASSWORD = 'test_password'
-MYSQL_PATH = []
+MYSQL_PATHS = []
 if IS_WINDOWS:
-    MYSQL_PATH.extend([
+    MYSQL_PATHS.extend([
         'C:\\Program Files (x86)\\MySQL\\MySQL Server 5.7\\bin',
         'C:\\MySQL\\bin', 
         'D:\\Programs\\xampp\\mysql\\bin'

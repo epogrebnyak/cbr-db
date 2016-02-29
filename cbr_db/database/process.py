@@ -9,6 +9,7 @@ import subprocess
 import tempfile
 import time
 
+from cbr_db.conf import settings
 from cbr_db.database.connection import get_credentials
 from cbr_db.filesystem import get_db_dumpfile_path
 from cbr_db.utils.text import replace_in_file
@@ -147,7 +148,20 @@ def mysqldump(db_name):
 
 
 def run_process(cmdline, shell=False, stdout=None, stderr=None):
+    # Workaround for MySQL under Windows
+    if settings.IS_WINDOWS:
+        cmdline[0] = _find_mysql_exe(cmdline[0])
     print('Calling: {!r}'.format(cmdline))
     start_time = time.monotonic()
     subprocess.check_call(cmdline, shell=shell, stdout=stdout, stderr=stderr)
     print("Elapsed time: {:.2f}".format(time.monotonic() - start_time))
+
+
+def _find_mysql_exe(name):
+    exe_name = name + '.exe'
+    for path in settings.MYSQL_PATHS:
+        exe_path = os.path.join(path, exe_name)
+        if os.path.isfile(exe_path):
+            return exe_path
+    raise Exception('MySQL executable {!r} not found in paths: {!r}'
+                    .format(exe_name, settings.MYSQL_PATHS))
