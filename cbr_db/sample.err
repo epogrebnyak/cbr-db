@@ -1,0 +1,119 @@
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+ERROR 1449 (HY000) at line 1997 in file: 'C:\Users\B7E3~1\AppData\Local\Temp\cbr-db\cbr_db.sql': The user specified as a definer ('test_user'@'%') does not exist
+Traceback (most recent call last):
+  File "C:\Users\Евгений\Anaconda3\lib\runpy.py", line 170, in _run_module_as_main
+    "__main__", mod_spec)
+  File "C:\Users\Евгений\Anaconda3\lib\runpy.py", line 85, in _run_code
+    exec(code, run_globals)
+  File "D:\git\cbr-db\cbr_db\bankform.py", line 255, in <module>
+    main(sys.argv[1:])
+  File "D:\git\cbr-db\cbr_db\bankform.py", line 167, in main
+    general_database_operations(arg, db_name)
+  File "D:\git\cbr-db\cbr_db\bankform.py", line 158, in general_database_operations
+    load_db_from_dump(db_name)
+  File "D:\git\cbr-db\cbr_db\commands.py", line 50, in load_db_from_dump
+    source_sql_file(patch_sql_file(path), db_name)
+  File "D:\git\cbr-db\cbr_db\database\process.py", line 70, in source_sql_file
+    run_sql_string(command, database=db_name)
+  File "D:\git\cbr-db\cbr_db\database\process.py", line 64, in run_sql_string
+    run_process(cmdline)
+  File "D:\git\cbr-db\cbr_db\database\process.py", line 156, in run_process
+    subprocess.check_call(cmdline, shell=shell, stdout=stdout, stderr=stderr)
+  File "C:\Users\Евгений\Anaconda3\lib\subprocess.py", line 584, in check_call
+    raise CalledProcessError(retcode, cmd)
+subprocess.CalledProcessError: Command '['D:\\Programs\\xampp\\mysql\\bin\\mysql.exe', '-utest_user', '-ptest_password', '--database', 'cbr_db', '--execute', 'source C:/Users/B7E3~1/AppData/Local/Temp/cbr-db/cbr_db.sql']' returned non-zero exit status 1
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+ERROR 1449 (HY000) at line 1: The user specified as a definer ('test_user'@'%') does not exist
+Traceback (most recent call last):
+  File "C:\Users\Евгений\Anaconda3\lib\runpy.py", line 170, in _run_module_as_main
+    "__main__", mod_spec)
+  File "C:\Users\Евгений\Anaconda3\lib\runpy.py", line 85, in _run_code
+    exec(code, run_globals)
+  File "D:\git\cbr-db\cbr_db\bankform.py", line 255, in <module>
+    main(sys.argv[1:])
+  File "D:\git\cbr-db\cbr_db\bankform.py", line 219, in main
+    regn, regn_file, regn_all)
+  File "D:\git\cbr-db\cbr_db\commands.py", line 243, in create_final_dataset_in_raw_database
+    run_sql_string("call cfg_init_populate_dates();", db)
+  File "D:\git\cbr-db\cbr_db\database\process.py", line 64, in run_sql_string
+    run_process(cmdline)
+  File "D:\git\cbr-db\cbr_db\database\process.py", line 156, in run_process
+    subprocess.check_call(cmdline, shell=shell, stdout=stdout, stderr=stderr)
+  File "C:\Users\Евгений\Anaconda3\lib\subprocess.py", line 584, in check_call
+    raise CalledProcessError(retcode, cmd)
+subprocess.CalledProcessError: Command '['D:\\Programs\\xampp\\mysql\\bin\\mysql.exe', '-utest_user', '-ptest_password', '--database', 'dbf_db', '--execute', 'call cfg_init_populate_dates();']' returned non-zero exit status 1
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Traceback (most recent call last):
+  File "C:\Users\Евгений\Anaconda3\lib\runpy.py", line 170, in _run_module_as_main
+    "__main__", mod_spec)
+  File "C:\Users\Евгений\Anaconda3\lib\runpy.py", line 85, in _run_code
+    exec(code, run_globals)
+  File "D:\git\cbr-db\cbr_db\bankform.py", line 255, in <module>
+    main(sys.argv[1:])
+  File "D:\git\cbr-db\cbr_db\bankform.py", line 242, in main
+    make_balance()
+  File "D:\git\cbr-db\cbr_db\commands.py", line 170, in make_balance
+    execute_sql("call alloc_make", db_name)
+  File "D:\git\cbr-db\cbr_db\database\connection.py", line 45, in execute_sql
+    result = execute_sql_with_cursor(sql_string, cur, verbose)
+  File "D:\git\cbr-db\cbr_db\database\connection.py", line 32, in execute_sql_with_cursor
+    cur.execute(sql_string)
+  File "C:\Users\Евгений\Anaconda3\lib\site-packages\pymysql\cursors.py", line 158, in execute
+    result = self._query(query)
+  File "C:\Users\Евгений\Anaconda3\lib\site-packages\pymysql\cursors.py", line 308, in _query
+    conn.query(q)
+  File "C:\Users\Евгений\Anaconda3\lib\site-packages\pymysql\connections.py", line 820, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+  File "C:\Users\Евгений\Anaconda3\lib\site-packages\pymysql\connections.py", line 1002, in _read_query_result
+    result.read()
+  File "C:\Users\Евгений\Anaconda3\lib\site-packages\pymysql\connections.py", line 1285, in read
+    first_packet = self.connection._read_packet()
+  File "C:\Users\Евгений\Anaconda3\lib\site-packages\pymysql\connections.py", line 966, in _read_packet
+    packet.check_error()
+  File "C:\Users\Евгений\Anaconda3\lib\site-packages\pymysql\connections.py", line 394, in check_error
+    err.raise_mysql_exception(self._data)
+  File "C:\Users\Евгений\Anaconda3\lib\site-packages\pymysql\err.py", line 120, in raise_mysql_exception
+    _check_mysql_exception(errinfo)
+  File "C:\Users\Евгений\Anaconda3\lib\site-packages\pymysql\err.py", line 115, in _check_mysql_exception
+    raise InternalError(errno, errorvalue)
+pymysql.err.InternalError: (1449, "The user specified as a definer ('test_user'@'%') does not exist")
+Traceback (most recent call last):
+  File "C:\Users\Евгений\Anaconda3\lib\runpy.py", line 170, in _run_module_as_main
+    "__main__", mod_spec)
+  File "C:\Users\Евгений\Anaconda3\lib\runpy.py", line 85, in _run_code
+    exec(code, run_globals)
+  File "D:\git\cbr-db\cbr_db\bankform.py", line 255, in <module>
+    main(sys.argv[1:])
+  File "D:\git\cbr-db\cbr_db\bankform.py", line 249, in main
+    report_balance_tables_xls()
+  File "D:\git\cbr-db\cbr_db\commands.py", line 183, in report_balance_tables_xls
+    report_balance_tables_csv()
+  File "D:\git\cbr-db\cbr_db\commands.py", line 194, in report_balance_tables_csv
+    execute_sql("call balance_report_line_dt_3tables", db_name)
+  File "D:\git\cbr-db\cbr_db\database\connection.py", line 45, in execute_sql
+    result = execute_sql_with_cursor(sql_string, cur, verbose)
+  File "D:\git\cbr-db\cbr_db\database\connection.py", line 32, in execute_sql_with_cursor
+    cur.execute(sql_string)
+  File "C:\Users\Евгений\Anaconda3\lib\site-packages\pymysql\cursors.py", line 158, in execute
+    result = self._query(query)
+  File "C:\Users\Евгений\Anaconda3\lib\site-packages\pymysql\cursors.py", line 308, in _query
+    conn.query(q)
+  File "C:\Users\Евгений\Anaconda3\lib\site-packages\pymysql\connections.py", line 820, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+  File "C:\Users\Евгений\Anaconda3\lib\site-packages\pymysql\connections.py", line 1002, in _read_query_result
+    result.read()
+  File "C:\Users\Евгений\Anaconda3\lib\site-packages\pymysql\connections.py", line 1285, in read
+    first_packet = self.connection._read_packet()
+  File "C:\Users\Евгений\Anaconda3\lib\site-packages\pymysql\connections.py", line 966, in _read_packet
+    packet.check_error()
+  File "C:\Users\Евгений\Anaconda3\lib\site-packages\pymysql\connections.py", line 394, in check_error
+    err.raise_mysql_exception(self._data)
+  File "C:\Users\Евгений\Anaconda3\lib\site-packages\pymysql\err.py", line 120, in raise_mysql_exception
+    _check_mysql_exception(errinfo)
+  File "C:\Users\Евгений\Anaconda3\lib\site-packages\pymysql\err.py", line 115, in _check_mysql_exception
+    raise InternalError(errno, errorvalue)
+pymysql.err.InternalError: (1449, "The user specified as a definer ('test_user'@'%') does not exist")

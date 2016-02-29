@@ -1,0 +1,58 @@
+
+D:\git\cbr-db\cbr_db>call baf reset database raw 
+Database: dbf_db
+Deleted existing database and created empty database under same name.
+Database: dbf_db
+Calling: ['D:\\Programs\\xampp\\mysql\\bin\\mysql.exe', '-utest_user', '-ptest_password', '--database', 'dbf_db', '--execute', 'source C:/Users/B7E3~1/AppData/Local/Temp/cbr-db/dbf_db.sql']
+Elapsed time: 6.83
+Loaded database structure from file <dbf_db.sql>. No data was imported.
+Database: cbr_db
+Deleted existing database and created empty database under same name.
+Database: cbr_db
+Calling: ['D:\\Programs\\xampp\\mysql\\bin\\mysql.exe', '-utest_user', '-ptest_password', '--database', 'cbr_db', '--execute', 'source C:/Users/B7E3~1/AppData/Local/Temp/cbr-db/cbr_db.sql']
+
+Date: 2015-01-01
+-> Skipping http://www.cbr.ru/credit/forms/101-20150101.rar (already downloaded)
+
+UNRAR 5.21 freeware      Copyright (c) 1993-2015 Alexander Roshal
+
+
+Extracting from D:\git\cbr-db\data\downloadable\101\rarzip\101-20150101.rar
+
+Extracting  D:\git\cbr-db\data\downloadable\101\dbf\122014_B.DBF           0%  OK 
+Extracting  D:\git\cbr-db\data\downloadable\101\dbf\122014_N.DBF           0%  OK 
+Extracting  D:\git\cbr-db\data\downloadable\101\dbf\122014_S.DBF           0%  OK 
+Extracting  D:\git\cbr-db\data\downloadable\101\dbf\122014B1.DBF           1%  2%  3%  4%  5%  6%  7%  8%  9% 10% 11% 12% 13% 14% 15% 16% 17% 18% 19% 20% 21% 22% 23% 24% 25% 26% 27% 28% 29% 30% 31% 32% 33% 34% 35% 36% 37% 38% 39% 40% 41% 42% 43% 44% 45% 46% 47% 48% 49% 50% 51% 52% 53% 54% 55% 56% 57% 58% 59% 60% 61% 62% 63% 64% 65% 66% 67% 68% 69% 70% 71% 72% 73% 74% 75% 76% 77% 78% 79% 80% 81% 82% 83% 84% 85% 86% 87% 88% 89% 90% 91% 92% 93% 94% 95% 96% 97% 98% 99%  OK 
+Extracting  D:\git\cbr-db\data\downloadable\101\dbf\122014N1.DBF          99%  OK 
+Extracting  D:\git\cbr-db\data\downloadable\101\dbf\122014S1.DBF          99%  OK 
+Extracting  D:\git\cbr-db\data\downloadable\101\dbf\NAMES.DBF             99%  OK 
+All OK
+
+Date: 2015-01-01
+File: 101-20150101.rar
+
+Date: 2015-01-01
+Converting 122014B1.DBF to csv file bulk_f101b1.122014B1
+Time elapsed: 0:00:03.306509
+Skipped writing 5898 records to file.
+Converting 122014_B.DBF to csv file bulk_f101_b.122014_B
+Time elapsed: 0:00:00.015626
+dbf_db.bulk_f101b1: Records: 151422  Deleted: 0  Skipped: 0  Warnings: 151422
+dbf_db.bulk_f101_b: Records: 795  Deleted: 0  Skipped: 0  Warnings: 795
+
+Date: 2015-01-01
+Calling: ['D:\\Programs\\xampp\\mysql\\bin\\mysqlimport.exe', '-utest_user', '-ptest_password', '--ignore_lines=1', '--ignore', 'dbf_db', 'D:\\git\\cbr-db\\data\\downloadable\\101\\csv\\bulk_f101b1.122014B1']
+Elapsed time: 5.08
+Calling: ['D:\\Programs\\xampp\\mysql\\bin\\mysqlimport.exe', '-utest_user', '-ptest_password', '--ignore_lines=1', '--ignore', 'dbf_db', 'D:\\git\\cbr-db\\data\\downloadable\\101\\csv\\bulk_f101_b.122014_B']
+Elapsed time: 0.12
+
+Finished importing CSV files into raw data database.
+Form: 101 Date: 2015-01-01
+
+Date: 2015-01-01
+Calling: ['D:\\Programs\\xampp\\mysql\\bin\\mysql.exe', '-utest_user', '-ptest_password', '--database', 'dbf_db', '--execute', 'call cfg_init_populate_dates();']
+Calling: ['D:\\Programs\\xampp\\mysql\\bin\\mysqldump.exe', '-utest_user', '-ptest_password', '--add-drop-table=FALSE', '--no-create-info', '--insert-ignore', 'dbf_db', 'f101']
+Elapsed time: 0.05
+Table 'dbf_db'.'f101' saved to D:\git\cbr-db\data\output\f101.sql
+Calling: ['D:\\Programs\\xampp\\mysql\\bin\\mysql.exe', '-utest_user', '-ptest_password', '--database', 'cbr_db', '--execute', 'source D:/git/cbr-db/data/output/f101.sql']
+Elapsed time: 0.02
