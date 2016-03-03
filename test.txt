@@ -1,244 +1,115 @@
 ============================= test session starts =============================
 platform win32 -- Python 3.5.1, pytest-2.8.1, py-1.4.30, pluggy-0.3.1
 rootdir: D:\git\cbr-db, inifile: pytest.ini
-plugins: cov-2.2.0
+plugins: cov-2.2.0, mock-0.11.0
 collected 49 items
 
 test.txt s
 tests\test_bankform.py ..
-tests\test_cli_dates.py ..EE
-tests\test_commands.py E
+tests\test_cli_dates.py ....
+tests\test_commands.py F
 tests\test_conn.py ..
-tests\test_database.py E
-tests\test_download.py EE
+tests\test_database.py .
+tests\test_download.py ..
 tests\test_filesystem.py ...
 tests\test_make_url.py ...
 tests\test_select_regn.py ....
-tests\test_unpack.py EEE
-tests\test_utils_dates.py .................EEEEEE
+tests\test_unpack.py .F.
+tests\test_utils_dates.py .......................
 
-=================================== ERRORS ====================================
- ERROR at setup of test_get_date_endpoints[today0-args0-start_date0-end_date0] 
-file D:\git\cbr-db\tests\test_cli_dates.py, line 90
-  @pytest.mark.parametrize('today,args,start_date,end_date', [
-      (date(2015, 5, 15), {
-          '<form>': '101',
-          '--all-dates': True,
-          '<timestamp1>': None,
-          '<timestamp2>': None,
-      }, date(2004, 2, 1), date(2015, 5, 1)),
-      (date(2015, 5, 15), {
-          '<form>': '101',
-          '--all-dates': True,
-          '<timestamp1>': '2015-03-15',
-          '<timestamp2>': '2015-04-15',
-      }, date(2015, 3, 1), date(2015, 4, 1)),
-  ])
-  def test_get_date_endpoints(mocker, today, args, start_date, end_date):
-        fixture 'mocker' not found
-        available fixtures: cov, use_test_settings, tmpdir_factory, capsys, tmpdir, tempdir, pytestconfig, recwarn, record_xml_property, capfd, monkeypatch, cache
-        use 'py.test --fixtures [testpath]' for help on them.
+================================== FAILURES ===================================
+______________________________ test_dbf2csv[101] ______________________________
 
-D:\git\cbr-db\tests\test_cli_dates.py:90
- ERROR at setup of test_get_date_endpoints[today1-args1-start_date1-end_date1] 
-file D:\git\cbr-db\tests\test_cli_dates.py, line 90
-  @pytest.mark.parametrize('today,args,start_date,end_date', [
-      (date(2015, 5, 15), {
-          '<form>': '101',
-          '--all-dates': True,
-          '<timestamp1>': None,
-          '<timestamp2>': None,
-      }, date(2004, 2, 1), date(2015, 5, 1)),
-      (date(2015, 5, 15), {
-          '<form>': '101',
-          '--all-dates': True,
-          '<timestamp1>': '2015-03-15',
-          '<timestamp2>': '2015-04-15',
-      }, date(2015, 3, 1), date(2015, 4, 1)),
-  ])
-  def test_get_date_endpoints(mocker, today, args, start_date, end_date):
-        fixture 'mocker' not found
-        available fixtures: cov, use_test_settings, tmpdir_factory, capsys, tmpdir, tempdir, pytestconfig, recwarn, record_xml_property, capfd, monkeypatch, cache
-        use 'py.test --fixtures [testpath]' for help on them.
+mocker = <pytest_mock.MockFixture object at 0x00000281EB0A5DD8>
+tempdir = 'C:\\Users\\B7E3~1\\AppData\\Local\\Temp\\cbr-db-tests\\dbf2csv\\101'
+form = '101'
 
-D:\git\cbr-db\tests\test_cli_dates.py:90
-_____________________ ERROR at setup of test_dbf2csv[101] _____________________
-file D:\git\cbr-db\tests\test_commands.py, line 10
-  @pytest.mark.parametrize('form', ['101'])
-  def test_dbf2csv(mocker, tempdir, form):
-        fixture 'mocker' not found
-        available fixtures: cov, use_test_settings, tmpdir_factory, capsys, tmpdir, tempdir, pytestconfig, recwarn, record_xml_property, capfd, monkeypatch, cache
-        use 'py.test --fixtures [testpath]' for help on them.
+    @pytest.mark.parametrize('form', ['101'])
+    def test_dbf2csv(mocker, tempdir, form):
+        tempdir = os.path.join(tempdir, 'dbf2csv', form)
+        form_dir = os.path.join(FILES_DIR, 'dbf2csv', form)
+        dbf_dir = copy_and_unpack(
+            os.path.join(form_dir, 'dbf'),
+            os.path.join(tempdir, 'dbf')
+        )
+        expected_csv_dir = copy_and_unpack(
+            os.path.join(form_dir, 'csv'),
+            os.path.join(tempdir, 'expected-csv')
+        )
+        output_csv_dir = os.path.join(tempdir, 'csv')
+        if not os.path.isdir(output_csv_dir):
+            os.makedirs(output_csv_dir)
+    
+        def get_public_data_folder_mock(form, ext):
+            assert form == '101'
+            if ext == 'dbf':
+                return dbf_dir
+            elif ext == 'csv':
+                return output_csv_dir
+            assert False, 'Unexpected ext: {!r}'.format(ext)
+    
+        mocker.patch('cbr_db.commands.get_public_data_folder',
+                     get_public_data_folder_mock)
+        dbf2csv('2015-12-20', '101')
+>       compare_dirs(output_csv_dir, expected_csv_dir)
 
-D:\git\cbr-db\tests\test_commands.py:10
-______________________ ERROR at setup of test_mysqldump _______________________
-file D:\git\cbr-db\tests\test_database.py, line 9
-  def test_mysqldump(mocker, tempdir):
-        fixture 'mocker' not found
-        available fixtures: cov, use_test_settings, tmpdir_factory, capsys, tmpdir, tempdir, pytestconfig, recwarn, record_xml_property, capfd, monkeypatch, cache
-        use 'py.test --fixtures [testpath]' for help on them.
+tests\test_commands.py:37: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\conftest.py:30: in compare_dirs
+    _assert_equal_dirs(filecmp.dircmp(a, b))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
-D:\git\cbr-db\tests\test_database.py:9
-__________________ ERROR at setup of test_get_last_modified ___________________
-file D:\git\cbr-db\tests\test_download.py, line 8
-  def test_get_last_modified(mocker):
-        fixture 'mocker' not found
-        available fixtures: cov, use_test_settings, tmpdir_factory, capsys, tmpdir, tempdir, pytestconfig, recwarn, record_xml_property, capfd, monkeypatch, cache
-        use 'py.test --fixtures [testpath]' for help on them.
+cmp = <filecmp.dircmp object at 0x00000281EB120DA0>
 
-D:\git\cbr-db\tests\test_download.py:8
-_______________________ ERROR at setup of test_download _______________________
-file D:\git\cbr-db\tests\test_download.py, line 15
-  def test_download(mocker, tempdir):
-        fixture 'mocker' not found
-        available fixtures: cov, use_test_settings, tmpdir_factory, capsys, tmpdir, tempdir, pytestconfig, recwarn, record_xml_property, capfd, monkeypatch, cache
-        use 'py.test --fixtures [testpath]' for help on them.
+    def _assert_equal_dirs(cmp):
+>       assert cmp.diff_files == []
+E       assert ['bulk_f101b1...1_b.112015_B'] == []
+E         Left contains more items, first extra item: 'bulk_f101b1.112015B1'
+E         Use -v to get the full diff
 
-D:\git\cbr-db\tests\test_download.py:15
-______________ ERROR at setup of test_get_local_ziprar_filepath _______________
-file D:\git\cbr-db\tests\test_unpack.py, line 11
-  def test_get_local_ziprar_filepath(mocker):
-        fixture 'mocker' not found
-        available fixtures: cov, use_test_settings, tmpdir_factory, capsys, tmpdir, tempdir, pytestconfig, recwarn, record_xml_property, capfd, monkeypatch, cache
-        use 'py.test --fixtures [testpath]' for help on them.
+tests\conftest.py:34: AssertionError
+---------------------------- Captured stdout call -----------------------------
+Converting 112015_B.DBF to csv file bulk_f101_b.112015_B
+Time elapsed: 0:00:00.017011
+Converting 112015B1.DBF to csv file bulk_f101b1.112015B1
+Time elapsed: 0:00:02.793979
+Skipped writing 5172 records to file.
+___________________ test_unpack_path[101-20051201.zip-101] ____________________
 
-D:\git\cbr-db\tests\test_unpack.py:11
-__________ ERROR at setup of test_unpack_path[101-20051201.zip-101] ___________
-file D:\git\cbr-db\tests\test_unpack.py, line 21
-  @pytest.mark.parametrize('filename,form', [
-      ('101-20051201.zip', '101'),
-      ('101-20151201.rar', '101')
-  ])
-  def test_unpack_path(mocker, tempdir, filename, form):
-        fixture 'mocker' not found
-        available fixtures: cov, use_test_settings, tmpdir_factory, capsys, tmpdir, tempdir, pytestconfig, recwarn, record_xml_property, capfd, monkeypatch, cache
-        use 'py.test --fixtures [testpath]' for help on them.
+mocker = <pytest_mock.MockFixture object at 0x00000281EB17BB70>
+tempdir = 'C:\\Users\\B7E3~1\\AppData\\Local\\Temp\\cbr-db-tests'
+filename = '101-20051201.zip', form = '101'
 
-D:\git\cbr-db\tests\test_unpack.py:21
-__________ ERROR at setup of test_unpack_path[101-20151201.rar-101] ___________
-file D:\git\cbr-db\tests\test_unpack.py, line 21
-  @pytest.mark.parametrize('filename,form', [
-      ('101-20051201.zip', '101'),
-      ('101-20151201.rar', '101')
-  ])
-  def test_unpack_path(mocker, tempdir, filename, form):
-        fixture 'mocker' not found
-        available fixtures: cov, use_test_settings, tmpdir_factory, capsys, tmpdir, tempdir, pytestconfig, recwarn, record_xml_property, capfd, monkeypatch, cache
-        use 'py.test --fixtures [testpath]' for help on them.
+    @pytest.mark.parametrize('filename,form', [
+        ('101-20051201.zip', '101'),
+        ('101-20151201.rar', '101')
+    ])
+    def test_unpack_path(mocker, tempdir, filename, form):
+        test_path = os.path.join(FILES_DIR, 'unpack', os.path.splitext(filename)[0])
+        input_path = os.path.join(test_path, 'input', filename)
+        expected_output_dir = os.path.join(test_path, 'output')
+        temp_input_path = os.path.join(tempdir, os.path.relpath(input_path, FILES_DIR))
+        os.makedirs(os.path.dirname(temp_input_path))
+        shutil.copy(input_path, temp_input_path)
+        # Unpack into output_dir (in temp)
+        output_dir = os.path.join(tempdir, os.path.relpath(expected_output_dir, FILES_DIR))
+        mocker.patch('cbr_db.unpack.get_public_data_folder', return_value=output_dir)
+        unpack_path(temp_input_path, form)
+>       compare_dirs(expected_output_dir, output_dir)
 
-D:\git\cbr-db\tests\test_unpack.py:21
-___ ERROR at setup of test_get_last_date_in_year[101-today0-dt0-expected0] ____
-file D:\git\cbr-db\tests\test_utils_dates.py, line 160
-  @pytest.mark.parametrize('form,today,dt,expected', [
-      # Form 101
-      ('101', date(2015, 5, 15), date(2014, 1, 1), date(2014, 12, 1)),
-      ('101', date(2015, 5, 15), date(2015, 1, 1), date(2015, 5, 1)),
-      ('101', date(2015, 5, 15), date(2016, 1, 1), date(2015, 5, 1)),
-      # Form 102 - per quarter
-      ('102', date(2015, 5, 15), date(2014, 1, 1), date(2015, 1, 1)),
-      ('102', date(2015, 5, 15), date(2015, 1, 1), date(2015, 4, 1)),
-      ('102', date(2015, 5, 15), date(2016, 1, 1), date(2015, 4, 1)),
+tests\test_unpack.py:36: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\conftest.py:30: in compare_dirs
+    _assert_equal_dirs(filecmp.dircmp(a, b))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
-  ])
-  def test_get_last_date_in_year(mocker, form, today, dt, expected):
-        fixture 'mocker' not found
-        available fixtures: cov, use_test_settings, tmpdir_factory, capsys, tmpdir, tempdir, pytestconfig, recwarn, record_xml_property, capfd, monkeypatch, cache
-        use 'py.test --fixtures [testpath]' for help on them.
+cmp = <filecmp.dircmp object at 0x00000281EB17A3C8>
 
-D:\git\cbr-db\tests\test_utils_dates.py:160
-___ ERROR at setup of test_get_last_date_in_year[101-today1-dt1-expected1] ____
-file D:\git\cbr-db\tests\test_utils_dates.py, line 160
-  @pytest.mark.parametrize('form,today,dt,expected', [
-      # Form 101
-      ('101', date(2015, 5, 15), date(2014, 1, 1), date(2014, 12, 1)),
-      ('101', date(2015, 5, 15), date(2015, 1, 1), date(2015, 5, 1)),
-      ('101', date(2015, 5, 15), date(2016, 1, 1), date(2015, 5, 1)),
-      # Form 102 - per quarter
-      ('102', date(2015, 5, 15), date(2014, 1, 1), date(2015, 1, 1)),
-      ('102', date(2015, 5, 15), date(2015, 1, 1), date(2015, 4, 1)),
-      ('102', date(2015, 5, 15), date(2016, 1, 1), date(2015, 4, 1)),
+    def _assert_equal_dirs(cmp):
+>       assert cmp.diff_files == []
+E       assert ['112005_S.DB...112005_B.DBF'] == []
+E         Left contains more items, first extra item: '112005_S.DBF'
+E         Use -v to get the full diff
 
-  ])
-  def test_get_last_date_in_year(mocker, form, today, dt, expected):
-        fixture 'mocker' not found
-        available fixtures: cov, use_test_settings, tmpdir_factory, capsys, tmpdir, tempdir, pytestconfig, recwarn, record_xml_property, capfd, monkeypatch, cache
-        use 'py.test --fixtures [testpath]' for help on them.
-
-D:\git\cbr-db\tests\test_utils_dates.py:160
-___ ERROR at setup of test_get_last_date_in_year[101-today2-dt2-expected2] ____
-file D:\git\cbr-db\tests\test_utils_dates.py, line 160
-  @pytest.mark.parametrize('form,today,dt,expected', [
-      # Form 101
-      ('101', date(2015, 5, 15), date(2014, 1, 1), date(2014, 12, 1)),
-      ('101', date(2015, 5, 15), date(2015, 1, 1), date(2015, 5, 1)),
-      ('101', date(2015, 5, 15), date(2016, 1, 1), date(2015, 5, 1)),
-      # Form 102 - per quarter
-      ('102', date(2015, 5, 15), date(2014, 1, 1), date(2015, 1, 1)),
-      ('102', date(2015, 5, 15), date(2015, 1, 1), date(2015, 4, 1)),
-      ('102', date(2015, 5, 15), date(2016, 1, 1), date(2015, 4, 1)),
-
-  ])
-  def test_get_last_date_in_year(mocker, form, today, dt, expected):
-        fixture 'mocker' not found
-        available fixtures: cov, use_test_settings, tmpdir_factory, capsys, tmpdir, tempdir, pytestconfig, recwarn, record_xml_property, capfd, monkeypatch, cache
-        use 'py.test --fixtures [testpath]' for help on them.
-
-D:\git\cbr-db\tests\test_utils_dates.py:160
-___ ERROR at setup of test_get_last_date_in_year[102-today3-dt3-expected3] ____
-file D:\git\cbr-db\tests\test_utils_dates.py, line 160
-  @pytest.mark.parametrize('form,today,dt,expected', [
-      # Form 101
-      ('101', date(2015, 5, 15), date(2014, 1, 1), date(2014, 12, 1)),
-      ('101', date(2015, 5, 15), date(2015, 1, 1), date(2015, 5, 1)),
-      ('101', date(2015, 5, 15), date(2016, 1, 1), date(2015, 5, 1)),
-      # Form 102 - per quarter
-      ('102', date(2015, 5, 15), date(2014, 1, 1), date(2015, 1, 1)),
-      ('102', date(2015, 5, 15), date(2015, 1, 1), date(2015, 4, 1)),
-      ('102', date(2015, 5, 15), date(2016, 1, 1), date(2015, 4, 1)),
-
-  ])
-  def test_get_last_date_in_year(mocker, form, today, dt, expected):
-        fixture 'mocker' not found
-        available fixtures: cov, use_test_settings, tmpdir_factory, capsys, tmpdir, tempdir, pytestconfig, recwarn, record_xml_property, capfd, monkeypatch, cache
-        use 'py.test --fixtures [testpath]' for help on them.
-
-D:\git\cbr-db\tests\test_utils_dates.py:160
-___ ERROR at setup of test_get_last_date_in_year[102-today4-dt4-expected4] ____
-file D:\git\cbr-db\tests\test_utils_dates.py, line 160
-  @pytest.mark.parametrize('form,today,dt,expected', [
-      # Form 101
-      ('101', date(2015, 5, 15), date(2014, 1, 1), date(2014, 12, 1)),
-      ('101', date(2015, 5, 15), date(2015, 1, 1), date(2015, 5, 1)),
-      ('101', date(2015, 5, 15), date(2016, 1, 1), date(2015, 5, 1)),
-      # Form 102 - per quarter
-      ('102', date(2015, 5, 15), date(2014, 1, 1), date(2015, 1, 1)),
-      ('102', date(2015, 5, 15), date(2015, 1, 1), date(2015, 4, 1)),
-      ('102', date(2015, 5, 15), date(2016, 1, 1), date(2015, 4, 1)),
-
-  ])
-  def test_get_last_date_in_year(mocker, form, today, dt, expected):
-        fixture 'mocker' not found
-        available fixtures: cov, use_test_settings, tmpdir_factory, capsys, tmpdir, tempdir, pytestconfig, recwarn, record_xml_property, capfd, monkeypatch, cache
-        use 'py.test --fixtures [testpath]' for help on them.
-
-D:\git\cbr-db\tests\test_utils_dates.py:160
-___ ERROR at setup of test_get_last_date_in_year[102-today5-dt5-expected5] ____
-file D:\git\cbr-db\tests\test_utils_dates.py, line 160
-  @pytest.mark.parametrize('form,today,dt,expected', [
-      # Form 101
-      ('101', date(2015, 5, 15), date(2014, 1, 1), date(2014, 12, 1)),
-      ('101', date(2015, 5, 15), date(2015, 1, 1), date(2015, 5, 1)),
-      ('101', date(2015, 5, 15), date(2016, 1, 1), date(2015, 5, 1)),
-      # Form 102 - per quarter
-      ('102', date(2015, 5, 15), date(2014, 1, 1), date(2015, 1, 1)),
-      ('102', date(2015, 5, 15), date(2015, 1, 1), date(2015, 4, 1)),
-      ('102', date(2015, 5, 15), date(2016, 1, 1), date(2015, 4, 1)),
-
-  ])
-  def test_get_last_date_in_year(mocker, form, today, dt, expected):
-        fixture 'mocker' not found
-        available fixtures: cov, use_test_settings, tmpdir_factory, capsys, tmpdir, tempdir, pytestconfig, recwarn, record_xml_property, capfd, monkeypatch, cache
-        use 'py.test --fixtures [testpath]' for help on them.
-
-D:\git\cbr-db\tests\test_utils_dates.py:160
-=============== 33 passed, 1 skipped, 15 error in 41.33 seconds ===============
+tests\conftest.py:34: AssertionError
+=============== 2 failed, 46 passed, 1 skipped in 50.06 seconds ===============
