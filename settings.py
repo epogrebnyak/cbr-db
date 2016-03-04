@@ -24,6 +24,7 @@ MYSQL_PATHS = []
 if IS_WINDOWS:
     MYSQL_PATHS.extend([
         'C:\\Program Files (x86)\\MySQL\\MySQL Server 5.7\\bin',
+        'C:\\Program Files\\MySQL\\MySQL Server 5.7\\bin',
         'C:\\MySQL\\bin', 
         'D:\\Programs\\xampp\\mysql\\bin'
     ])
