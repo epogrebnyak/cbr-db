@@ -2,26 +2,41 @@ import pandas as pd
 import numpy as np
 
 REGN = 1010
-    
+
 def flatten(source_df, key_col):    
-    col_dict = {'2016-01-01':['20160101', '20160101_ir', '20160101_iv'],
-                '2015-10-01':['20151001', '20151001_ir', '20151001_iv']}
-                
-    df = pd.DataFrame()
-    for dt, cols in col_dict.items(): # '2016-01-01':             
-        df_ = source_df[[key_col] + cols]
-        df_['dt'] = dt
-        df_ = df_.rename(index=str, columns={cols[0]:'itogo', cols[1]:'ir', cols[2]:'iv'})
-        df = df.append(df_)
-    df['regn'] = REGN 
-    return df
+    col_dict  = {	
+    # '2010-01-01' : [2009,	'2009_ir',	'2009_iv'],
+	# '2011-01-01' : [2010,	'2010_ir',	'2010_iv'],
+	# '2012-01-01' : [2011,	'2011_ir',	'2011_iv'],
+	# '2013-01-01' : [2012,	'2012_ir',	'2012_iv'],
+	# '2014-01-01' : [2013,	'2013_ir',	'2013_iv'],
+	  '2015-01-01' : [2014,	'2014_ir',	'2014_iv'],
+	# '2015-04-01' : ['20150401',	'20150401_ir',	'20150401_iv'],
+	# '2015-05-01' : ['20150501',	'20150501_ir',	'20150501_iv'],
+	# '2015-07-01' : ['20150701',	'20150701_ir',	'20150701_iv'],
+	# '2015-08-01' : ['20150801',	'20150801_ir',	'20150801_iv'],
+	# '2015-09-01' : ['20150901',	'20150901_ir',	'20150901_iv'],
+	# '2015-10-01' : ['20151001',	'20151001_ir',	'20151001_iv'],
+	# '2015-11-01' : ['20151101',	'20151101_ir',	'20151101_iv'],
+	# '2015-12-01' : ['20151201',	'20151201_ir',	'20151201_iv'],
+	  '2016-01-01' : ['20160101',	'20160101_ir',	'20160101_iv'] }
     
+    df = pd.DataFrame()
+    for dt, cols in col_dict.items():       
+        df_block = source_df[[key_col] + cols]
+        df_block ['dt'] = dt
+        df_block = df_block.rename(index=str, columns={cols[0]:'itogo', cols[1]:'ir', cols[2]:'iv'})
+        df = df.append(df_block)
+    df['regn'] = REGN 
+    return df   
+    
+
 def xl_import(xl_filename):
     alloc = pd.read_excel(xl_filename, 'alloc')
     f101 = pd.read_excel(xl_filename, 'conto')
     balance = pd.read_excel(xl_filename, 'balance')
     return (alloc, 
-            flatten(f101, 'conto') 
+            flatten(f101, 'conto'),
             flatten(balance , 'line')) 
 
 def make_balance(f101, alloc):
@@ -53,6 +68,8 @@ if __name__ == "__main__":
     where v.conto is not null
     group by dt, line, regn;
     '''
+    
+
     
     joined = alloc.merge(f101, on='conto', how='left')
     # todo 3 (optional): must check if there are any non-zero part of f101 that does not have code in alloc
