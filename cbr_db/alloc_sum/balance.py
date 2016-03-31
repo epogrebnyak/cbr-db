@@ -3,8 +3,8 @@ import numpy as np
 
 REGN = 1010
 
-def flatten(source_df, key_col):    
-    col_dict  = {	
+def flatten(source_df, key_col):
+    col_dict  = {
     # '2010-01-01' : [2009,	'2009_ir',	'2009_iv'],
 	# '2011-01-01' : [2010,	'2010_ir',	'2010_iv'],
 	# '2012-01-01' : [2011,	'2011_ir',	'2011_iv'],
@@ -20,45 +20,45 @@ def flatten(source_df, key_col):
 	# '2015-11-01' : ['20151101',	'20151101_ir',	'20151101_iv'],
 	# '2015-12-01' : ['20151201',	'20151201_ir',	'20151201_iv'],
 	  '2016-01-01' : ['20160101',	'20160101_ir',	'20160101_iv'] }
-    
+
     df = pd.DataFrame()
-    for dt, cols in col_dict.items():       
+    for dt, cols in col_dict.items():
         df_block = source_df[[key_col] + cols]
         df_block ['dt'] = dt
         df_block = df_block.rename(index=str, columns={cols[0]:'itogo', cols[1]:'ir', cols[2]:'iv'})
         df = df.append(df_block)
-    df['regn'] = REGN 
-    return df   
-    
+    df['regn'] = REGN
+    return df
+
 
 def xl_import(xl_filename):
     alloc = pd.read_excel(xl_filename, 'alloc')
     f101 = pd.read_excel(xl_filename, 'conto')
     balance = pd.read_excel(xl_filename, 'balance')
-    return (alloc, 
+    return (alloc,
             flatten(f101, 'conto'),
-            flatten(balance , 'line')) 
+            flatten(balance , 'line'))
 
 def make_balance(f101, alloc):
     pass
-     
+
 def comp(df1, df2):
      """Compare two dataframes assuming irregularities in row order"""
      return True
 
 def balance_file_test(filename):
-    alloc, conto, ref_balance = xl_import(filename)   
+    alloc, conto, ref_balance = xl_import(filename)
     balance = make_balance(alloc, conto)
     assert comp(df1=ref_balance, df2=balance)
-     
+
 if __name__ == "__main__":
 
     alloc, f101, ref_balance = xl_import('summ2.xls')
-    
+
     # Replicating SQL code below
-    # see also sheet 'comment' in 'summ2.xls' 
+    # see also sheet 'comment' in 'summ2.xls'
     # and https://github.com/epogrebnyak/cbr-db/blob/pandas/py3/pandas_interface.py#L177-L235
-    '''    
+    '''
     SELECT  dt, line,
             regn,
             sum(   ir*mult) ir,
@@ -68,22 +68,41 @@ if __name__ == "__main__":
     where v.conto is not null
     group by dt, line, regn;
     '''
-    
 
-    
+
+
     joined = alloc.merge(f101, on='conto', how='left')
     # todo 3 (optional): must check if there are any non-zero part of f101 that does not have code in alloc
-    
+
     # ir, iv, itogo multipy with mult
     joined['ir'] = joined['ir']*joined['mult']
     joined['iv'] = joined['iv']*joined['mult']
     joined['itogo'] = joined['itogo']*joined['mult']
 
     grouped = joined.groupby(['dt', 'line', 'regn']).agg({'ir':np.sum,'iv':np.sum, 'itogo':np.sum})
-    
+
     # todo 1: grouped has multiIndex, I want to have same flat structure as in *ref_balance*
-    balance = grouped
-    print(balance)
-    print(ref_balance)
-    
-    # todo 2: check that values in *balance* and *ref_balance* are the same in corresponding rows and columns   
+    # @gabrielelanaro To remove multiIndex you can do dataframe.reset_index()
+    balance = grouped.reset_index()
+
+    print(balance.head())
+    print(ref_balance.head())
+
+
+    # todo 2: check that values in *balance* and *ref_balance* are the same in corresponding rows and columns
+
+    # @gabrielelanaro to match them we need to sort the rows and columns
+    #  so that they are aligned
+    # Also the index has to match, that's why we reset the index at the end.
+
+    normalized_balance = balance.sort_index(axis=1).sort_values(by=['dt', 'line', 'regn']).reset_index(drop=True)
+    normalized_ref = ref_balance.sort_index(axis=1).sort_values(by=['dt', 'line', 'regn']).reset_index(drop=True)
+
+    print(normalized_balance.head())
+    print(normalized_ref.head())
+
+    # @gabrielelanaro we are using assert_frame_equal because it supports
+    # comparison for floating point numbers (those are rarely exactly equals
+    # when using == ).
+    from pandas.util.testing import assert_frame_equal
+    assert_frame_equal(normalized_balance, normalized_ref)
