@@ -40,7 +40,16 @@ def xl_import(xl_filename):
             flatten(balance , 'line')) 
 
 def make_balance(f101, alloc):
-    pass
+    joined = alloc.merge(f101, on='conto', how='left')
+    
+    # ir, iv, itogo multipied by *mult*
+    joined['ir'] = joined['ir']*joined['mult']
+    joined['iv'] = joined['iv']*joined['mult']
+    joined['itogo'] = joined['itogo']*joined['mult']
+
+    # 'as_index = False' allows flat structure without MultiIndex
+    return joined.groupby(['dt', 'line', 'regn'], as_index = False).agg({'ir':np.sum,'iv':np.sum, 'itogo':np.sum})
+
      
 def comp(df1, df2):
      """Compare two dataframes assuming irregularities in row order"""
@@ -69,8 +78,6 @@ if __name__ == "__main__":
     group by dt, line, regn;
     '''
     
-
-    
     joined = alloc.merge(f101, on='conto', how='left')
     # todo 3 (optional): must check if there are any non-zero part of f101 that does not have code in alloc
     
@@ -79,11 +86,31 @@ if __name__ == "__main__":
     joined['iv'] = joined['iv']*joined['mult']
     joined['itogo'] = joined['itogo']*joined['mult']
 
-    grouped = joined.groupby(['dt', 'line', 'regn']).agg({'ir':np.sum,'iv':np.sum, 'itogo':np.sum})
+    # as_index = False allows flat structure - as in *ref_balance*
+    balance = joined.groupby(['dt', 'line', 'regn'], as_index = False).agg({'ir':np.sum,'iv':np.sum, 'itogo':np.sum})
     
-    # todo 1: grouped has multiIndex, I want to have same flat structure as in *ref_balance*
-    balance = grouped
-    print(balance)
-    print(ref_balance)
+    def normalize(df):
+        cols = ['regn', 'dt', 'line', 'ir', 'iv', 'itogo']
+        sort_cols = ['regn', 'dt', 'line']
+        return df.sort_values(sort_cols).reset_index()[cols]        
+    
+    balance = normalize(balance)
+    ref_balance = normalize(ref_balance)
     
     # todo 2: check that values in *balance* and *ref_balance* are the same in corresponding rows and columns   
+    print(balance.iloc[16,:] - ref_balance.iloc[16,:])
+    
+def comp(df1, df2):
+    diff = df1
+    for i, j in zip(df1.index, df1.columns):
+        a1 = df1.loc[i,j]
+        a2 = df2.loc[i,j]
+        print(a1, a2)
+        if a1 == a2:
+            diff.loc[i,j] = True
+        else:
+            diff.loc[i,j] = (round(a1-a2, 2) == 0) 
+            
+    return (diff == True).all()
+    
+    #print (comp(balance, ref_balance))
