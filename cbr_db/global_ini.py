@@ -27,7 +27,7 @@ f102 = {
         'tag': 'f102_P',
         'name': "form 102 – short data",
         'postfix': "_P",
-        'db_table': 'bulk_f102_P',
+        'db_table': 'bulk_f102_p',
         'dbf_fields': ['DT', 'REGN', 'QUART', 'YEAR', 'CODE', 'ITOGO'],
         'regex': r"^([1-4])(20[0-9]{2})(_P).DBF$"
     },
@@ -36,7 +36,7 @@ f102 = {
         'tag': 'f102_P1',
         'name': "form 102 – long data",
         'postfix': "_P1",
-        'db_table': 'bulk_f102_P1',
+        'db_table': 'bulk_f102_p1',
         'dbf_fields': ['DT', 'REGN', 'QUART', 'YEAR', 'CODE', 'SIM_R', 'SIM_V', 'SIM_ITOGO'],
         'regex': r"^([1-4])(20[0-9]{2})(_P1).DBF$"
     }
