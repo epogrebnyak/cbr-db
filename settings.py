@@ -40,11 +40,13 @@ DB_NAME_FINAL = 'cbr_db'
 # Paths and directories
 #
 
-_PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_DIR = os.path.join(_PROJECT_DIR, 'data')
+PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.path.join(PROJECT_DIR, 'data')
 OUTPUT_DIR = os.path.join(DATA_DIR, 'output')
 
 if IS_WINDOWS:
-    UNPACK_RAR_EXE = os.path.join(_PROJECT_DIR, 'bin', 'unrar.exe')
+    UNPACK_RAR_EXE = os.path.join(PROJECT_DIR, 'bin', 'unrar.exe')
 else:
     UNPACK_RAR_EXE = 'unrar'
+
+DB_SQLITE = os.path.join(DATA_DIR, 'db.sqlite')

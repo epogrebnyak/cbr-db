@@ -132,4 +132,4 @@ def get_csv_files(isodate, form):
         csv_filename = make_csv_filename(dbf_filename, info['db_table'])
         csv_dir = get_public_data_folder(form, 'csv')
         csv_path = os.path.join(csv_dir, csv_filename)
-        yield csv_path
+        yield csv_path, dbf_filename

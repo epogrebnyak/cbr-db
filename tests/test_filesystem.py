@@ -20,11 +20,11 @@ def test_sqldump_table_and_filename():
         'bulk_f101b1.112015B1',
     ]),
     ('102', '2016-01-01', [
-        'bulk_f102_P.42015_P',
-        'bulk_f102_P1.42015_P1',
+        'bulk_f102_p.42015_P',
+        'bulk_f102_p1.42015_P1',
     ]),
 ])
 def test_get_csv_files(form, isodate, expected):
     path = get_public_data_folder(form, 'csv')
     expected = [os.path.join(path, x) for x in expected]
-    assert sorted(get_csv_files(isodate, form)) == expected
+    assert sorted([x[0] for x in get_csv_files(isodate, form)]) == expected

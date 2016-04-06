@@ -9,6 +9,7 @@ Usage:
     bankform.py unpack     <form> (<timestamp1> [<timestamp2>] | --all-dates)
     bankform.py make csv   <form> (<timestamp1> [<timestamp2>] | --all-dates)
     bankform.py import csv <form> (<timestamp1> [<timestamp2>] | --all-dates)
+    bankform.py import_sqlite csv <form> (<timestamp1> [<timestamp2>] | --all-dates)
     bankform.py update     <form> (<timestamp1> [<timestamp2>] | --all-dates)
         [--no-download]
     bankform.py import plan <form>
@@ -188,6 +189,10 @@ def main(argv):
             # import CSV for selected dates into raw database
             if arg['import'] and arg['csv']:
                 import_csv(isodate, form)
+
+            # TODO: This is temporary code to test sqlite import
+            if arg['import_sqlite'] and arg['csv']:
+                import_csv_sqlite(isodate, form)
 
             # do all data import operations
             if arg['update']:

@@ -4,4 +4,4 @@ pymysql==0.6.6
 dbfread==2.0.4
 xlsxwriter==0.6.7
 pandas==0.17.1
-sqlalchemy==0.9.9
+SQLAlchemy==1.0.9

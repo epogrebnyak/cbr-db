@@ -3,7 +3,7 @@ import os
 from cbr_db.utils.text import read_regn_file
 from .csvtools import write_csv_by_path
 from .conf import settings
-from .database.api import import_records
+from .database.api import import_records, import_csv_to_database
 from .database.connection import execute_sql, clear_table, insert_rows_into_table
 from .database.process import mysqlimport_generic, source_sql_file, dump_table_csv,\
     run_sql_string, mysqlimport, dump_table_sql, patch_sql_file, mysqldump
@@ -26,6 +26,7 @@ __all__ = [
     'import_bank',
     'import_csv',
     'import_csv_derived_from_text_files',
+    'import_csv_sqlite',
     'import_dataset_from_sql',
     'import_plan',
     'import_tables',
@@ -300,9 +301,20 @@ def delete_and_create_db(db_name):
 
 
 def import_csv(isodate, form):
-    for csv_path in get_csv_files(isodate, form):
+    for csv_path, dbf_name in get_csv_files(isodate, form):
         mysqlimport(settings.DB_NAME_RAW, csv_path, ignore_lines=1)
     print("\nFinished importing CSV files into raw data database.")
+    print("Form:", form, "Date:", isodate)
+
+
+def import_csv_sqlite(isodate, form):
+    """
+    Temporary function to test import to sqlite database.
+    Must be eventually renamed to import_csv.
+    """
+    for csv_path, dbf_name in get_csv_files(isodate, form):
+        import_csv_to_database(form, csv_path, dbf_name)
+    print("\nFinished importing CSV files into sqlite database.")
     print("Form:", form, "Date:", isodate)
 
 

@@ -83,6 +83,22 @@ _BATCHES = {
         ['{python}', '-m', '{module}', 'make', 'balance'],
         ['{python}', '-m', '{module}', 'report', 'balance', '{report_format}'],
     ],
+    # Import into raw mysql database
+    'raw_mysql': [
+        ['{python}', '-m', '{module}', 'reset', 'database', 'raw'],
+        ['{python}', '-m', '{module}', 'download', '{form}', '{dates}'],
+        ['{python}', '-m', '{module}', 'unpack', '{form}', '{dates}'],
+        ['{python}', '-m', '{module}', 'make', 'csv', '{form}', '{dates}'],
+        ['{python}', '-m', '{module}', 'import', 'csv', '{form}', '{dates}'],
+        ['{python}', '-m', '{module}', 'make', 'dataset', '{form}', '{dates}'],
+    ],
+    # Import into raw sqlite database
+    'raw_sqlite': [
+        ['{python}', '-m', '{module}', 'download', '{form}', '{dates}'],
+        ['{python}', '-m', '{module}', 'unpack', '{form}', '{dates}'],
+        ['{python}', '-m', '{module}', 'make', 'csv', '{form}', '{dates}'],
+        ['{python}', '-m', '{module}', 'import_sqlite', 'csv', '{form}', '{dates}'],
+    ],
 }
 
 
