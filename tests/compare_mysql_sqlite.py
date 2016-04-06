@@ -55,9 +55,16 @@ def check_f101(sqlite, mysql):
 
 
 def check_f102(sqlite, mysql):
-    sqlite.execute('SELECT * FROM f101')
-    mysql.execute()
-    pass
+    sqlite.execute('SELECT count(*) FROM f102')
+    mysql.execute('SELECT count(*) FROM f102')
+    sqlite_count = sqlite.fetchone()[0]
+    mysql_count = mysql.fetchone()[0]
+    if sqlite_count != mysql_count:
+        print('SQLite {} rows, MySQL {} rows'.format(sqlite_count, mysql_count))
+    columns = ['year', 'quart', 'regn', 'code', 'ir', 'iv', 'itogo', 'has_iv']
+    order = ['year', 'quart', 'regn', 'code']
+    export_to_csv(sqlite, 'f102', columns, order, os.path.join(TEMPDIR, 'f102_sqlite.csv'))
+    export_to_csv(mysql, 'f102', columns, order, os.path.join(TEMPDIR, 'f102_mysql.csv'))
 
 
 _FUNCTIONS = {
@@ -74,9 +81,8 @@ def _parse_args(argv):
 
 def main(argv):
     args = _parse_args(argv)
-    if os.path.isdir(TEMPDIR):
-        shutil.rmtree(TEMPDIR)
-    os.mkdir(TEMPDIR)
+    if not os.path.isdir(TEMPDIR):
+        os.mkdir(TEMPDIR)
     check = _FUNCTIONS[args.form]
     with closing(sqlite3.connect(settings.DB_SQLITE)) as sqlite_conn,\
             closing(get_mysql_connection('dbf_db')) as mysql_conn:

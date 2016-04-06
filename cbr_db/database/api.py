@@ -81,4 +81,18 @@ def _import_f102(session, source, csv_path):
     Bulk CSV import implementation for Form 102.
     """
     from .models import F102
-    raise NotImplementedError
+    with open(csv_path) as file:
+        reader = csv.DictReader(file, dialect='excel-tab')
+        session.bulk_insert_mappings(F102, (
+            {
+                'source_id': source.id,
+                'year': x['YEAR'],
+                'quart': x['QUART'],
+                'regn': x['REGN'],
+                'code': x['CODE'],
+                'itogo': x.get('ITOGO') or x['SIM_ITOGO'],
+                'iv': x.get('SIM_V', 0),
+                'ir': x.get('SIM_R', 0),
+                'has_iv': 1 if 'SIM_V' in x else 0,
+            } for x in reader
+        ))

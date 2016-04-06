@@ -59,6 +59,6 @@ class F102(Base):
     itogo = Column(BigInteger)
     has_iv = Column(SmallInteger)
 
-    __table_args__ = (
-        UniqueConstraint('quart', 'year', 'regn', 'code'),
-    )
+    #__table_args__ = (
+    #    UniqueConstraint('quart', 'year', 'regn', 'code'),
+    #)
